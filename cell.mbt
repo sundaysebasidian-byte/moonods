@@ -13,11 +13,12 @@ pub(all) enum Value {
 pub struct Cell {
   value : Value
   formula : String?
+  style : Style
 }
 
 pub fn Cell::new(value : Value) -> Cell raise OdsError {
   validate_value(value)
-  { value, formula: None }
+  { value, formula: None, style: Plain }
 }
 
 /// OpenFormula text must begin of:=. This validates storage, not formula syntax.
@@ -28,7 +29,7 @@ pub fn Cell::formula(expression : String, cache : Value) -> Cell raise OdsError 
   }
   validate_value(cache)
   if cache == Empty { raise Invalid("formula requires a typed nonempty cache") }
-  { value: cache, formula: Some(expression) }
+  { value: cache, formula: Some(expression), style: Plain }
 }
 
 pub fn Cell::value(self : Cell) -> Value { self.value }

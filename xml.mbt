@@ -44,6 +44,7 @@ fn Cell::xml(self : Cell, extra : String) -> String {
   let b = StringBuilder()
   b.write_string("<table:table-cell")
   b.write_string(extra)
+  b.write_string(" table:style-name=\"\{self.style.id()}\"")
   if self.formula is Some(f) { b.write_string(" table:formula=\"\{xml_escape(f)}\"") }
   let display = match self.value {
     Empty => ""

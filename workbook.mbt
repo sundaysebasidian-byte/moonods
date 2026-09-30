@@ -4,6 +4,9 @@ pub struct Sheet {
   mut rows : Int
   mut cols : Int
   mut text_units : Int
+  widths : Map[Int, Int]
+  spans : Map[(Int, Int), (Int, Int)]
+  covered : Map[(Int, Int), Bool]
 }
 pub struct Workbook { sheets : Array[Sheet] }
 
@@ -15,7 +18,7 @@ pub fn Workbook::add_sheet(self : Workbook, name : String) -> Sheet raise OdsErr
   for s in self.sheets {
     if s.name.to_lower() == name.to_lower() { raise Invalid("duplicate sheet name") }
   }
-  let s = { name, cells: {}, rows: 1, cols: 1, text_units: 0 }
+  let s = { name, cells: {}, rows: 1, cols: 1, text_units: 0, widths: {}, spans: {}, covered: {} }
   self.sheets.push(s)
   s
 }
@@ -44,6 +47,7 @@ fn Cell::units(self : Cell) -> Int {
 /// Zero-based coordinate. Validation precedes mutation.
 pub fn Sheet::set(self : Sheet, row : Int, col : Int, cell : Cell) -> Unit raise OdsError {
   position(row, col)
+  if self.covered.contains((row, col)) { raise Invalid("cannot write covered merge cell") }
   let rows = if row + 1 > self.rows { row + 1 } else { self.rows }
   let cols = if col + 1 > self.cols { col + 1 } else { self.cols }
   if rows * cols > 65536 { raise Invalid("sheet rendered grid exceeds 65536 cells") }
@@ -62,19 +66,31 @@ let namespaces : String = " xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns
 pub fn Workbook::content_xml(self : Workbook) -> String raise OdsError {
   if self.sheets.is_empty() { raise Invalid("workbook needs at least one sheet") }
   let b = StringBuilder()
-  b.write_string("<?xml version=\"1.0\" encoding=\"UTF-8\"?><office:document-content\{namespaces} office:version=\"1.3\"><office:body><office:spreadsheet>")
+  b.write_string("<?xml version=\"1.0\" encoding=\"UTF-8\"?><office:document-content\{namespaces} office:version=\"1.3\"><office:automatic-styles>\{self.column_styles()}</office:automatic-styles><office:body><office:spreadsheet>")
   let mut grid = 0
   let mut units = 0
   for s in self.sheets {
     grid += s.rows * s.cols
     units += s.text_units
     if grid > 262144 || units > 4194304 { raise Invalid("workbook resource budget exceeded") }
-    b.write_string("<table:table table:name=\"\{xml_escape(s.name)}\"><table:table-column table:number-columns-repeated=\"\{s.cols}\"/>")
+    b.write_string("<table:table table:name=\"\{xml_escape(s.name)}\">")
+    for col in 0..<s.cols {
+      let a = match s.widths.get(col) { Some(mm) => " table:style-name=\"W\{mm}\""; None => "" }
+      b.write_string("<table:table-column\{a}/>")
+    }
     for row in 0..<s.rows {
       b.write_string("<table:table-row>")
       for col in 0..<s.cols {
-        let c = match s.cells.get((row, col)) { Some(c) => c; None => { value: Empty, formula: None } }
-        b.write_string(c.xml(""))
+        if s.covered.contains((row, col)) {
+          b.write_string("<table:covered-table-cell/>")
+        } else {
+          let c = match s.cells.get((row, col)) { Some(c) => c; None => { value: Empty, formula: None, style: Plain } }
+          let extra = match s.spans.get((row, col)) {
+            Some((nr, nc)) => " table:number-rows-spanned=\"\{nr}\" table:number-columns-spanned=\"\{nc}\""
+            None => ""
+          }
+          b.write_string(c.xml(extra))
+        }
       }
       b.write_string("</table:table-row>")
     }
