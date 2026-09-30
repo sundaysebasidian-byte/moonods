@@ -1,0 +1,3 @@
+import { "sundaysebasidian-byte/moonods" @ods }
+pkgtype(kind: "executable")
+options(supported_targets: "js")
