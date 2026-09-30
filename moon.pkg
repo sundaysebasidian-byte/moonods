@@ -1,0 +1,4 @@
+import {
+  "moonbitlang/core/encoding/utf8",
+  "moonbit-community/zipc" @zip,
+}
