@@ -1,0 +1,59 @@
+js	Resolve pinned packages and verifier	﻿2026-10-01T10:35:32.6831588Z ##[group]Run moon update
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6831918Z ^[[36;1mmoon update^[[0m
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6832226Z ^[[36;1mpython -m pip install -r requirements-verify.txt^[[0m
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6832595Z ^[[36;1mpython scripts/verify_deps.py^[[0m
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6832879Z ^[[36;1mpython scripts/fetch_schemas.py^[[0m
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6898501Z shell: /usr/bin/bash -e {0}
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6898749Z env:
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6898942Z   MOONBIT_VERSION: 0.10.14+7d59c7ec9
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6899202Z   RUST_LOG: error
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6899482Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.14/x64
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6899914Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.14/x64/lib/pkgconfig
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6900351Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.14/x64
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6900726Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.14/x64
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6901301Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.14/x64
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6901678Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.14/x64/lib
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6902093Z   MOON_HOME: /home/runner/work/_temp/moonods-sdk
+js	Resolve pinned packages and verifier	2026-10-01T10:35:32.6902550Z ##[endgroup]
+js	Resolve pinned packages and verifier	2026-10-01T10:35:34.8330797Z Registry index cloned successfully
+js	Resolve pinned packages and verifier	2026-10-01T10:35:34.8331676Z Symbols updated successfully
+js	Resolve pinned packages and verifier	2026-10-01T10:35:35.3144220Z Collecting odfpy==1.4.1 (from -r requirements-verify.txt (line 2))
+js	Resolve pinned packages and verifier	2026-10-01T10:35:35.3722460Z   Downloading odfpy-1.4.1.tar.gz (717 kB)
+js	Resolve pinned packages and verifier	2026-10-01T10:35:35.5168618Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 717.0/717.0 kB 4.1 MB/s  0:00:00
+js	Resolve pinned packages and verifier	2026-10-01T10:35:35.6035033Z   Installing build dependencies: started
+js	Resolve pinned packages and verifier	2026-10-01T10:35:36.5575017Z   Installing build dependencies: finished with status 'done'
+js	Resolve pinned packages and verifier	2026-10-01T10:35:36.5581621Z   Getting requirements to build wheel: started
+js	Resolve pinned packages and verifier	2026-10-01T10:35:37.2936752Z   Getting requirements to build wheel: finished with status 'done'
+js	Resolve pinned packages and verifier	2026-10-01T10:35:37.2946169Z   Preparing metadata (pyproject.toml): started
+js	Resolve pinned packages and verifier	2026-10-01T10:35:37.5065232Z   Preparing metadata (pyproject.toml): finished with status 'done'
+js	Resolve pinned packages and verifier	2026-10-01T10:35:37.7760276Z Collecting lxml==6.0.2 (from -r requirements-verify.txt (line 3))
+js	Resolve pinned packages and verifier	2026-10-01T10:35:37.7843721Z   Downloading lxml-6.0.2-cp313-cp313-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.6 kB)
+js	Resolve pinned packages and verifier	2026-10-01T10:35:37.7996564Z Collecting defusedxml==0.7.1 (from -r requirements-verify.txt (line 4))
+js	Resolve pinned packages and verifier	2026-10-01T10:35:37.8075757Z   Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+js	Resolve pinned packages and verifier	2026-10-01T10:35:37.8408977Z Downloading lxml-6.0.2-cp313-cp313-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.2 MB)
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.0573485Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 27.4 MB/s  0:00:00
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.0643441Z Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.0805283Z Building wheels for collected packages: odfpy
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.0813284Z   Building wheel for odfpy (pyproject.toml): started
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.3736931Z   Building wheel for odfpy (pyproject.toml): finished with status 'done'
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.3743654Z   Created wheel for odfpy: filename=odfpy-1.4.1-py2.py3-none-any.whl size=160717 sha256=9ceeea7d97c4698628353710fb4af20286e520b1e9fe3c932c3e65178e48ac69
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.3745401Z   Stored in directory: /home/runner/.cache/pip/wheels/8e/cd/9f/979443982946991080916064e4c049b91941be1800825ff74b
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.3774281Z Successfully built odfpy
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.3953407Z Installing collected packages: lxml, defusedxml, odfpy
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.6791200Z 
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.6803763Z Successfully installed defusedxml-0.7.1 lxml-6.0.2 odfpy-1.4.1
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7826494Z Traceback (most recent call last):
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7855919Z   File "/home/runner/work/moonods/moonods/scripts/verify_deps.py", line 19, in <module>
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7856852Z     print(json.dumps(verify(), indent=2))
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7857361Z                      ~~~~~~^^
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7858190Z   File "/home/runner/work/moonods/moonods/scripts/verify_deps.py", line 15, in verify
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7860052Z     assert hashlib.sha256((source / name).read_bytes()).hexdigest() == digest, f'dependency source mismatch: {source / name}'
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7861405Z                           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7862461Z   File "/opt/hostedtoolcache/Python/3.13.14/x64/lib/python3.13/pathlib/_abc.py", line 625, in read_bytes
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7863412Z     with self.open(mode='rb') as f:
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7863887Z          ~~~~~~~~~^^^^^^^^^^^
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7864810Z   File "/opt/hostedtoolcache/Python/3.13.14/x64/lib/python3.13/pathlib/_local.py", line 537, in open
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7865893Z     return io.open(self, mode, buffering, encoding, errors, newline)
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7866634Z            ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7867964Z FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/moonods/moonods/.mooncakes/moonbit-community/zipc/zip_errors_test.mbt'
+js	Resolve pinned packages and verifier	2026-10-01T10:35:38.7926353Z ##[error]Process completed with exit code 1.

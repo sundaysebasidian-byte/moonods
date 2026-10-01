@@ -1,0 +1,22 @@
+{
+  "source_head": "8629b91203a4ecbeae721724439797bf7decdc9a",
+  "status": "PASS",
+  "unit_tests": {
+    "total": 25,
+    "passed": 25,
+    "failed": 0
+  },
+  "consumer_tests": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0
+  },
+  "candidate_file_count": 41,
+  "fresh_extracted_candidate_all_files_match": true,
+  "metadata_entries_excluded": [
+    "SOURCE_STATE.json",
+    "GIT_HISTORY.txt",
+    "moonods-history.bundle"
+  ],
+  "scope": "Fresh directory from full source ZIP; existing SDK/core/Python/schema and third-party index cache reused; not fresh machine or registry installation"
+}

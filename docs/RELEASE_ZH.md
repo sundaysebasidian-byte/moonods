@@ -4,8 +4,8 @@
 
 | 项目 | 当前状态 |
 |---|---|
-| 公开仓库 | 准备中；目标 https://github.com/sundaysebasidian-byte/moonods |
-| 远端 CI | 尚未执行；不以本地通过替代 |
+| 公开仓库 | **已公开**；https://github.com/sundaysebasidian-byte/moonods |
+| 远端 CI | 首轮失败，修复后待重跑；不以本地通过替代 |
 | Mooncakes 0.1.0 | 尚未发布；命名空间 sundaysebasidian-byte/moonods |
 | 独立注册表消费 | 尚未执行；此前本地候选消费通过 |
 | 隐私/许可 | 首发前核查通过，见 evidence/publication/privacy-license-review.json |
@@ -16,3 +16,5 @@
 Excel 16.113.3 常规20组通过、整体 **PARTIAL**；0001年显示缺口及毫米绝对列宽 **UNRESOLVED** 保留。新增日期诊断 ODS 未做原生Office实读。LibreOffice、Numbers、WPS **NOT TESTED**。详见验收矩阵及 OFFICE_COMPATIBILITY_ZH。
 
 Mooncakes 内容在发布时固定；后续仓库新增的发行结果文档/证据不代表已发布包字节变化。记录发布候选全部文件的摘要与实际注册表下载逐文件比较，核心源码必须一致。
+
+首轮真实CI [`36850050995`](https://github.com/sundaysebasidian-byte/moonods/actions/runs/36850050995)，提交 `8629b91203a4ecbeae721724439797bf7decdc9a`：SDK/Node/Python准备通过，依赖核对因 `.mooncakes` 尚未解析而失败；`moon update` 只更新索引。现将显式 `moon check` 解析依赖放在逐文件摘要校验之前，保持全部核对与测试标准。原始失败日志保留。源码ZIP换目录复现25+4通过，候选41份文件全部一致，见 evidence/publication/source-reproduction-summary.json。
