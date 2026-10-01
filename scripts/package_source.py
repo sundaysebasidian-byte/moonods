@@ -34,7 +34,7 @@ def main():
             i = zipfile.ZipInfo('MoonODS/' + name, (1980,1,1,0,0,0))
             i.compress_type = zipfile.ZIP_DEFLATED
             z.writestr(i, data)
-    print(json.dumps({'file': str(output), 'bytes': output.stat().st_size(), 'head': head,
+    print(json.dumps({'file': str(output), 'bytes': output.stat().st_size, 'head': head,
                       'sha256': hashlib.sha256(output.read_bytes()).hexdigest()}, indent=2))
 
 if __name__ == '__main__': main()
