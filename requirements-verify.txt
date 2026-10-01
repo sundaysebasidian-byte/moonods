@@ -1,0 +1,4 @@
+# Verification only; the MoonBit writer has no Python runtime dependency.
+odfpy==1.4.1
+lxml==6.0.2
+defusedxml==0.7.1

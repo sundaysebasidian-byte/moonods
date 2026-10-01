@@ -3,3 +3,4 @@ _build/
 examples/generated/
 __pycache__/
 .venv/
+.schemas/
