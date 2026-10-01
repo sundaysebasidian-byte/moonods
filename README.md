@@ -1,6 +1,6 @@
 # MoonODS
 
-MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。项目目前仅在本地开发，尚未公开仓库或发布 mooncakes。
+MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。公开仓库与 Mooncakes 首发已获用户批准；发行进度及真实验证结果见 [发行记录](docs/RELEASE_ZH.md)。
 
 适合销售汇总、教学实验和调用方提供公式缓存的离线报表。它生成 ODS，不读取或转换已有文件。生态里已有 [markitdown-mb](https://github.com/ZSeanYves/markitdown) 的 ODS→Markdown 读取，以及 [mbtexcel](https://github.com/moonbitlang/office.mbt) 的 XLSX 读写；本项目聚焦有界、类型化、确定性的 ODF 1.3 writer。当前检索不等于证明生态里绝无同类项目，正式申报前需要再核查。
 
@@ -32,6 +32,15 @@ moon run --target js -j 1 examples/generate
 ```
 
 新检出需要解析 `moon.mod` 的固定依赖：`moon update`。源码包附带原封不动的 zipc/flate 源码归档，可用 `python3 scripts/restore_deps.py` 恢复到本项目 `.mooncakes`，再用 `scripts/verify_deps.py` 校验；这两个脚本只写本项目，不配置全局工具链。Moon 首次依赖解析仍可能需要 registry 索引/缓存；离线时应使用已准备的 SDK 缓存，不能把有网环境成功误称完全离线初始化成功。
+
+Mooncakes 发行版的下游依赖声明为 `sundaysebasidian-byte/moonods@0.1.0`。发布完成后可在自己的模块运行：
+
+```sh
+moon add sundaysebasidian-byte/moonods@0.1.0
+moon check --target js -j 1
+```
+
+源码、开发验证脚本和完整证据请从 [GitHub](https://github.com/sundaysebasidian-byte/moonods) 获取；Mooncakes 包只包含库、示例、接口、许可和说明。注册表消费结果单独记录，不用本地 workspace 成功代替。
 
 本地独立模块消费已实际验证：`scripts/verify_reuse.py`用`moon package`候选ZIP建立新目录，独立模块与解压候选组成`moon.work`，第三方依赖从现有可信缓存解析；尚未从Mooncakes安装本项目。手工本地workspace布局示意：
 
@@ -111,7 +120,7 @@ python scripts/verify_reuse.py --moon /absolute/path/to/existing/sdk/bin/moon
 
 脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包；也运行新的日期/单位诊断例及独立7类型值/3 XML检查。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[最新完整证据](evidence/date-width-release/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr也保留。Excel为单独的本机读取验证，不由该跨平台脚本或远端CI执行；真实记录在[Excel报告](evidence/office-2026-10-01-fixed/excel.json)。新增诊断ODS没有原生Office实测，旧四个ODS哈希仍与既有Excel输入核对。
 
-`.github/workflows/ci.yml` 已提供相同检查及证据保存。它只在未来获准建立远端后运行；远端 CI、Ubuntu SDK 安装与网络依赖解析本次未测。
+`.github/workflows/ci.yml` 已提供相同检查及证据保存。真实远端执行的提交 SHA、运行链接及结论见发行记录；本地通过不替代远端结果。
 
 ## 设计与合规
 
@@ -119,6 +128,6 @@ python scripts/verify_reuse.py --moon /absolute/path/to/existing/sdk/bin/moon
 
 zipc 的 Archive 按路径排序，会把 META-INF 放在 mimetype 前，因此本库编写小型固定路径 ZIP32 STORED 封装，复用 zipc 的 CRC32 实现；没有通用 ZIP writer/reader 或用户资产路径入口。依赖源码与摘要真实核对，归档保持上游 Apache-2.0 许可，项目原创代码为 MIT。详见 [来源](SOURCES.md)、[第三方声明](THIRD_PARTY_NOTICES.md)、[AI_USAGE](AI_USAGE.md)。
 
-[申报参考](docs/PROPOSAL_REFERENCE.md) 是 AI 辅助技术事实，不能冒充人工最终申报书。用户需理解并人工撰写；公开仓库、mooncakes 发布、报名及身份/银行/学籍/诚信材料仍待用户处理。
+[申报参考](docs/PROPOSAL_REFERENCE.md) 是 AI 辅助技术事实，不能冒充人工最终申报书。用户需理解并人工撰写；公开仓库与包首发已获批准；报名及身份/银行/学籍/诚信材料仍由用户处理。
 
-本轮边界补充已完成统一技术复核，按真实工程阶段提交并生成新源码交付。Library历史v2对应`dc59462`的22项测试快照；本轮为25项测试及新增诊断例。公开仓库、包发布、远端CI和人工申报仍未完成，不把本地复核称为官方验收。
+本轮边界补充已完成统一技术复核，按真实工程阶段提交并生成新源码交付。Library历史v2对应`dc59462`的22项测试快照；本轮为25项测试及新增诊断例。公开、首发及远端CI的最新状态见发行记录；人工申报仍由用户完成，不把工程验证称为官方验收。

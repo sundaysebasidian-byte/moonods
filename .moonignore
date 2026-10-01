@@ -9,3 +9,6 @@ examples/compatibility/generated/
 /vendor/
 /scripts/
 /fixtures/
+/SOURCE_STATE.json
+/GIT_HISTORY.txt
+/moonods-history.bundle

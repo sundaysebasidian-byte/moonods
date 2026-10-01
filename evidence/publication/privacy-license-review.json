@@ -1,0 +1,12 @@
+{
+  "tracked_files": 555,
+  "history_commits": 17,
+  "secret_pattern_matching_files": [],
+  "secret_pattern_matching_commits": [],
+  "pattern_values_not_printed": true,
+  "screen_review": "Grant dialog shows only this project fixtures and standard macOS sidebar; no tokens or unrelated document list. Original screenshots retained unmodified.",
+  "synthetic_fixtures": true,
+  "third_party_archives": "Unchanged zipc/flate archives and original Apache-2.0 notices retained; OASIS RNG not redistributed",
+  "manual_proposal_generated": false,
+  "status": "PASS"
+}

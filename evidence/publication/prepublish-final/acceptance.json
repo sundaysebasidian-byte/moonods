@@ -1,0 +1,546 @@
+{
+  "started_utc": "2026-10-01T10:33:41.151119+00:00",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.14",
+  "steps": [
+    {
+      "name": "moonc-version",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moonc",
+        "-v"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "moon-version",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "version"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "node-version",
+      "command": [
+        "node",
+        "--version"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "format",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "fmt",
+        "--check"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "check",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "check",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "build",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "build",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "test",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "test",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "examples-first",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "examples/generate"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "examples-second",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "examples/generate"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "schema-bytes",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/fetch_schemas.py"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "external",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/verify_external.py",
+        "--report",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/publication/prepublish-final/external.json"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "compatibility-first",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "examples/compatibility"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "compatibility-second",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "examples/compatibility"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "compatibility-regression",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/verify_compatibility.py",
+        "--report",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/publication/prepublish-final/compatibility.json"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "reuse",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/verify_reuse.py",
+        "--moon",
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "--output",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/publication/prepublish-final/reuse"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    }
+  ],
+  "scope": "JS backend core + examples + independent package/schema/reader checks",
+  "not_run_by_this_script": [
+    "LibreOffice",
+    "Excel",
+    "Numbers",
+    "WPS",
+    "remote CI",
+    "native/wasm backends",
+    "peak RSS and performance"
+  ],
+  "source_sha256": {
+    "boundaries_wbtest.mbt": "3fbbbb587487af543b08f7f75f4d65654343eeda7a3a3cf0003acc350e6dfe85",
+    "cell.mbt": "0f1c84262f85333be98037e3bb89ac94bdc1fbb7b583f1e90e1f115505cd43da",
+    "cell_wbtest.mbt": "afa9db346cf861007a00087706f97d59b182f401ab2b3b3c9eb51727906aaa85",
+    "compatibility_wbtest.mbt": "d16513acca80a1c0cf5b170c8981648623dfce0da6c0daf3121fe86062ed799b",
+    "examples/compatibility/main.mbt": "ac07ed80dd07d80e2bc40cfdeb9524817248ccafcd0ec1929880219fe207af07",
+    "examples/generate/main.mbt": "f4cbfe8c348314c5d3a10e10d2792a765c78709078c9d6f80c97ef9b161c2763",
+    "fixtures/reuse-consumer/src/main.mbt": "e644693538cf7b740cdf880e30812b4f71763e45c5699964da067b01f6b8f3c5",
+    "fixtures/reuse-consumer/src/reuse_wbtest.mbt": "2a2d82203acf5dcac142ca0b7d415c6d497eb01b7c6d606698d438ba1260b4db",
+    "package.mbt": "3db24b3d3fd785da47e5a4b5b90065cbf4be15e37fabf6e383778e9a1c2ec630",
+    "package_wbtest.mbt": "fd342855e8486b6e390f4a228349eab3f095142d0164ae5f947cee5276744601",
+    "scripts/acceptance.py": "b293d234453df603405cb206c915ce317e876d20b17468c4c5436a2794ba8bf8",
+    "scripts/fetch_schemas.py": "65f92755ac636fd37f2a4868d1e9952e0e0c0aaf867f7ed01c7e7743c3007caf",
+    "scripts/package_source.py": "6794e2fa60ead722e16fde5e0196dc3b532a394aa0c5337be733a87aeb3a6275",
+    "scripts/restore_deps.py": "29fa68f7b726beba75278d2c5a8745e2e6afb15662c57f9f4dd7cdb713e4a073",
+    "scripts/verify_compatibility.py": "a1090031a76066476fe27a1948347af8ddba3d5f85b03bbb82c19fd52bbcb6cf",
+    "scripts/verify_consumer_outputs.py": "10668e02b2258ca54ddd057b8d6ee725b60d95d31296fa1c0c4dddb21a33794c",
+    "scripts/verify_deps.py": "59574e8d4b22b0814bfb88dafbcb2f579aafa3259b0d88a7865a2e729a4d186e",
+    "scripts/verify_excel.py": "41bf855854f886201157f1a38ad3f9b0b0679b7d9835a07233277485167567ce",
+    "scripts/verify_external.py": "4ae1344688e6b223250f0989d550445fd00e9c587494037b09cde2009c215090",
+    "scripts/verify_registry.py": "5c430462167591b855c0b320b7c84ffc4e1b763d06dee6e7dab7112e36064d28",
+    "scripts/verify_reuse.py": "2f5855943d7a924e5d496a0e6d09e5126e20e53dfd782b8547dadc300aa13ba3",
+    "style.mbt": "fefb89007460bda1a6f2c6dd12cfcd5a8d7c7fd3a282b0aab8048226bebdfe5e",
+    "style_wbtest.mbt": "04705f9d4d118df76a2aaf7d5b42fcb159069cd38f82b05b50a4ed3c3c98e02d",
+    "tests/consumer/api_test.mbt": "31bc5548d526ed963c12be4287bd3f8322386582998cd4557509730a331ff1f0",
+    "workbook.mbt": "d255c1b90de809904a3377ed7ca29efb714c77e947e582d5fe962b82fdbb925c",
+    "workbook_wbtest.mbt": "6b79e1f4eeb5bba44ddd1b6068c13135aa41700e0f3cbaca7d8ed4a53b4456f7",
+    "xml.mbt": "5c5935442dc508b8aade02077561cd9296867c9c1f913234a48889451f7e9430",
+    "xml_wbtest.mbt": "f88bf99df7743a678f5d11d466f753e5a3b72e17313966a03c3f8632146fa8b7"
+  },
+  "dependencies": {
+    "zipc": {
+      "version": "0.2.2",
+      "sha256": "e552ecca64446aa9be8ced2dfae21f413e77ced2d21dfd0934772f32f30c43de"
+    },
+    "flate": {
+      "version": "0.2.0",
+      "sha256": "935372d9a49a5d4bbb40a2fd057bd36b587f683d605c5de204adc143a2215e66"
+    }
+  },
+  "unit_tests": {
+    "total": 25,
+    "passed": 25,
+    "failed": 0
+  },
+  "cross_process_determinism": {
+    "status": "PASS",
+    "sha256": {
+      "sales.ods": "689c9409eba85bafa31eef29d0037a75818fad65380b63acb67870d9e77fd101",
+      "formulas.ods": "ecaf2fdbe2839d149ac7c83c433598f1e4c8dbdf9243a0f7fed877aa1524995c",
+      "edge.ods": "9c1f36342ee7f3f96ddcb3618effbb5ad423d7c252147c9dd07ae438bb3b9841",
+      "experiment.ods": "5f1b55e56d67a3fe6e60496e48f9fecc97876483ccf6641e873968e3d57c23bd"
+    }
+  },
+  "separate_office_evidence": {
+    "file": "evidence/office-2026-10-01-fixed/excel.json",
+    "sha256": "74f3a58d2a6d9666876375247e02fd012573c64627a8cfe5383db7d91419ef1d",
+    "provenance": "Previously executed native application read; not rerun by this script",
+    "application": "Microsoft Excel",
+    "version": "16.113.3",
+    "status": "PARTIAL",
+    "normal_cases": {
+      "status": "PASS",
+      "assertion_groups": 20,
+      "empty_value_note": "Excel value2 presents both explicit Empty and Text(\"\") as empty string; independent ODS check distinguishes them"
+    },
+    "boundaries": {
+      "status": "PARTIAL",
+      "issues": [
+        "Absolute column-width check assuming points failed; physical-mm calibration unresolved",
+        "Year 0001 date has no value through Excel value2 API"
+      ],
+      "long_text_length_read": 32767,
+      "date_displays": [
+        "#N/A",
+        "12/31/99"
+      ]
+    },
+    "matches_current_generated_ods": true
+  },
+  "compatibility_fixture_determinism": {
+    "status": "PASS",
+    "sha256": "95f96203cbdf8698c062ee7ee677c256cbf94cf5ec3373a52357ec5406d53414"
+  },
+  "independent_module_reuse": {
+    "started_utc": "2026-10-01T10:33:43.129591+00:00",
+    "steps": [
+      {
+        "name": "package",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "package",
+          "--frozen",
+          "--list"
+        ],
+        "cwd": "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-format",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "fmt",
+          "--check",
+          "src"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-duvqppq4/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-check",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "check",
+          "--target",
+          "js",
+          "-j",
+          "1",
+          "--deny-warn"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-duvqppq4/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-build",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "build",
+          "--target",
+          "js",
+          "-j",
+          "1",
+          "--deny-warn"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-duvqppq4/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-test",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "test",
+          "--target",
+          "js",
+          "-j",
+          "1",
+          "--deny-warn",
+          "src"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-duvqppq4/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-first",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "run",
+          "--target",
+          "js",
+          "-j",
+          "1",
+          "src"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-duvqppq4/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-second",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "run",
+          "--target",
+          "js",
+          "-j",
+          "1",
+          "src"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-duvqppq4/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      }
+    ],
+    "scope": "Independent local module consumes extracted moon package candidate via moon.work",
+    "mooncakes_published_or_remote_consumption": false,
+    "unmeasured": [
+      "office applications",
+      "fresh machine",
+      "network package installation",
+      "market demand"
+    ],
+    "verified_dependencies": {
+      "zipc": {
+        "version": "0.2.2",
+        "sha256": "e552ecca64446aa9be8ced2dfae21f413e77ced2d21dfd0934772f32f30c43de"
+      },
+      "flate": {
+        "version": "0.2.0",
+        "sha256": "935372d9a49a5d4bbb40a2fd057bd36b587f683d605c5de204adc143a2215e66"
+      }
+    },
+    "candidate": {
+      "file": "moonods-local-candidate-0.1.0.zip",
+      "sha256": "67106c5e1b2c4e1712e461e98296f57cf660c91ee32bfaf3db912f480bc6b290",
+      "bytes": 64903,
+      "files": [
+        "moon.pkg",
+        "moon.mod",
+        "xml.mbt",
+        "TOOLCHAIN.lock",
+        "compatibility_wbtest.mbt",
+        "LICENSE",
+        "licenses/flate-Apache-2.0.txt",
+        "licenses/moonbit-core-Apache-2.0.txt",
+        "licenses/zipc-Apache-2.0.txt",
+        "SOURCES.md",
+        "package.mbt",
+        "style_wbtest.mbt",
+        "boundaries_wbtest.mbt",
+        "workbook_wbtest.mbt",
+        "DEPENDENCIES.lock.json",
+        "pkg.generated.mbti",
+        "tests/consumer/moon.pkg",
+        "tests/consumer/pkg.generated.mbti",
+        "tests/consumer/api_test.mbt",
+        "cell_wbtest.mbt",
+        "workbook.mbt",
+        "THIRD_PARTY_NOTICES.md",
+        "docs/OFFICE_COMPATIBILITY_ZH.md",
+        "docs/ACCEPTANCE_ZH.md",
+        "docs/REUSE_REVIEW_ZH.md",
+        "docs/RELEASE_ZH.md",
+        "docs/RULES_REVIEW_ZH.md",
+        "docs/PROPOSAL_REFERENCE.md",
+        "README.md",
+        "xml_wbtest.mbt",
+        "package_wbtest.mbt",
+        "style.mbt",
+        "examples/compatibility/moon.pkg",
+        "examples/compatibility/main.mbt",
+        "examples/compatibility/pkg.generated.mbti",
+        "examples/generate/moon.pkg",
+        "examples/generate/main.mbt",
+        "examples/generate/pkg.generated.mbti",
+        "requirements-verify.txt",
+        "cell.mbt",
+        "AI_USAGE.md"
+      ],
+      "source_sha256": {
+        "moon.pkg": "db4df9cb2a38cc73d956036004cd5effe4593e8177d3015349f94dcb9a5ff7cd",
+        "moon.mod": "54488ec890423a86358198797c527194194da4a4cdc80c7ca2a6bff1d569d1c4",
+        "xml.mbt": "5c5935442dc508b8aade02077561cd9296867c9c1f913234a48889451f7e9430",
+        "compatibility_wbtest.mbt": "d16513acca80a1c0cf5b170c8981648623dfce0da6c0daf3121fe86062ed799b",
+        "package.mbt": "3db24b3d3fd785da47e5a4b5b90065cbf4be15e37fabf6e383778e9a1c2ec630",
+        "style_wbtest.mbt": "04705f9d4d118df76a2aaf7d5b42fcb159069cd38f82b05b50a4ed3c3c98e02d",
+        "boundaries_wbtest.mbt": "3fbbbb587487af543b08f7f75f4d65654343eeda7a3a3cf0003acc350e6dfe85",
+        "workbook_wbtest.mbt": "6b79e1f4eeb5bba44ddd1b6068c13135aa41700e0f3cbaca7d8ed4a53b4456f7",
+        "tests/consumer/api_test.mbt": "31bc5548d526ed963c12be4287bd3f8322386582998cd4557509730a331ff1f0",
+        "cell_wbtest.mbt": "afa9db346cf861007a00087706f97d59b182f401ab2b3b3c9eb51727906aaa85",
+        "workbook.mbt": "d255c1b90de809904a3377ed7ca29efb714c77e947e582d5fe962b82fdbb925c",
+        "xml_wbtest.mbt": "f88bf99df7743a678f5d11d466f753e5a3b72e17313966a03c3f8632146fa8b7",
+        "package_wbtest.mbt": "fd342855e8486b6e390f4a228349eab3f095142d0164ae5f947cee5276744601",
+        "style.mbt": "fefb89007460bda1a6f2c6dd12cfcd5a8d7c7fd3a282b0aab8048226bebdfe5e",
+        "examples/compatibility/main.mbt": "ac07ed80dd07d80e2bc40cfdeb9524817248ccafcd0ec1929880219fe207af07",
+        "examples/generate/main.mbt": "f4cbfe8c348314c5d3a10e10d2792a765c78709078c9d6f80c97ef9b161c2763",
+        "cell.mbt": "0f1c84262f85333be98037e3bb89ac94bdc1fbb7b583f1e90e1f115505cd43da"
+      },
+      "all_files_sha256": {
+        "moon.pkg": "db4df9cb2a38cc73d956036004cd5effe4593e8177d3015349f94dcb9a5ff7cd",
+        "moon.mod": "54488ec890423a86358198797c527194194da4a4cdc80c7ca2a6bff1d569d1c4",
+        "xml.mbt": "5c5935442dc508b8aade02077561cd9296867c9c1f913234a48889451f7e9430",
+        "TOOLCHAIN.lock": "fe2ed5fe640b256808f8138fb3303052037dfeab1510215e7206d1c2dce49c07",
+        "compatibility_wbtest.mbt": "d16513acca80a1c0cf5b170c8981648623dfce0da6c0daf3121fe86062ed799b",
+        "LICENSE": "7aed9943672c49428e033adb160dfc72ae9d245108ea27c3453ff979110c8091",
+        "licenses/flate-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "licenses/moonbit-core-Apache-2.0.txt": "86460c45017ffacb9aa9e18850fa9fdb036339dc8851125465f4a3f3442fc894",
+        "licenses/zipc-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "SOURCES.md": "0c404761436ec1c5d58ade8ab424c74f85222709d53f69a20d3f06ea9826e19a",
+        "package.mbt": "3db24b3d3fd785da47e5a4b5b90065cbf4be15e37fabf6e383778e9a1c2ec630",
+        "style_wbtest.mbt": "04705f9d4d118df76a2aaf7d5b42fcb159069cd38f82b05b50a4ed3c3c98e02d",
+        "boundaries_wbtest.mbt": "3fbbbb587487af543b08f7f75f4d65654343eeda7a3a3cf0003acc350e6dfe85",
+        "workbook_wbtest.mbt": "6b79e1f4eeb5bba44ddd1b6068c13135aa41700e0f3cbaca7d8ed4a53b4456f7",
+        "DEPENDENCIES.lock.json": "c45563142b797dbf62ac730a6cb804ece359cb23cfa99a9c63ed43aa9da060eb",
+        "pkg.generated.mbti": "b34ef298e3693cdee5ccae2eb329ac6c040c68a1506b58ef87291f3d28256e27",
+        "tests/consumer/moon.pkg": "0d914b0ff6f314479b17e014f4454223e24dc2ea246bf06d829d26497346faf0",
+        "tests/consumer/pkg.generated.mbti": "55dfe860142f9161edcffdf0084b9db6ea58faa4c0215de1369b09dd5edcc5b1",
+        "tests/consumer/api_test.mbt": "31bc5548d526ed963c12be4287bd3f8322386582998cd4557509730a331ff1f0",
+        "cell_wbtest.mbt": "afa9db346cf861007a00087706f97d59b182f401ab2b3b3c9eb51727906aaa85",
+        "workbook.mbt": "d255c1b90de809904a3377ed7ca29efb714c77e947e582d5fe962b82fdbb925c",
+        "THIRD_PARTY_NOTICES.md": "0c0c8a7a0f00980e9ee6e03c2130272b8779e9f0654ca8533afa9adb8d60cccb",
+        "docs/OFFICE_COMPATIBILITY_ZH.md": "85eee4b455229e3af2d7ac638a10fedbe40a9685d4878faa1a71d0675ed1ff2d",
+        "docs/ACCEPTANCE_ZH.md": "4823c1301b088b881f2c306435b34fa3930900b8f40ccf78ee62c702bb288d40",
+        "docs/REUSE_REVIEW_ZH.md": "0f5b9893f9d834ba6bd7eec71afba33320c043d5f2cb74554af20203e30cb6b3",
+        "docs/RELEASE_ZH.md": "7976578c7aa04adc49d58de3146499f3b71174ecf7b44144d4bdc4698ea047f1",
+        "docs/RULES_REVIEW_ZH.md": "6ada40316677385158015ca056151aa9dba08e8f2a308fb7a043df7973a1bae8",
+        "docs/PROPOSAL_REFERENCE.md": "1fbf0b67fb344cacc4c47e740a81933d9c9872e349b3f897f3ca5914f6677841",
+        "README.md": "d79b3d9c12e5243f07a2a16fe259c7cc7fc0e4f980d5b1e804dc1ddd371f1077",
+        "xml_wbtest.mbt": "f88bf99df7743a678f5d11d466f753e5a3b72e17313966a03c3f8632146fa8b7",
+        "package_wbtest.mbt": "fd342855e8486b6e390f4a228349eab3f095142d0164ae5f947cee5276744601",
+        "style.mbt": "fefb89007460bda1a6f2c6dd12cfcd5a8d7c7fd3a282b0aab8048226bebdfe5e",
+        "examples/compatibility/moon.pkg": "692316774b063ee959d0fba67df0587cb44ff309f9df705315dfe5bec12cca4d",
+        "examples/compatibility/main.mbt": "ac07ed80dd07d80e2bc40cfdeb9524817248ccafcd0ec1929880219fe207af07",
+        "examples/compatibility/pkg.generated.mbti": "e766d50c8be1d1a1a3aca522a090d5a55d8bd0f599a1436d4f887d5acd0a57c4",
+        "examples/generate/moon.pkg": "692316774b063ee959d0fba67df0587cb44ff309f9df705315dfe5bec12cca4d",
+        "examples/generate/main.mbt": "f4cbfe8c348314c5d3a10e10d2792a765c78709078c9d6f80c97ef9b161c2763",
+        "examples/generate/pkg.generated.mbti": "b8ea8e756f3e442505079734dd31e0ebd865d0b44a4da3dd0a435bcbbb80f475",
+        "requirements-verify.txt": "069819b2fac9540113accf84f60ff7ed4371301e53981d69746818635a030b2e",
+        "cell.mbt": "0f1c84262f85333be98037e3bb89ac94bdc1fbb7b583f1e90e1f115505cd43da",
+        "AI_USAGE.md": "6155ce2dacff4f310763f45282bceeaafec321c8e890310629c4235e3c02e7ca"
+      },
+      "all_candidate_bytes_match_checkout": true
+    },
+    "consumer_source_sha256": {
+      "moon.mod": "ce0fbe9becaa5042c6b14353e10a88bc814a16c2afbf7eb7bcdd390a6ed3579c",
+      "src/main.mbt": "e644693538cf7b740cdf880e30812b4f71763e45c5699964da067b01f6b8f3c5",
+      "src/moon.pkg": "a3cb20dc94fa8dca2a4c297b9db610452cac9f1c9f19661539b6845779886408",
+      "src/reuse_wbtest.mbt": "2a2d82203acf5dcac142ca0b7d415c6d497eb01b7c6d606698d438ba1260b4db"
+    },
+    "workspace_config": "members = [\n  \"candidate\",\n  \"consumer\",\n]\n",
+    "tests": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0
+    },
+    "independent_reader": {
+      "status": "PASS",
+      "typed_cell_assertions": 30,
+      "official_rng_xml_count": 9,
+      "package_checks": "PASS",
+      "inconsistent_cache_preserved": 99,
+      "calculation_performed": false
+    },
+    "cross_process_determinism": {
+      "status": "PASS",
+      "sha256": {
+        "declarations.ods": "4cf791220b9288e9cfe7d4964cf21ff542e731f37429e08a8eadb8ef82102ecb",
+        "laboratory.ods": "596cc7f9fb489714dab6b96f3a76e0810304093e6b00cddcc3b278029c4365dd",
+        "business.ods": "95504f27df11060e92014462e4ff18fda8111b3f68a028c058f578cbc3f3d3ce"
+      }
+    },
+    "status": "PASS",
+    "finished_utc": "2026-10-01T10:33:45.076335+00:00"
+  },
+  "status": "PASS",
+  "finished_utc": "2026-10-01T10:33:45.087863+00:00"
+}
