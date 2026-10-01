@@ -16,7 +16,7 @@ MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook �
 
 公式文本按调用方给出的内容保存；只检查前缀、长度和 XML 字符，不解释函数。缓存由调用方负责，办公软件可能重算，库不会修正错误缓存。请只向办公软件交付可信公式；本库不承诺拦截公式中的外部引用。数字使用 IEEE-754 `Double`，不适合要求精确十进制金额运算的计算层。
 
-MVP 验证范围为 JS 后端。核心没有 FFI；其他后端及 LibreOffice、Excel、Numbers、WPS 的真实打开/布局/重算尚未实测。schema 与独立读取器通过不等于全部办公软件兼容。完整状态见 [中文验收矩阵](docs/ACCEPTANCE_ZH.md)。
+MVP 验证范围为 JS 后端。核心没有 FFI。现有 Mac Excel 16.113.3 已实际打开四个自制 ODS，20 组常规断言通过，整体兼容状态 **PARTIAL**：公元 0001 年显示异常，绝对毫米列宽校准未完成。LibreOffice、Numbers、WPS、其他后端仍未测；schema 与独立读取器通过不等于全部办公软件兼容。详见[桌面实测](docs/OFFICE_COMPATIBILITY_ZH.md)和[中文验收矩阵](docs/ACCEPTANCE_ZH.md)。
 
 ## 安装与运行
 
@@ -85,11 +85,11 @@ Workbook/Sheet/Cell 为不透明类型，不能访问内部数组/Map绕过验�
 |---|---|
 | 工作表 | 最多 32；名称 1..31 UTF-16 单位，非空白；不允许 `[]:*?/\\`、控制字符、首尾单引号；忽略大小写查重 |
 | 单元格索引 | 行 0..1023、列 0..127；每表实际渲染矩形≤65,536 格，工作簿合计≤262,144 格 |
-| 字符串/公式 | 每段≤32,768 UTF-16 单位；每表文本与公式合计≤2,097,152，工作簿合计≤4,194,304 |
+| 字符串/公式 | 每段≤32,767 UTF-16 单位；每表文本与公式合计≤2,097,152，工作簿合计≤4,194,304 |
 | 合并/列宽 | 每表≤256 合并；矩形至少两格，不越界、不重叠、不覆盖显式已写值（即使 Empty）；列宽 1..500 mm |
 | 序列化 | content.xml UTF-8≤16 MiB，完整包≤32 MiB；任一预算可先触发。不是进程 RSS 限制 |
 
-表名政策为本项目互操作性约束，比 ODF 的 `string` 更严格。修改单元格/列宽/合并先验证再改变状态；失败后已写内容仍可复用。不能写入合并覆盖格；合并扩展后的矩形也计入预算。工作簿总预算在输出前预检，XML 转义膨胀在逐片写入时再限制。库在内存中构造整个包，不提供流式大型表格输出。
+表名政策为本项目互操作性约束，比 ODF 的 `string` 更严格。Excel 实测会截断旧 32,768 字样本，故每段上限收紧至 32,767 UTF-16 单元；修改后的边界样本已完整读取。日期支持 ODF 有效公历年份 1..9999，不保证 Excel 支持全部范围；完整年月日显示可选 DateISO。修改单元格/列宽/合并先验证再改变状态；失败后已写内容仍可复用。不能写入合并覆盖格；合并扩展后的矩形也计入预算。工作簿总预算在输出前预检，XML 转义膨胀在逐片写入时再限制。库在内存中构造整个包，不提供流式大型表格输出。
 
 ## 可复现验证
 
@@ -103,7 +103,7 @@ python scripts/acceptance.py --moon /absolute/path/to/existing/sdk/bin/moon
 python scripts/verify_reuse.py --moon /absolute/path/to/existing/sdk/bin/moon
 ```
 
-脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[证据](evidence/2026-10-01-reuse/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr 也随包保留。
+脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[最新证据](evidence/2026-10-01-office-final/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr 也随包保留。Excel 为单独的本机读取验证，不由该跨平台脚本或远端 CI 执行；真实记录在 [Excel 报告](evidence/office-2026-10-01-fixed/excel.json)。
 
 `.github/workflows/ci.yml` 已提供相同检查及证据保存。它只在未来获准建立远端后运行；远端 CI、Ubuntu SDK 安装与网络依赖解析本次未测。
 

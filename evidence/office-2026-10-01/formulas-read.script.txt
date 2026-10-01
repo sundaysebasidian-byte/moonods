@@ -1,0 +1,4 @@
+var e=Application('Microsoft Excel'); var w=e.workbooks.byName("moonods-formulas.ods"); var s=w.worksheets[0];
+var result={version:e.version(),name:w.name(),sheets:w.worksheets.name(),readOnly:w.readOnly(),date1904:w.date1904()};
+result.values=s.ranges.byName('A1:B4').value2(); result.formulas=s.ranges.byName('A1:B4').formula(); result.date=s.ranges.byName('B3').stringValue();
+JSON.stringify(result);

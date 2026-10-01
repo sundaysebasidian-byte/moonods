@@ -1,0 +1,26 @@
+{
+  "started_utc": "2026-10-01T07:04:43.988306+00:00",
+  "application": "Microsoft Excel",
+  "scope": "existing Mac application, read-only task-owned ODS copies, no workbook save",
+  "steps": [
+    {
+      "name": "sales-grant-0",
+      "command": [
+        "osascript"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "sales-open",
+      "command": [
+        "osascript"
+      ],
+      "exit_code": 1
+    }
+  ],
+  "libreoffice": "NOT TESTED; no installation approved",
+  "other_applications": "NOT TESTED",
+  "status": "FAIL",
+  "error": "sales open failed",
+  "finished_utc": "2026-10-01T07:04:45.217763+00:00"
+}

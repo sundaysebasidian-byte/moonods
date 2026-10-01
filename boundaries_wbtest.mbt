@@ -1,11 +1,11 @@
 ///|
 test "long text limit preserves accepted boundary" {
   let b = StringBuilder()
-  for _ in 0..<32768 {
+  for _ in 0..<32767 {
     b.write_string("x")
   }
   let ok = b.to_string()
-  assert_eq(Cell::new(Text(ok)).units(), 32768)
+  assert_eq(Cell::new(Text(ok)).units(), 32767)
   assert_true(
     try {
       Cell::new(Text(ok + "x")) |> ignore
@@ -124,25 +124,32 @@ test "sheet text budget replacement accounting" {
   let w = Workbook::new()
   let s = w.add_sheet("s")
   let b = StringBuilder()
-  for _ in 0..<32768 {
+  for _ in 0..<32767 {
     b.write_string("x")
   }
   let c = Cell::new(Text(b.to_string()))
   for row in 0..<64 {
     s.set(row, 0, c)
   }
+  s.set(
+    64,
+    0,
+    Cell::new(
+      Text("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+    ),
+  )
   assert_eq(s.text_units, 2097152)
   assert_true(
     try {
-      s.set(64, 0, Cell::new(Text("x")))
+      s.set(65, 0, Cell::new(Text("x")))
       false
     } catch {
       Invalid(_) => true
     },
   )
-  assert_true(s.get(64, 0) is None)
+  assert_true(s.get(65, 0) is None)
   s.set(0, 0, Cell::new(Empty))
-  s.set(64, 0, c)
+  s.set(65, 0, c)
   assert_eq(s.text_units, 2097152)
 }
 
@@ -249,7 +256,7 @@ test "same logical workbook is independent of mutation order" {
 test "workbook aggregate text boundary before XML serialization" {
   let w = Workbook::new()
   let b = StringBuilder()
-  for _ in 0..<32768 {
+  for _ in 0..<32767 {
     b.write_string("x")
   }
   let c = Cell::new(Text(b.to_string()))
@@ -258,6 +265,13 @@ test "workbook aggregate text boundary before XML serialization" {
     for r in 0..<64 {
       s.set(r, 0, c)
     }
+    s.set(
+      64,
+      0,
+      Cell::new(
+        Text("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+      ),
+    )
   }
   assert_true(w.content_xml().length() > 0)
   w.add_sheet("three").set(0, 0, Cell::new(Text("x")))

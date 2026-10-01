@@ -53,8 +53,8 @@ pub fn Cell::expression(self : Cell) -> String? {
 
 ///|
 fn validate_text(s : String) -> Unit raise OdsError {
-  if s.length() > 32768 {
-    raise Invalid("text exceeds 32768 UTF-16 units")
+  if s.length() > 32767 {
+    raise Invalid("text exceeds 32767 UTF-16 units")
   }
   for c in s {
     let n = c.to_int()

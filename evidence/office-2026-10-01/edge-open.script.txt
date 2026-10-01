@@ -1,0 +1,6 @@
+tell application "Microsoft Excel"
+if exists workbook "moonods-edge.ods" then return name of workbook "moonods-edge.ods"
+set f to (POSIX file "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/office-2026-10-01/inputs/moonods-edge.ods") as text
+open workbook workbook file name f read only true add to mru false
+return name of workbook "moonods-edge.ods"
+end tell

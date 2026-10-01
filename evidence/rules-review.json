@@ -1,0 +1,107 @@
+{
+  "read_date_utc": "2026-10-01",
+  "sources": [
+    {
+      "url": "https://bxup9uklfcb.feishu.cn/wiki/Dx4Bwd6D1i3GfHkajQCcF7SznEd",
+      "method": "Existing browser accessibility + native copy-all, full text read",
+      "scope": "11 chapters, two appendices, table text; image QR contents not claimed read",
+      "working_copy_sha256": "013cd23988757a840763b7c760ad2b3db2dffc79ec6c87809436a4a9fbef4051"
+    },
+    {
+      "url": "https://bxup9uklfcb.feishu.cn/share/base/form/shrcnWUMlgpbwHaXgzV7HmNhNhg",
+      "method": "Public server-rendered form snapshot parsed; all field descriptions/options/conditions read",
+      "scope": "16 fields and current October instructions",
+      "working_filtered_copy_sha256": "ad302d19c68c2adb3d4a403aa5e0af8f38f7e2e6cf59df6ee9f713d209012172"
+    },
+    {
+      "url": "https://bxup9uklfcb.feishu.cn/wiki/GKDswxuptiJRcxkzPgZcw1J6nAd",
+      "method": "Existing browser native copy-all, full text read",
+      "scope": "Five sections",
+      "working_copy_sha256": "f716c9982a390e076f692c4cf90ac4289baf1a8babff4808e8e04305284cb7e6"
+    }
+  ],
+  "form_title": "2026 MoonBit 国产基础软件开源大赛-10月黑客松 项目申报",
+  "fields": [
+    {
+      "name": "参赛方向",
+      "required": true
+    },
+    {
+      "name": "姓名",
+      "required": true
+    },
+    {
+      "name": "GitHub ID",
+      "required": true
+    },
+    {
+      "name": "联系方式（邮箱）",
+      "required": true
+    },
+    {
+      "name": "联系方式（电话）",
+      "required": true
+    },
+    {
+      "name": "身份证照片",
+      "required": true
+    },
+    {
+      "name": "项目名称",
+      "required": true
+    },
+    {
+      "name": "项目的GitHub仓库链接",
+      "required": true
+    },
+    {
+      "name": "项目申报书",
+      "required": true
+    },
+    {
+      "name": "银行卡账号",
+      "required": true
+    },
+    {
+      "name": "银行卡所属分行",
+      "required": true
+    },
+    {
+      "name": "推荐人",
+      "required": false
+    },
+    {
+      "name": "所属高校/组织",
+      "required": true
+    },
+    {
+      "name": "学信网认证报告",
+      "required": true
+    },
+    {
+      "name": "《参赛诚信承诺书》",
+      "required": true
+    },
+    {
+      "name": "备注",
+      "required": false
+    }
+  ],
+  "proposal_requirement": {
+    "minimum_effective_commits": 10,
+    "minimum_complete_scenarios": 3,
+    "human_written": true,
+    "final_proposal_generated": false
+  },
+  "conflicts": {
+    "deadline": "Charter October table 10/24; official website 10/31; unresolved; internal preparation before 10/24",
+    "project_count": "Charter one in principle; October form three submissions; user verified monthly group notice three projects; preserve respective wording"
+  },
+  "actions": {
+    "submitted": false,
+    "consented": false,
+    "signed": false,
+    "personal_materials_read_or_filled": false
+  },
+  "distribution": "Factual summary only; raw HTML with temporary redirect token, complete charter/pledge and raw snapshot stay outside repository/archive"
+}

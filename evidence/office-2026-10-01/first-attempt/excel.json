@@ -1,0 +1,44 @@
+{
+  "started_utc": "2026-10-01T07:01:07.738445+00:00",
+  "application": "Microsoft Excel",
+  "scope": "existing Mac application, read-only task-owned ODS copies, no workbook save",
+  "steps": [
+    {
+      "name": "sales-open",
+      "command": [
+        "osascript"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "sales-read",
+      "command": [
+        "osascript",
+        "-l",
+        "JavaScript"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "experiment-open",
+      "command": [
+        "osascript"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "experiment-read",
+      "command": [
+        "osascript",
+        "-l",
+        "JavaScript"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "libreoffice": "NOT TESTED; no installation approved",
+  "other_applications": "NOT TESTED",
+  "status": "FAIL",
+  "error": "Command '['osascript']' timed out after 75 seconds",
+  "finished_utc": "2026-10-01T07:02:23.777528+00:00"
+}

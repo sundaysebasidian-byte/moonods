@@ -1,0 +1,11 @@
+tell application "System Events" to tell process "Microsoft Excel"
+if exists window "Open" then
+set prompt to value of static text 1 of splitter group 1 of window "Open"
+if prompt is "Please select the file \"moonods-formulas.ods\":" then
+click static text "moonods-formulas.ods" of scroll area 9 of scroll area 1 of browser 1 of splitter group 1 of splitter group 1 of window "Open"
+if enabled of button "Grant Access" of splitter group 1 of window "Open" then click button "Grant Access" of splitter group 1 of window "Open"
+return "Granted only expected task file"
+end if
+end if
+return "No expected grant dialog"
+end tell

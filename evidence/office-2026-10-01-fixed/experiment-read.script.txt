@@ -1,0 +1,4 @@
+var e=Application('Microsoft Excel'); var w=e.workbooks.byName("moonods-experiment.ods"); var s=w.worksheets[0];
+var result={version:e.version(),name:w.name(),sheets:w.worksheets.name(),readOnly:w.readOnly(),date1904:w.date1904()};
+result.values=s.ranges.byName('A1:D3').value2(); result.date=s.ranges.byName('A2').stringValue(); result.metadata=w.worksheets[1].ranges.byName('B1').value2(); result.longText=w.worksheets[1].ranges.byName('B2').value2();
+JSON.stringify(result);

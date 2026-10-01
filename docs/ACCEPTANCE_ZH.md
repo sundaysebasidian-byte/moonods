@@ -1,49 +1,50 @@
 # MoonODS 中文验收矩阵
 
-状态日期：2026-10-01。本地 MVP 有界验证通过，不是官方终验通过，也不保证奖金额度。所有“通过”只覆盖表中条件。
+状态日期2026-10-01，按实际完整阅读的[章程§5.1](https://bxup9uklfcb.feishu.cn/wiki/Dx4Bwd6D1i3GfHkajQCcF7SznEd)阶段三原顺序整理。本地交付状态不是官方终验通过，不保证一次验收或奖金额度。
 
-## 九条交付要求
+## 终验九条
 
-| 条目 | 当前结果 | 可审阅材料与缺口 |
+| 官方条目（事实摘要） | 当前状态 | 材料与缺口 |
 |---|---|---|
-| 1. 公开仓库和可追踪记录 | **待用户批准** | 独立本地 Git；真实阶段提交记录（数量不作为已确认的十月门槛），源码包附完整 git bundle/history；没有远端、push 或公开发布 |
-| 2. 主要语言与源码声明 | **本地通过** | 核心 Cell/Sheet/Workbook/XML/ZIP 为 MoonBit；公共容器不透明；明确声明实现范围与限制 |
-| 3. README目标、安装、用法 | **本地完成；人工复核待做** | README、源码接口、固定工具链和依赖摘要；未发布不能用 moon add 安装 MoonODS，须本地 workspace |
-| 4. CI check/build/test | **本地等价命令通过；远端未测** | GitHub workflow文件存在，无远端运行；未来Linux官方SDK安装与网络解析尚未核实 |
-| 5. 至少三个可运行示例 | **本地通过** | sales/experiment/formulas 实际生成；另有 edge fixture。示例值与样式由独立读取/Schema核对 |
-| 6. 正常、错误、边界、资源测试 | **当前测试通过，非穷尽** | 22/22 JS测试；资源上限与事务性错误；明确未做性能/RSS、多后端、全公式/ODF集合测试 |
-| 7. mooncakes发布与包安装 | **待用户批准，未发布** | 实际moon package本地候选由不同模块消费通过；未从远端安装过本项目，不能称已发布可安装 |
-| 8. OSI许可及依赖合规 | **材料已核** | 原创MIT，core/zipc/flate Apache-2.0来源许可、原封归档与SHA；合成fixture；OASIS规范未重授权为MIT |
-| 9. 可解释、维护、申报材料 | **技术参考完成；用户理解和人工最终申报待做** | AI_USAGE、PROPOSAL_REFERENCE、SOURCES；章程要求最终人工撰写，未代签/报名 |
+| 1. MoonBit为主要实现语言 | **本地满足** | Cell/Sheet/Workbook/XML/ZIP核心为MoonBit；Node仅示例文件适配器，Python仅独立验证 |
+| 2. GitHub公开、提交清晰 | **未完成，待用户批准** | 独立本地Git，真实阶段提交；ZIP附history/bundle/SOURCE_STATE；没有远端/push |
+| 3. 源码清晰并实现核心功能 | **本地验证通过** | 类型API、公式缓存、多表、基础样式/列宽/合并、固定ODF包；范围与预算明确 |
+| 4. README目标、安装、用法、示例可复现 | **本地完成；用户理解待做** | 工具链/依赖锁、真实日志、候选workspace消费通过；未从Mooncakes安装本项目 |
+| 5. CI覆盖检查、构建、测试 | **本地等价命令通过；远端未运行** | workflow存在，check/build/test通过；远端Linux及网络解析未测 |
+| 6. 至少一个可运行示例 | **本地通过** | 销售/实验多表/公式声明三场景及edge实际运行，4 ODS附包；另有独立消费3场景 |
+| 7. 完整测试覆盖核心路径 | **当前有界范围通过；非穷尽** | 22核心/API、4独立消费、RNG/odfpy/ZIP负控制；Excel常规通过、整体PARTIAL；不是任意ODF/规模/办公软件全测 |
+| 8. 发布mooncakes.io | **未完成，待用户批准** | 本地候选消费通过，没有发布或远端安装 |
+| 9. OSI许可及引用/移植合规 | **材料已核** | 原创MIT；core/zipc/flate Apache-2.0原许可与引用、归档摘要；合成fixture；OASIS资料不重新授权MIT |
 
-## 真实测试证据
+## 真实测试矩阵
 
-| 测试 | 结果 | 证据范围 |
+| 检查 | 状态 | 证据范围 |
 |---|---|---|
-| MoonBit JS `check --deny-warn` / `build --deny-warn` | **通过** | 精确0.10.14编译器/0.1.20260920构建器，本机Mac ARM64；`-j 1` |
-| 20核心测试+2同模块公共API测试包测试 | **22通过/0失败** | 中文、XML五种转义与非法控制/孤立代理单元、31单位表名/重复、不合法日期、NaN/±Infinity、空值/空字符串、长文、合并越界/重叠/数据丢失、列宽、资源预算、缓存不求值、确定性 |
-| 独立模块本地候选消费 | **4测试通过/0失败** | 不同module名，通过moon.work消费实际候选ZIP的解压内容；没有链接原源码，未发布/远端安装；3不同场景、30类型值、9 XML，详见REUSE_REVIEW_ZH |
-| 不透明API的编译负控制 | **按预期拒绝** | `w.sheets.clear()` 触发 compiler Error4028 abstract type；evidence/opaque-probe.json 与诊断日志，不能算运行失败 |
-| 官方ODF1.3 Relax NG | **通过** | 4文件每个 content/styles/manifest共12 XML；原始schema SHA固定；document和manifest无效控制均被拒绝 |
-| 独立Python zipfile | **通过** | CRC、4个固定路径/顺序、mimetype第一项STORED/no-extra/ASCII内容、无comment、固定时间戳、local header与central目录对应；路径、顺序、MIME、CRC四种破坏均被拒绝 |
-| 独立 odfpy 核值 | **通过** | 38个类型值断言，公式文本+缓存4类型、中文空白和长文、两表、空表；不导入MoonODS实现 |
-| 样式/合并/列宽独立核对 | **通过（XML语义层）** | 销售标题covered格、四列宽、Header背景与Decimal2样式定义；不等于办公软件视觉渲染 |
-| 两个独立生成进程 | **通过** | 4份ODS SHA256一致；逻辑单元格写入顺序不同的核心测试亦通过；不主张任意SDK/后端输出都一致 |
-| 源码包新目录复现 | **见 evidence/source-package-check.json** | 使用同一已有SDK、Node/Python与已下载schema，仅换源码目录；不是全新机器或无缓存离线安装 |
-| LibreOffice实际打开/核值/重算 | **未测** | 未找到已装LibreOffice；官方安装未授权；独立读取器不替代此项 |
-| Excel/Numbers/WPS实际打开/布局 | **未测** | 已装工具存在，但本轮按要求不使用原生焦点，以免干扰其它任务 |
-| 其他后端、跨OS、性能、进程峰值RSS | **未测** | 输出/数据预算不是实际内存性能证明，无GPU需求 |
+| JS fmt/check/build `--deny-warn` | **PASS** | 锁定moonc0.10.14与moon0.1.20260920，既有MacSDK，`-j 1` |
+| 核心20 + 同模块公共API2 | **22 PASS / 0 FAIL** | 中文/XML转义/非法字符、非法/重复表名、非有限数、无效日期、空值/空字符串、长文、合并冲突/越界/数据损失、列宽、事务性错误与各资源预算 |
+| 独立模块本地候选消费 | **4 PASS / 0 FAIL** | 不同模块从真实候选ZIP解压消费；3场景、30类型值、9 XML；不是Mooncakes安装 |
+| 不透明API编译负控制 | **按预期拒绝** | `w.sheets.clear()`报Error4028；opaque-probe证据，不是正常运行失败 |
+| 官方ODF1.3 RNG | **PASS** | 固定摘要官方原schema；4 ODS共12 XML；document/manifest无效控制被拒绝 |
+| Python zipfile及负控制 | **PASS** | CRC、固定4路径、mimetype首项/STORED/no-extra/ASCII、headers/时间戳；路径/顺序/MIME/CRC破坏被拒绝 |
+| 独立odfpy | **PASS** | 38类型值，中文空白/长文/多表/公式四类缓存；不导入MoonODS解析 |
+| 样式/列宽/合并XML语义 | **PASS** | Header/Decimal2、毫米属性、covered格；不等同于绝对视觉几何 |
+| 两个独立生成进程 | **PASS** | 同SDK相同输入四ODS字节一致，不承诺任意SDK/后端一致 |
+| Excel16.113.3真实打开/核值 | **常规20组PASS；整体PARTIAL** | 四自制文件，真实API/截图；值/样式/合并/公式导入；未保存，SHA不变 |
+| Excel旧32768字边界 | **FAIL：截至32767，已修实现** | 修正前失败保留；上限收紧32767，精确总预算边界不降标准；修正后32767完整 |
+| Excel极早日期 | **兼容缺口未解决** | 0001-01-01显示#N/A/API无值；ODF合法1..9999保留，不保证Excel全范围 |
+| Excel绝对毫米列宽 | **UNRESOLVED** | 返回单位假设point的检查FAIL保留；比例PASS，绝对物理单位待校准，不标通过 |
+| LibreOffice实际打开/核值 | **NOT TESTED** | 无已装工具且安装未授权；其他读取器不替代此项 |
+| Numbers / WPS | **NOT TESTED** | 存在已装应用不等于实测 |
+| 其他后端/OS、性能/RSS、远端CI | **NOT TESTED** | 数据/输出预算不是进程峰值内存证明 |
 
-最新完整串行结果在 `evidence/2026-10-01-reuse/acceptance.json` 与各stdout/stderr；较早报告注明对应阶段。开发中 `--deny-warn` 首次检查失败，是测试包导入未标 test-only，已修；保留在 evidence/2026-10-01，不用成功报告覆盖历史失败。
+最新串行结果：`evidence/2026-10-01-office-final/acceptance.json`及stdout/stderr。Excel单独记录：`evidence/office-2026-10-01-fixed/excel.json`，详见[桌面兼容实测](OFFICE_COMPATIBILITY_ZH.md)。旧失败阶段保留：首次test-only导入、reuse-first/reuse-second、Office访问/打开失败、错误单位假设；不能用旧报告证明当前源码。
 
-本轮复用复核早期失败保留在 evidence/reuse-first（格式检查误覆盖未改动第三方源码）与 reuse-second（独立模块测试误用黑盒访问私有适配器）；修正检查范围和白盒文件后通过。核心API与ODS实现未因此变更。
+先前源码ZIP换目录检查在`evidence/source-package-check.json`，只证明较早快照。本轮源码ZIP独立换目录检查随交付另提供；均使用同一既有工具/schema/第三方缓存，不称全新机器或无缓存初始化。
 
-## 交付前用户/官方待办
+## 申报规则和待办（不是终验第九条）
 
-- 审阅功能定位及生态同类项目；当前主分支资料和发布索引版本不同，不能把检索快照当绝对缺口证明。
-- 九月历史章程的“不少于10有效commits”不自动套作十月配额，继续按真实阶段提交，不凑数量。
-- 完整重读最终章程与报名字段；本任务仅实际读到章程申报段、报名页动态壳。新官网10/31与父任务所引旧章程10/24冲突，内部按10/24前准备，最终时刻待官方确认。
-- 官网“十月最多提交3次”与用户已核群公告“每人单月最多3项目”保留各自措辞；奖励150/350都以审核为条件，不能保证净到手1500。
-- 用户自行理解、人工撰写申报书、处理身份/电话/银行卡/学籍与诚信承诺；批准后才公开仓库、发布包、报名。不要修改九月LogLens来冒充独立新项目。
+完整读取章程11章/附录、十月表单16字段及诚信承诺。十月表单明确至少3完整场景、至少10有效提交；按真实阶段提交，不凑次数。章程“申报书务必人工撰写”，表单“不要使用 AI 编写”。AI参考不是最终申报书，用户需理解并自行撰写一页内Markdown；个人身份/电话/邮箱/银行/学籍/诚信由用户处理，未代填/签署。
 
-不承诺一次通过验收。若办公软件实测或官方审核出现问题，修实现/文档与证据，不降低验证标准。
+章程十月截至10/24，官网10/31；内部按10/24前准备，最终截止待官方明确。章程原则上一项目、表单三次提交、用户已核群公告每人单月三项目保留各自来源。150启动/350完成均有审核条件，不保证1500净到手。详见[规则复核](RULES_REVIEW_ZH.md)。
+
+公开仓库、Mooncakes发布、报名仍待用户批准；正式申报前复核同类与生态价值。当前检索不能证明唯一，九月LogLens不改成新项目。用户理解/审核未完成，不承诺一次过。

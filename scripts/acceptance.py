@@ -23,7 +23,7 @@ def main():
     report = {'started_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
               'platform': platform.platform(), 'python': platform.python_version(), 'steps': steps,
               'scope': 'JS backend core + examples + independent package/schema/reader checks',
-              'unmeasured': ['LibreOffice', 'Excel', 'Numbers', 'WPS', 'remote CI', 'native/wasm backends', 'peak RSS and performance']}
+              'not_run_by_this_script': ['LibreOffice', 'Excel', 'Numbers', 'WPS', 'remote CI', 'native/wasm backends', 'peak RSS and performance']}
     source_files = list(ROOT.glob('*.mbt')) + list((ROOT / 'examples').rglob('*.mbt')) + list((ROOT / 'tests').rglob('*.mbt')) + list((ROOT / 'fixtures').rglob('*.mbt')) + list((ROOT / 'scripts').glob('*.py'))
     source_files = [f for f in source_files if '_build' not in f.parts]
     report['source_sha256'] = {str(f.relative_to(ROOT)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(source_files)}
@@ -51,6 +51,21 @@ def main():
         if set(first) != {'sales.ods', 'experiment.ods', 'formulas.ods', 'edge.ods'} or first != hashes():
             raise RuntimeError('Cross-process output determinism failed')
         report['cross_process_determinism'] = {'status': 'PASS', 'sha256': first}
+        office_path = ROOT / 'evidence/office-2026-10-01-fixed/excel.json'
+        if office_path.exists():
+            office = json.loads(office_path.read_text())
+            expected = {'moonods-' + name: digest for name, digest in first.items()}
+            report['separate_office_evidence'] = {
+                'file': str(office_path.relative_to(ROOT)),
+                'sha256': hashlib.sha256(office_path.read_bytes()).hexdigest(),
+                'provenance': 'Previously executed native application read; not rerun by this script',
+                'application': office['application'], 'version': office['version'],
+                'status': office['status'], 'normal_cases': office['normal_cases'],
+                'boundaries': office['boundaries'],
+                'matches_current_generated_ods': office['inputs_unchanged_sha256'] == expected,
+            }
+            if not report['separate_office_evidence']['matches_current_generated_ods']:
+                report['separate_office_evidence']['status'] = 'STALE INPUTS'
         run('schema-bytes', [sys.executable, ROOT / 'scripts/fetch_schemas.py'])
         run('external', [sys.executable, ROOT / 'scripts/verify_external.py', '--report', out / 'external.json'])
         run('reuse', [sys.executable, ROOT / 'scripts/verify_reuse.py', '--moon', moon, '--output', out / 'reuse'])

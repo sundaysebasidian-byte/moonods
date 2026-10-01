@@ -118,7 +118,7 @@ fn edge() -> @ods.Workbook raise @ods.OdsError {
     s.set(row, 0, @ods.Cell::new(v))
   }
   let b = StringBuilder()
-  for _ in 0..<32768 {
+  for _ in 0..<32767 {
     b.write_string("x")
   }
   s.set(8, 0, @ods.Cell::new(Text(b.to_string())))

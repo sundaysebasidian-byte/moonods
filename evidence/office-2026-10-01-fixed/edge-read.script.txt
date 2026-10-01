@@ -1,0 +1,4 @@
+var e=Application('Microsoft Excel'); var w=e.workbooks.byName("moonods-edge.ods"); var s=w.worksheets[0];
+var result={version:e.version(),name:w.name(),sheets:w.worksheets.name(),readOnly:w.readOnly(),date1904:w.date1904()};
+result.cells=['A1','A2','A3','A4','A5','A6','A7','A8'].map(c=>({address:c,value:s.ranges.byName(c).value2(),type:typeof s.ranges.byName(c).value2()})); result.text=s.ranges.byName('A1').value2(); result.longText=s.ranges.byName('A9').value2(); result.dateDisplays=['A7','A8'].map(c=>s.ranges.byName(c).stringValue());
+JSON.stringify(result);

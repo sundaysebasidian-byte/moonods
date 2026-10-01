@@ -1,6 +1,6 @@
 # MoonODS 技术事实与申报参考（AI 辅助，非人工最终申报书）
 
-章程 5.1 阶段一要求申报书由参赛者人工撰写。本文件供理解、复核和人工改写，不可冒充手写或代签。
+章程 5.1 原句“申报书务必人工撰写”，当前十月表单要求“不要使用 AI 编写”。本文件只提供供理解、复核的技术事实，不是最终申报书，不可直接提交或机械改写后冒充人工撰写。用户需自行选择内容和撰写一页以内 Markdown，助手不代签。
 
 项目：MoonODS，类型化 OpenDocument 表格生成库。为 MoonBit 服务、离线分析及教学实验把结构化结果写成可在办公软件打开的 .ods。不是读取转换器。已知 markitdown 的 ODS→Markdown 能力解决读取需求，本项目提供反向的结构化 writer；不能仅以语言不同证明原创或生态缺口。注册表检索及日期见 SOURCES.md。
 
@@ -12,6 +12,6 @@
 范围：Workbook/Sheet/Cell，string/finite number/bool/Gregorian date/empty，公式文本+类型化缓存，多表、基础样式、列宽、合并；确定性 ZIP/manifest/XML；有界资源错误。核心 MoonBit。可靠 ZIP 组件按固定版本和原许可复用。
 不做：ODS 读取、格式转换、公式解释器、宏、外部数据源、图表、密码/签名、完整 ODF 属性集合。无附加资产入口。
 
-实现路径：类型模型先验证，再生成命名空间 XML；ODF 1.3 包严格限定固定路径。独立 Python zipfile/odfpy 与官方 Relax NG 校验；LibreOffice 未安装、下载未批准，禁止声称实测。现有办公工具另行实测记录。所有公开仓库、包发布和报名待用户批准。
+实现路径：类型模型先验证，再生成命名空间 XML；ODF 1.3 包严格限定固定路径。独立 Python zipfile/odfpy 与官方 Relax NG 校验；现有 Excel 16.113.3 实读四个 ODS，常规 20 组通过、整体 PARTIAL，限制见 OFFICE_COMPATIBILITY_ZH。LibreOffice、Numbers、WPS 未实测，无新增安装。公开仓库、包发布和报名待用户批准。当前十月表单明确至少 10 次有效提交；实际历史随源码包附带，不把数量等同于质量或官方认可。
 
 理解核对：为什么 mimetype 第一项且无 extra？为什么空值与空字符串不同？covered-table-cell 如何保留合并网格？缓存结果为何可能与公式矛盾？AI 辅助已在 AI_USAGE.md 声明。用户需理解上述点再人工写最终申报。
