@@ -91,3 +91,44 @@ test "same logical workbook is independent of mutation order" {
   y.set_column_width(1, 35); y.set_column_width(0, 50)
   assert_eq(a.to_ods(), b.to_ods())
 }
+test "workbook aggregate text boundary before XML serialization" {
+  let w = Workbook::new()
+  let b = StringBuilder()
+  for _ in 0..<32768 { b.write_string("x") }
+  let c = Cell::new(Text(b.to_string()))
+  for name in ["one", "two"] {
+    let s = w.add_sheet(name)
+    for r in 0..<64 { s.set(r, 0, c) }
+  }
+  assert_true(w.content_xml().length() > 0)
+  w.add_sheet("three").set(0, 0, Cell::new(Text("x")))
+  assert_true(try { w.content_xml() |> ignore; false } catch { Invalid(_) => true })
+}
+test "serialized UTF8 byte cap preserves boundary and rejects expansion" {
+  let b = StringBuilder()
+  for _ in 0..<32768 { b.write_string("x") }
+  let chunk = b.to_string()
+  let xml = XmlOutput::new()
+  for _ in 0..<512 { xml.write_string(chunk) }
+  assert_eq(xml.data.length(), 16777216)
+  assert_true(try { xml.write_string("😀"); false } catch { Invalid(_) => true })
+  assert_eq(xml.data.length(), 16777216)
+}
+test "malformed UTF16 and finite numeric edges" {
+  for s in [String::from_array([(0xD800).unsafe_to_char()]), String::from_array([(0xDC00).unsafe_to_char()]), "\uFFFE", "\u0001"] {
+    assert_true(try { Cell::new(Text(s)) |> ignore; false } catch { Invalid(_) => true })
+  }
+  assert_true(try { Cell::new(Number(-1.0 / 0.0)) |> ignore; false } catch { Invalid(_) => true })
+  for v in [Number(-0.0), Number(1.0e300), Number(1.0e-300), Date(1, 1, 1), Date(9999, 12, 31), Date(2000, 2, 29)] {
+    assert_eq(Cell::new(v).value(), v)
+  }
+  for v in [Date(2026, 4, 31), Date(2026, 1, 0), Date(10000, 1, 1), Date(2100, 2, 29)] {
+    assert_true(try { Cell::new(v) |> ignore; false } catch { Invalid(_) => true })
+  }
+}
+test "formula cache remains caller supplied including inconsistent values" {
+  let c = Cell::formula("of:=1+1", Number(99.0))
+  assert_eq(c.value(), Number(99.0))
+  assert_true(c.xml("").contains("office:value=\"99\""))
+  assert_eq(Cell::formula("of:=FALSE()", Boolean(false)).value(), Boolean(false))
+}

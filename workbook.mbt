@@ -65,14 +65,18 @@ let namespaces : String = " xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns
 /// Inspectable XML for diagnostics. ODS output is provided by to_ods().
 pub fn Workbook::content_xml(self : Workbook) -> String raise OdsError {
   if self.sheets.is_empty() { raise Invalid("workbook needs at least one sheet") }
-  let b = StringBuilder()
-  b.write_string("<?xml version=\"1.0\" encoding=\"UTF-8\"?><office:document-content\{namespaces} office:version=\"1.3\"><office:automatic-styles>\{self.column_styles()}</office:automatic-styles><office:body><office:spreadsheet>")
   let mut grid = 0
   let mut units = 0
   for s in self.sheets {
     grid += s.rows * s.cols
     units += s.text_units
     if grid > 262144 || units > 4194304 { raise Invalid("workbook resource budget exceeded") }
+  }
+  // Preflight workbook totals before allocating serialized XML. Escaping can
+  // expand text, so a second byte budget is enforced at every append.
+  let b = XmlOutput::new()
+  b.write_string("<?xml version=\"1.0\" encoding=\"UTF-8\"?><office:document-content\{namespaces} office:version=\"1.3\"><office:automatic-styles>\{self.column_styles()}</office:automatic-styles><office:body><office:spreadsheet>")
+  for s in self.sheets {
     b.write_string("<table:table table:name=\"\{xml_escape(s.name)}\">")
     for col in 0..<s.cols {
       let a = match s.widths.get(col) { Some(mm) => " table:style-name=\"W\{mm}\""; None => "" }

@@ -1,4 +1,15 @@
 // Fixed vocabulary, typed data and escaped text; arbitrary XML is not accepted.
+priv struct XmlOutput { data : @buffer.Buffer }
+fn XmlOutput::new() -> XmlOutput { { data: @buffer.Buffer() } }
+fn XmlOutput::write_string(self : XmlOutput, s : String) -> Unit raise OdsError {
+  let bytes = @utf8.encode(s[:])
+  if self.data.length() + bytes.length() > 16777216 {
+    raise Invalid("content XML exceeds 16 MiB")
+  }
+  self.data.write_bytes(bytes[:])
+}
+fn XmlOutput::to_string(self : XmlOutput) -> String { @utf8.decode_lossy(self.data.to_bytes()[:]) }
+
 fn xml_escape(s : String) -> String {
   let b = StringBuilder()
   for c in s {
