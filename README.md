@@ -33,7 +33,16 @@ moon run --target js -j 1 examples/generate
 
 新检出需要解析 `moon.mod` 的固定依赖：`moon update`。源码包附带原封不动的 zipc/flate 源码归档，可用 `python3 scripts/restore_deps.py` 恢复到本项目 `.mooncakes`，再用 `scripts/verify_deps.py` 校验；这两个脚本只写本项目，不配置全局工具链。Moon 首次依赖解析仍可能需要 registry 索引/缓存；离线时应使用已准备的 SDK 缓存，不能把有网环境成功误称完全离线初始化成功。
 
-在其他同一 workspace 的 MoonBit 包中使用：
+本地独立模块消费已实际验证：`scripts/verify_reuse.py`用`moon package`候选ZIP建立新目录，独立模块与解压候选组成`moon.work`，第三方依赖从现有可信缓存解析；尚未从Mooncakes安装本项目。手工本地workspace布局示意：
+
+```text
+moon.work                         members = ["candidate", "consumer"]
+candidate/moon.mod                从moon package ZIP解压
+consumer/moon.mod                 import { "sundaysebasidian-byte/moonods@0.1.0" }
+consumer/src/moon.pkg             import { "sundaysebasidian-byte/moonods" @ods }
+```
+
+在消费模块的 MoonBit 包中使用：
 
 ```mbt
 // moon.pkg
@@ -54,7 +63,7 @@ fn make_report() -> Bytes raise @ods.OdsError {
 }
 ```
 
-Workbook/Sheet/Cell 为不透明类型，不能访问内部数组/Map绕过验证。返回的 `Bytes` 由调用方写入文件。坐标从 0 开始；`Sheet::get` 返回稀疏显式单元格的 `Cell?`，未设置格返回 None，显式空值使用 `Cell::new(Empty)`。`Cell::value` / `expression` 可取值与公式，`Workbook::content_xml` 供诊断，`to_ods` 返回包。可恢复错误为 `@ods.Invalid(message)`，详见实际编译的 [下游 API 测试](tests/consumer/api_test.mbt)。
+Workbook/Sheet/Cell 为不透明类型，不能访问内部数组/Map绕过验证。返回的 `Bytes` 由调用方写入文件。坐标从 0 开始；`Sheet::get` 返回稀疏显式单元格的 `Cell?`，未设置格返回 None，显式空值使用 `Cell::new(Empty)`。`Cell::value` / `expression` 可取值与公式，`Workbook::content_xml` 供诊断，`to_ods` 返回包。可恢复错误为 `@ods.Invalid(message)`，详见实际编译的 [公共 API 测试包](tests/consumer/api_test.mbt)（同一模块）与[独立消费模块](fixtures/reuse-consumer/src/main.mbt)（不同模块，本地候选消费）。
 
 ## 三个可运行场景
 
@@ -65,6 +74,8 @@ Workbook/Sheet/Cell 为不透明类型，不能访问内部数组/Map绕过验�
 | `sales.ods` | 中文产品/月度汇总，合并标题、表头、日期、金额、列宽 | 销量 20、金额 399.88；Decimal2 仅显示样式 |
 | `experiment.ods` | “样本”“元数据”两表，测量数值、布尔标志与长备注 | -0.125、true/false、空值≠空字符串、中文空白和 emoji |
 | `formulas.ods` | 数值、布尔、字符串、日期公式及调用方缓存 | `SUM` 缓存 30；其余类型缓存按输入保留，不声称求值正确 |
+
+另有[独立模块的三场景完整输入→API→输出→断言](docs/REUSE_REVIEW_ZH.md)，从本地候选包消费，实际核对30个类型值和9 XML。
 
 额外 `edge.ods` 覆盖 XML 特殊字符、长文边界、极大/极小有限数、日期端点和空表。
 
@@ -88,9 +99,11 @@ Workbook/Sheet/Cell 为不透明类型，不能访问内部数组/Map绕过验�
 # 使用已有含上述依赖的 Python，不必与系统 python3 相同
 python scripts/fetch_schemas.py
 python scripts/acceptance.py --moon /absolute/path/to/existing/sdk/bin/moon
+# 上述验收也执行独立模块候选消费；单独复核可用：
+python scripts/verify_reuse.py --moon /absolute/path/to/existing/sdk/bin/moon
 ```
 
-脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[证据](evidence/2026-10-01-final/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr 也随包保留。
+脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[证据](evidence/2026-10-01-reuse/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr 也随包保留。
 
 `.github/workflows/ci.yml` 已提供相同检查及证据保存。它只在未来获准建立远端后运行；远端 CI、Ubuntu SDK 安装与网络依赖解析本次未测。
 

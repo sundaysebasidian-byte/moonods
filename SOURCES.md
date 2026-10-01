@@ -33,7 +33,12 @@
 ## 活动核对与剩余缺口
 
 - [2026官方页](https://moonbitlang.github.io/Hackathon2026/)：实际下载前端与读完整中文文案。十月最多提交3次；10月31日为报名/验收截止；150启动和350完成支持各需审核。不保证个人净到账1500。群公告“每人单月最多3项目、10/1开放”来自用户已核证据，非本任务重新获取截图。
-- [章程](https://bxup9uklfcb.feishu.cn/wiki/Dx4Bwd6D1i3GfHkajQCcF7SznEd)：浏览器实际读到第五章5.1阶段一，要求至少3完整场景、不少于10有效提交、申报书人工撰写。章程未完整重读；父任务引用的旧10/24与新网页10/31冲突仍需官方确认，内部按10/24前准备，不声称最终确认时刻。
+- [章程](https://bxup9uklfcb.feishu.cn/wiki/Dx4Bwd6D1i3GfHkajQCcF7SznEd)：浏览器实际读到第五章5.1阶段一，历史条款有至少3完整场景、不少于10有效提交、原句“申报书务必人工撰写”。九月提交门槛不自动等于已确认的十月规则。章程未完整重读；父任务引用的旧10/24与新网页10/31冲突仍需官方确认，内部按10/24前准备，不声称最终确认时刻。
 - [报名表](https://bxup9uklfcb.feishu.cn/share/base/form/shrcnWUMlgpbwHaXgzV7HmNhNhg)：只下载到动态HTML壳，未完整读取字段、未填写/提交。本次不进行原生焦点操作，完整表单/章程最终对照保留未完成项。
 
 公开远端、mooncakes发布、报名、签署或个人材料均未执行。所有申报参考明确为 AI辅助事实，用户需独立理解并人工形成最终申报。
+
+## 本地模块消费机制（2026-10-01实际查证）
+
+- [Moon模块配置](https://docs.moonbitlang.com/en/latest/toolchain/moon/module.html) Dependency Management 与 Publishing Files：实际读取moon.work优先本地成员、版本字段在workspace忽略，以及.moonignore替代同目录.gitignore过滤候选包。
+- [Workspace Support](https://docs.moonbitlang.com/en/latest/toolchain/moon/workspace.html)：独立模块本地消费使用官方workspace机制；SDK本机实际运行结果另有命令日志，文档当前版本本身不代表旧SDK支持全部功能。

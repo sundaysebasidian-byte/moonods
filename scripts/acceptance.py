@@ -24,7 +24,8 @@ def main():
               'platform': platform.platform(), 'python': platform.python_version(), 'steps': steps,
               'scope': 'JS backend core + examples + independent package/schema/reader checks',
               'unmeasured': ['LibreOffice', 'Excel', 'Numbers', 'WPS', 'remote CI', 'native/wasm backends', 'peak RSS and performance']}
-    source_files = list(ROOT.glob('*.mbt')) + list((ROOT / 'examples').rglob('*.mbt')) + list((ROOT / 'tests').rglob('*.mbt')) + list((ROOT / 'scripts').glob('*.py'))
+    source_files = list(ROOT.glob('*.mbt')) + list((ROOT / 'examples').rglob('*.mbt')) + list((ROOT / 'tests').rglob('*.mbt')) + list((ROOT / 'fixtures').rglob('*.mbt')) + list((ROOT / 'scripts').glob('*.py'))
+    source_files = [f for f in source_files if '_build' not in f.parts]
     report['source_sha256'] = {str(f.relative_to(ROOT)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(source_files)}
     try:
         if not args.moon: raise RuntimeError('Existing moon binary required; no automatic installation')
@@ -52,6 +53,9 @@ def main():
         report['cross_process_determinism'] = {'status': 'PASS', 'sha256': first}
         run('schema-bytes', [sys.executable, ROOT / 'scripts/fetch_schemas.py'])
         run('external', [sys.executable, ROOT / 'scripts/verify_external.py', '--report', out / 'external.json'])
+        run('reuse', [sys.executable, ROOT / 'scripts/verify_reuse.py', '--moon', moon, '--output', out / 'reuse'])
+        report['independent_module_reuse'] = json.loads((out / 'reuse/reuse.json').read_text())
+        if report['independent_module_reuse']['status'] != 'PASS': raise RuntimeError('Independent module reuse failed')
         report['status'] = 'PASS'
     except Exception as e:
         report['status'] = 'FAIL'; report['error'] = str(e)

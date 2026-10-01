@@ -1,0 +1,92 @@
+Using cached moonbit-community/flate@0.2.0
+Using cached moonbit-community/zipc@0.2.2
+Warning: Main package `moonods-audit/independent-consumer` uses blackbox-only test inputs (`_test.mbt` files) in package directory "/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src". Main packages will stop generating blackbox tests in a future release. Move public behavior into a non-main package and keep the main package as an entrypoint.
+Error: [4021]
+   ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:3:11 ]
+   │
+ 3 │   let w = sales_report([
+   │           ──────┬─────  
+   │                 ╰─────── The value identifier sales_report is unbound.
+───╯
+Error: [4033]
+   ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:4:5 ]
+   │
+ 4 │     { product: "不同批次", quantity: 3.0, amount: 7.5, },
+   │     ────────────────────────────┬───────────────────────  
+   │                                 ╰───────────────────────── There is no record definition with the fields: product, quantity, amount.
+───╯
+Error: [0013]
+   ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:7:15 ]
+   │
+ 7 │   let empty = sales_report([])
+   │               ──────┬─────  
+   │                     ╰─────── Error Warning (unresolved_type_variable): The type of this expression is (Array[_/0]) -> _/1, which contains unresolved type variables. The type variable is default to Unit.
+───╯
+Error: [4021]
+   ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:7:15 ]
+   │
+ 7 │   let empty = sales_report([])
+   │               ──────┬─────  
+   │                     ╰─────── The value identifier sales_report is unbound.
+───╯
+Error: [0013]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:14:11 ]
+    │
+ 14 │   let w = laboratory_report([], "另一个实验来源")
+    │           ────────┬────────  
+    │                   ╰────────── Error Warning (unresolved_type_variable): The type of this expression is (Array[_/0], String) -> _/1, which contains unresolved type variables. The type variable is default to Unit.
+────╯
+Error: [4021]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:14:11 ]
+    │
+ 14 │   let w = laboratory_report([], "另一个实验来源")
+    │           ────────┬────────  
+    │                   ╰────────── The value identifier laboratory_report is unbound.
+────╯
+Error: [4021]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:22:11 ]
+    │
+ 22 │   let w = declaration_report([1.0, 2.0], example_declarations())
+    │           ─────────┬────────  
+    │                    ╰────────── The value identifier declaration_report is unbound.
+────╯
+Error: [4021]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:22:42 ]
+    │
+ 22 │   let w = declaration_report([1.0, 2.0], example_declarations())
+    │                                          ──────────┬─────────  
+    │                                                    ╰─────────── The value identifier example_declarations is unbound.
+────╯
+Error: [4021]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:30:5 ]
+    │
+ 30 │     sales_report(example_sales()).to_ods(),
+    │     ──────┬─────  
+    │           ╰─────── The value identifier sales_report is unbound.
+────╯
+Error: [4021]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:30:18 ]
+    │
+ 30 │     sales_report(example_sales()).to_ods(),
+    │                  ──────┬──────  
+    │                        ╰──────── The value identifier example_sales is unbound.
+────╯
+Error: [4021]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:31:5 ]
+    │
+ 31 │     sales_report(example_sales()).to_ods(),
+    │     ──────┬─────  
+    │           ╰─────── The value identifier sales_report is unbound.
+────╯
+Error: [4021]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer/src/reuse_test.mbt:31:18 ]
+    │
+ 31 │     sales_report(example_sales()).to_ods(),
+    │                  ──────┬──────  
+    │                        ╰──────── The value identifier example_sales is unbound.
+────╯
+Failed with 0 warnings, 12 errors.
+Error: failed to run check for target Js
+
+Caused by:
+    failed when checking project

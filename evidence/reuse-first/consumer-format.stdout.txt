@@ -1,0 +1,199 @@
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/moon.work b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moon.work[m
+[1mindex d9dda40..9dd3d4a 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/moon.work[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moon.work[m
+[36m@@ -1 +1,6 @@[m
+[31m-members = ["candidate", "consumer", "zipc", "flate"][m
+[32m+[m[32mmembers = [[m
+[32m+[m[32m  "candidate",[m
+[32m+[m[32m  "consumer",[m
+[32m+[m[32m  "zipc",[m
+[32m+[m[32m  "flate",[m
+[32m+[m[32m][m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/moon.work /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moon.work`
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/bitwriter.mbt b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/bitwriter.mbt[m
+[1mindex bc4f598..2599189 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/bitwriter.mbt[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/bitwriter.mbt[m
+[36m@@ -10,7 +10,7 @@[m [mpriv struct BitWriter {[m
+ [m
+ ///|[m
+ fn BitWriter::new() -> BitWriter {[m
+[31m-  { out: [], bitbuf: 0, bit_count: 0 }[m
+[32m+[m[32m  { out: [], bitbuf: 0, bit_count: 0, }[m
+ }[m
+ [m
+ ///|[m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/bitwriter.mbt /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/bitwriter.mbt`
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/block_writer.mbt b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/block_writer.mbt[m
+[1mindex fa00404..6bddf1f 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/block_writer.mbt[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/block_writer.mbt[m
+[36m@@ -39,28 +39,28 @@[m [mfn build_codelen_syms([m
+     if cur == 0 {[m
+       while run >= 11 {[m
+         let r = if run < 138 { run } else { 138 }[m
+[31m-        out.push({ sym: 18, extra: r - 11, nextra: 7 })[m
+[32m+[m[32m        out.push({ sym: 18, extra: r - 11, nextra: 7, })[m
+         run = run - r[m
+       }[m
+       while run >= 3 {[m
+         let r = if run < 10 { run } else { 10 }[m
+[31m-        out.push({ sym: 17, extra: r - 3, nextra: 3 })[m
+[32m+[m[32m        out.push({ sym: 17, extra: r - 3, nextra: 3, })[m
+         run = run - r[m
+       }[m
+       while run > 0 {[m
+[31m-        out.push({ sym: 0, extra: 0, nextra: 0 })[m
+[32m+[m[32m        out.push({ sym: 0, extra: 0, nextra: 0, })[m
+         run = run - 1[m
+       }[m
+     } else {[m
+[31m-      out.push({ sym: cur, extra: 0, nextra: 0 })[m
+[32m+[m[32m      out.push({ sym: cur, extra: 0, nextra: 0, })[m
+       run = run - 1[m
+       while run >= 3 {[m
+         let r = if run < 6 { run } else { 6 }[m
+[31m-        out.push({ sym: 16, extra: r - 3, nextra: 2 })[m
+[32m+[m[32m        out.push({ sym: 16, extra: r - 3, nextra: 2, })[m
+         run = run - r[m
+       }[m
+       while run > 0 {[m
+[31m-        out.push({ sym: cur, extra: 0, nextra: 0 })[m
+[32m+[m[32m        out.push({ sym: cur, extra: 0, nextra: 0, })[m
+         run = run - 1[m
+       }[m
+     }[m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/block_writer.mbt /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/block_writer.mbt`
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/huffman_table.mbt b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/huffman_table.mbt[m
+[1mindex 8b680a4..1630fc3 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/huffman_table.mbt[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/huffman_table.mbt[m
+[36m@@ -23,7 +23,7 @@[m [mpriv struct HuffmanDecoder {[m
+ [m
+ ///|[m
+ fn HuffmanDecoder::new() -> HuffmanDecoder {[m
+[31m-  { min: 0, chunks: Array::make(512, 0U), links: [], link_mask: 0 }[m
+[32m+[m[32m  { min: 0, chunks: Array::make(512, 0U), links: [], link_mask: 0, }[m
+ }[m
+ [m
+ ///|[m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/huffman_table.mbt /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/huffman_table.mbt`
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/incremental_test.mbt b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/incremental_test.mbt[m
+[1mindex b515c9a..c7faa20 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/incremental_test.mbt[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/incremental_test.mbt[m
+[36m@@ -89,7 +89,14 @@[m [mtest "byte-at-a-time deflate+inflate round-trips (1B in, 1B out)" {[m
+   // suspension and the length-258/259 and dist=1 boundaries without the[m
+   // expensive level-9 chain search.[m
+   let cases = [[m
+[31m-    (1, 0), (1, 1), (1, 2), (2, 7), (2, 258), (2, 259), (4, 600), (256, 500),[m
+[32m+[m[32m    (1, 0),[m
+[32m+[m[32m    (1, 1),[m
+[32m+[m[32m    (1, 2),[m
+[32m+[m[32m    (2, 7),[m
+[32m+[m[32m    (2, 258),[m
+[32m+[m[32m    (2, 259),[m
+[32m+[m[32m    (4, 600),[m
+[32m+[m[32m    (256, 500),[m
+   ][m
+   let mut seed = 0x9E3779B9U[m
+   for ci in 0..<cases.length() {[m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/incremental_test.mbt /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/incremental_test.mbt`
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/huffman_build.mbt b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/huffman_build.mbt[m
+[1mindex 104435b..f91dd1a 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/huffman_build.mbt[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/huffman_build.mbt[m
+[36m@@ -19,7 +19,7 @@[m [mpriv struct LevelInfo {[m
+ [m
+ ///|[m
+ fn LevelInfo::new() -> LevelInfo {[m
+[31m-  { level: 0, last_freq: 0, next_char_freq: 0, next_pair_freq: 0, needed: 0 }[m
+[32m+[m[32m  { level: 0, last_freq: 0, next_char_freq: 0, next_pair_freq: 0, needed: 0, }[m
+ }[m
+ [m
+ ///|[m
+[36m@@ -147,7 +147,7 @@[m [mfn gen_huffman([m
+   let nodes : Array[Node] = [][m
+   for i in 0..<size {[m
+     if freq[i] != 0 {[m
+[31m-      nodes.push({ lit: i, freq: freq[i] })[m
+[32m+[m[32m      nodes.push({ lit: i, freq: freq[i], })[m
+     }[m
+   }[m
+   let count = nodes.length()[m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/huffman_build.mbt /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/huffman_build.mbt`
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/optimal_parse.mbt b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/optimal_parse.mbt[m
+[1mindex 0e9f83b..7494e4a 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/optimal_parse.mbt[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/optimal_parse.mbt[m
+[36m@@ -71,7 +71,7 @@[m [mfn collect_matches([m
+       while cand >= 0 && steps < optimal_max_chain && i - cand <= 32768 {[m
+         let l = capped_match_len(data, cand, i, limit)[m
+         if l > best {[m
+[31m-          frontier.push({ len: l, dist: i - cand })[m
+[32m+[m[32m          frontier.push({ len: l, dist: i - cand, })[m
+           best = l[m
+           if l >= limit {[m
+             break[m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/optimal_parse.mbt /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/optimal_parse.mbt`
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/lz77.mbt b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/lz77.mbt[m
+[1mindex 2e92f75..8346639 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/lz77.mbt[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/lz77.mbt[m
+[36m@@ -26,16 +26,16 @@[m [mpriv struct LevelConfig {[m
+ [m
+ ///|[m
+ let level_configs : FixedArray[LevelConfig] = [[m
+[31m-  { good_length: 0, max_lazy: 0, nice_length: 0, max_chain: 0 }, // 0: stored[m
+[31m-  { good_length: 4, max_lazy: 0, nice_length: 8, max_chain: 4 },[m
+[31m-  { good_length: 4, max_lazy: 0, nice_length: 16, max_chain: 8 },[m
+[31m-  { good_length: 4, max_lazy: 0, nice_length: 32, max_chain: 32 },[m
+[31m-  { good_length: 4, max_lazy: 4, nice_length: 16, max_chain: 16 },[m
+[31m-  { good_length: 8, max_lazy: 16, nice_length: 32, max_chain: 32 },[m
+[31m-  { good_length: 8, max_lazy: 16, nice_length: 128, max_chain: 128 }, // 6: default[m
+[31m-  { good_length: 8, max_lazy: 32, nice_length: 128, max_chain: 256 },[m
+[31m-  { good_length: 32, max_lazy: 128, nice_length: 258, max_chain: 1024 },[m
+[31m-  { good_length: 32, max_lazy: 258, nice_length: 258, max_chain: 4096 }, // 9[m
+[32m+[m[32m  { good_length: 0, max_lazy: 0, nice_length: 0, max_chain: 0, }, // 0: stored[m
+[32m+[m[32m  { good_length: 4, max_lazy: 0, nice_length: 8, max_chain: 4, },[m
+[32m+[m[32m  { good_length: 4, max_lazy: 0, nice_length: 16, max_chain: 8, },[m
+[32m+[m[32m  { good_length: 4, max_lazy: 0, nice_length: 32, max_chain: 32, },[m
+[32m+[m[32m  { good_length: 4, max_lazy: 4, nice_length: 16, max_chain: 16, },[m
+[32m+[m[32m  { good_length: 8, max_lazy: 16, nice_length: 32, max_chain: 32, },[m
+[32m+[m[32m  { good_length: 8, max_lazy: 16, nice_length: 128, max_chain: 128, }, // 6: default[m
+[32m+[m[32m  { good_length: 8, max_lazy: 32, nice_length: 128, max_chain: 256, },[m
+[32m+[m[32m  { good_length: 32, max_lazy: 128, nice_length: 258, max_chain: 1024, },[m
+[32m+[m[32m  { good_length: 32, max_lazy: 258, nice_length: 258, max_chain: 4096, }, // 9[m
+ ][m
+ [m
+ ///|[m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/lz77.mbt /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/lz77.mbt`
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/checksum/crc32.mbt b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/checksum/crc32.mbt[m
+[1mindex 224166e..fbf459a 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/checksum/crc32.mbt[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/checksum/crc32.mbt[m
+[36m@@ -27,7 +27,7 @@[m [mpub struct Crc32 {[m
+ ///|[m
+ /// Create a fresh CRC-32 accumulator.[m
+ pub fn Crc32::new() -> Crc32 {[m
+[31m-  { state: 0xFFFFFFFF }[m
+[32m+[m[32m  { state: 0xFFFFFFFF, }[m
+ }[m
+ [m
+ ///|[m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/checksum/crc32.mbt /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/checksum/crc32.mbt`
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/checksum/adler32.mbt b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/checksum/adler32.mbt[m
+[1mindex 7c11122..debd3f2 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/checksum/adler32.mbt[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/checksum/adler32.mbt[m
+[36m@@ -13,7 +13,7 @@[m [mpub struct Adler32 {[m
+ ///|[m
+ /// Create a fresh Adler-32 accumulator.[m
+ pub fn Adler32::new() -> Adler32 {[m
+[31m-  { a: 1, b: 0 }[m
+[32m+[m[32m  { a: 1, b: 0, }[m
+ }[m
+ [m
+ ///|[m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/flate/checksum/adler32.mbt /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-mu3wrewo/_build/wasm-gc/release/format/moonbit-community/flate/checksum/adler32.mbt`

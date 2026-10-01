@@ -1,0 +1,5 @@
+import {
+  "sundaysebasidian-byte/moonods" @ods,
+}
+
+pkgtype(kind: "executable")

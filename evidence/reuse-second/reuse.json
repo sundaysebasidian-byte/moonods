@@ -1,0 +1,129 @@
+{
+  "started_utc": "2026-10-01T05:23:40.272001+00:00",
+  "steps": [
+    {
+      "name": "package",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "package",
+        "--frozen",
+        "--list"
+      ],
+      "cwd": "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "consumer-format",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "fmt",
+        "--check",
+        "src"
+      ],
+      "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "consumer-check",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "check",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-5ebfemfc/consumer",
+      "exit_code": 255,
+      "status": "FAIL"
+    }
+  ],
+  "scope": "Independent local module consumes extracted moon package candidate via moon.work",
+  "mooncakes_published_or_remote_consumption": false,
+  "unmeasured": [
+    "office applications",
+    "fresh machine",
+    "network package installation",
+    "market demand"
+  ],
+  "verified_dependencies": {
+    "zipc": {
+      "version": "0.2.2",
+      "sha256": "e552ecca64446aa9be8ced2dfae21f413e77ced2d21dfd0934772f32f30c43de"
+    },
+    "flate": {
+      "version": "0.2.0",
+      "sha256": "935372d9a49a5d4bbb40a2fd057bd36b587f683d605c5de204adc143a2215e66"
+    }
+  },
+  "candidate": {
+    "file": "moonods-local-candidate-0.1.0.zip",
+    "sha256": "64b962f46f9dd226e0b7d4dea63dfd0caf669a33c694a3048e2245ef6f2c6391",
+    "bytes": 46884,
+    "files": [
+      "moon.pkg",
+      "moon.mod",
+      "xml.mbt",
+      "TOOLCHAIN.lock",
+      "LICENSE",
+      "licenses/flate-Apache-2.0.txt",
+      "licenses/moonbit-core-Apache-2.0.txt",
+      "licenses/zipc-Apache-2.0.txt",
+      "SOURCES.md",
+      "package.mbt",
+      "style_wbtest.mbt",
+      "boundaries_wbtest.mbt",
+      "workbook_wbtest.mbt",
+      "DEPENDENCIES.lock.json",
+      "pkg.generated.mbti",
+      "tests/consumer/moon.pkg",
+      "tests/consumer/pkg.generated.mbti",
+      "tests/consumer/api_test.mbt",
+      "cell_wbtest.mbt",
+      "workbook.mbt",
+      "THIRD_PARTY_NOTICES.md",
+      "docs/ACCEPTANCE_ZH.md",
+      "docs/PROPOSAL_REFERENCE.md",
+      "README.md",
+      "xml_wbtest.mbt",
+      "package_wbtest.mbt",
+      "style.mbt",
+      "examples/generate/moon.pkg",
+      "examples/generate/main.mbt",
+      "examples/generate/pkg.generated.mbti",
+      "requirements-verify.txt",
+      "cell.mbt",
+      "AI_USAGE.md"
+    ],
+    "source_sha256": {
+      "moon.pkg": "db4df9cb2a38cc73d956036004cd5effe4593e8177d3015349f94dcb9a5ff7cd",
+      "moon.mod": "796a8af9918f0b3ce3abda415a1bcb24e72b2200eeaa577335016386e5fc0c12",
+      "xml.mbt": "5c5935442dc508b8aade02077561cd9296867c9c1f913234a48889451f7e9430",
+      "package.mbt": "3db24b3d3fd785da47e5a4b5b90065cbf4be15e37fabf6e383778e9a1c2ec630",
+      "style_wbtest.mbt": "04705f9d4d118df76a2aaf7d5b42fcb159069cd38f82b05b50a4ed3c3c98e02d",
+      "boundaries_wbtest.mbt": "d9c18c4a3f3b1d1a36be2332685ae262ee35f20e3d1d81b7fae4f1cf9f9a24c4",
+      "workbook_wbtest.mbt": "6b79e1f4eeb5bba44ddd1b6068c13135aa41700e0f3cbaca7d8ed4a53b4456f7",
+      "tests/consumer/api_test.mbt": "e9f9c2b9d9227f743c96e279a93bf815ff7d444f46bfe7c25921359cc52c1354",
+      "cell_wbtest.mbt": "afa9db346cf861007a00087706f97d59b182f401ab2b3b3c9eb51727906aaa85",
+      "workbook.mbt": "d255c1b90de809904a3377ed7ca29efb714c77e947e582d5fe962b82fdbb925c",
+      "xml_wbtest.mbt": "f88bf99df7743a678f5d11d466f753e5a3b72e17313966a03c3f8632146fa8b7",
+      "package_wbtest.mbt": "fd342855e8486b6e390f4a228349eab3f095142d0164ae5f947cee5276744601",
+      "style.mbt": "7c1d095cc99c1159c2fc837fba50865b80f786c0729a44897013770e386398da",
+      "examples/generate/main.mbt": "0b54f059c3f23c59089282cc6d9d56e953756527b7f5e6ba22f4bcd87ee72f3c",
+      "cell.mbt": "2ec8ef04abf57f1ea32896df793d3d9fdcb9c1ff9047bd83373f722bc881b58a"
+    }
+  },
+  "consumer_source_sha256": {
+    "moon.mod": "ce0fbe9becaa5042c6b14353e10a88bc814a16c2afbf7eb7bcdd390a6ed3579c",
+    "src/main.mbt": "42b4d21b15109b3d1829aaed5891777208063bf5a07e4a52ce6590b3ffd1d985",
+    "src/moon.pkg": "a3cb20dc94fa8dca2a4c297b9db610452cac9f1c9f19661539b6845779886408",
+    "src/reuse_test.mbt": "2a2d82203acf5dcac142ca0b7d415c6d497eb01b7c6d606698d438ba1260b4db"
+  },
+  "workspace_config": "members = [\n  \"candidate\",\n  \"consumer\",\n]\n",
+  "status": "FAIL",
+  "error": "consumer-check failed; retained logs",
+  "finished_utc": "2026-10-01T05:23:40.710306+00:00"
+}

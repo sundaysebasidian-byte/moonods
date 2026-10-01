@@ -1,0 +1,10 @@
+_build/
+.mooncakes/
+.schemas/
+__pycache__/
+.venv/
+examples/generated/
+/evidence/
+/vendor/
+/scripts/
+/fixtures/
