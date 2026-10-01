@@ -56,8 +56,14 @@ def main():
             # Exact original source bytes, consumed only from the packaged copy.
             fingerprints = {n: hashlib.sha256(z.read(n)).hexdigest() for n in names if n.endswith('.mbt') or n in ['moon.mod', 'moon.pkg']}
             assert all(digest(ROOT / n) == h for n, h in fingerprints.items())
+            # Documentation/licenses/interfaces must describe the same snapshot
+            # as the code actually consumed, rather than an earlier candidate.
+            all_fingerprints = {n: hashlib.sha256(z.read(n)).hexdigest() for n in names if not n.endswith('/')}
+            assert all(digest(ROOT / n) == h for n, h in all_fingerprints.items()), 'Candidate file differs from current checkout'
         report['candidate'] = {'file': candidate.name, 'sha256': digest(candidate), 'bytes': candidate.stat().st_size,
-                               'files': names, 'source_sha256': fingerprints}
+                               'files': names, 'source_sha256': fingerprints,
+                               'all_files_sha256': all_fingerprints,
+                               'all_candidate_bytes_match_checkout': True}
         fixture = ROOT / 'fixtures/reuse-consumer'
         report['consumer_source_sha256'] = {str(p.relative_to(fixture)): digest(p) for p in sorted(fixture.rglob('*')) if p.is_file() and '_build' not in p.parts}
         # All workspace members are physically extracted archives or copied

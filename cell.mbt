@@ -6,6 +6,8 @@ pub suberror OdsError {
 
 ///|
 /// Formula cache values have the same types as literal values.
+/// Date is a Gregorian ODF date in 1..9999, independent of an application's
+/// serial date epoch. It does not promise Excel supports historical dates.
 pub(all) enum Value {
   Empty
   Text(String)
@@ -22,9 +24,28 @@ struct Cell {
 }
 
 ///|
+/// Validate ODF values; application-specific date ranges are not inferred.
 pub fn Cell::new(value : Value) -> Cell raise OdsError {
   validate_value(value)
   { value, formula: None, style: Plain, }
+}
+
+///|
+/// Optional date policy for Excel's 1900 date system, with an ISO date style.
+/// Rejects dates before 1900-01-01 and all invalid Gregorian dates, including
+/// Excel's fictional 1900-02-29. Does not configure a reader's date system or
+/// guarantee rendering. For historical display, callers may explicitly use
+/// Text("0001-01-01"), which has no date arithmetic semantics.
+pub fn Cell::excel_1900_date(
+  year : Int,
+  month : Int,
+  day : Int,
+) -> Cell raise OdsError {
+  let cell = Cell::new(Date(year, month, day))
+  if year < 1900 {
+    raise Invalid("Excel 1900 date policy requires 1900-01-01 or later")
+  }
+  cell.styled(DateISO)
 }
 
 ///|

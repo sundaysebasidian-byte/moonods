@@ -1,0 +1,38 @@
+{
+  "status": "PARTIAL",
+  "date_decision": "ODF Gregorian 0001 is valid per official RNG and independent reader; existing Excel result plus Microsoft date bounds support an application range difference, not a demonstrated writer defect",
+  "date_default": "Keep ODF 1..9999; invalid Gregorian/year zero/year10000 rejected",
+  "opt_in": "Cell::excel_1900_date rejects before1900 and fictional1900-02-29; DateISO; no reader settings changed; not all-Excel compatibility filter",
+  "width_decision": "Fixed positive millimeter length and reference mapping conform; native absolute physical mm UNRESOLVED; no pixel compensation",
+  "original_points_assumption": "FAIL retained; VBA definition cannot establish Mac AppleScript/JXA units",
+  "mac_excel_sdef": {
+    "sha256": "65791dab8b9f94a66e22dbd582ed49acc70f1d9f8e9efe3bcfee7434fe76c0f9",
+    "range_width_property": {
+      "name": "width",
+      "code": "pwid",
+      "type": "real",
+      "access": "r",
+      "description": "Returns the width of the range."
+    },
+    "unit_statement": "not specified"
+  },
+  "sources": [
+    "https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html",
+    "https://support.microsoft.com/en-us/excel/date-systems-in-excel",
+    "https://support.microsoft.com/en-us/excel/excel-specifications-and-limits",
+    "https://learn.microsoft.com/en-us/office/vba/api/excel.range.width",
+    "https://www.w3.org/TR/xmlschema-2/#date"
+  ],
+  "regression": {
+    "core": {
+      "total": 25,
+      "passed": 25,
+      "failed": 0
+    },
+    "independent_module": "PASS",
+    "compatibility": "7 typed values + 3 official XML; year zero and negative width controls rejected",
+    "original_four_files_match_excel_inputs": true
+  },
+  "native_apps_this_round": "NOT RUN; no UI activation or screenshots",
+  "delivery": "Original Library v2 preserved; changes pending unified three-project review; no new Git commit/publication/registration"
+}

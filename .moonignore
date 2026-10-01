@@ -4,6 +4,7 @@ _build/
 __pycache__/
 .venv/
 examples/generated/
+examples/compatibility/generated/
 /evidence/
 /vendor/
 /scripts/

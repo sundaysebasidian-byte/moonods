@@ -22,3 +22,17 @@ Excel value2把Empty与Text("")均呈现空字符串，源区别由独立读取/
 `evidence/office-2026-10-01/`为修正前，保留访问/打开失败、单位假设和长文截断。销售/formulas截图视觉核对过；早期错名实验截图改为`duplicate-sales-window.png`，不能当实验截图。正确实验截图为`office-2026-10-01-fixed/experiment-window.png`，通过指定Excel窗口编号截取、视觉核对。截图辅助核值，以真实API日志为主。
 
 LibreOffice、Numbers、WPS未实测。没有安装LibreOffice，也不把Excel/odfpy称为LibreOffice通过。
+
+## 本轮规范判定与有界处理
+
+ODF1.3 §19.374/§18.3.14将日期值关联XML Schema date/dateTime；官方RNG与独立odfpy接受0001-01-01。Microsoft[日期系统](https://support.microsoft.com/en-us/excel/date-systems-in-excel)及[限制](https://support.microsoft.com/en-us/excel/excel-specifications-and-limits)说明计算下界1900-01-01（1904系统为1904-01-01）。结合既有实读，判断极早日期是Excel支持范围差异，未发现MoonODS生成错误；不改变合法ODFDate的默认行为。
+
+新增可选`Cell::excel_1900_date`提前拒绝1900以前/无效公历日，并选择DateISO。它不设置阅读器日期系统，不保证全部应用兼容。历史显示可显式用Text，类型和算术语义不同，不自动降级。回归覆盖0001/1899、1900/2000闰年/9999、年0/10000与虚构1900-02-29拒绝。
+
+ODF §20.254/§18.3.26的column-width为固定positiveLength，毫米单位合法。回归核1/32/500mm与列引用逐项对应、替换值、非法-1/0/501拒绝后字节不变；独立RNG也拒绝负长度。API承诺源文件请求值，不承诺各阅读器物理布局。
+
+Microsoft[VBA Range.Width](https://learn.microsoft.com/en-us/office/vba/api/excel.range.width)定义为point，但本次实测是Mac AppleScript/JXA，不是VBA；既有Excel16.113.3的sdef仅说明返回范围宽度，**未注明单位**。不能直接套VBA约定。数据近似96单位/英寸只是假设，不是校准；原point换算FAIL继续保留，绝对毫米UNRESOLVED，不改成PASS或向writer加入像素补偿。
+
+本轮仅读规范/本机字典和执行非原生回归，未激活Office、System Events或截图，不占Pixel焦点。新的诊断例未原生实读。Library历史v2及旧真实报告保留；审查草稿结果在`evidence/date-width-final/`，最终重打包/消费结果在`evidence/date-width-release/`。统一技术复核后按真实阶段提交；较早spec-review记录中的待提交状态属于草稿阶段。
+
+`excel_1900_date`只是日期范围政策，不是完整Excel兼容过滤器。Microsoft还列出公式8192字符、单元格253换行、列宽255字符等上限；MoonODS的ODF存储限制不同，没有声称这些合法ODF输入全能在Excel保留或计算。任意公式与500mm边界的原生读取仍未测，不把字典/规范检查称为实测。

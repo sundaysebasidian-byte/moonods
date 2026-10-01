@@ -65,6 +65,10 @@ fn make_report() -> Bytes raise @ods.OdsError {
 
 Workbook/Sheet/Cell 为不透明类型，不能访问内部数组/Map绕过验证。返回的 `Bytes` 由调用方写入文件。坐标从 0 开始；`Sheet::get` 返回稀疏显式单元格的 `Cell?`，未设置格返回 None，显式空值使用 `Cell::new(Empty)`。`Cell::value` / `expression` 可取值与公式，`Workbook::content_xml` 供诊断，`to_ods` 返回包。可恢复错误为 `@ods.Invalid(message)`，详见实际编译的 [公共 API 测试包](tests/consumer/api_test.mbt)（同一模块）与[独立消费模块](fixtures/reuse-consumer/src/main.mbt)（不同模块，本地候选消费）。
 
+`Cell::new(Date(...))` 验证 ODF 公历日期 1..9999；它不推断读取软件的日期系统。需要遵守 Excel **1900 日期系统**边界时，可显式使用 `Cell::excel_1900_date(y, m, d)`：拒绝1900-01-01以前及无效公历日，返回带DateISO样式的日期；也拒绝Excel历史上的虚构1900-02-29。此入口不配置阅读器，不承诺1904日期系统或所有Office都兼容。公式缓存可取该Cell的`.value()`后传给`Cell::formula`。
+
+历史日期只需跨软件显示时，调用方可显式选择`Cell::new(Text("0001-01-01"))`；此值是字符串，不能参与日期运算。库不会偷偷把Date转成Text。列宽API保证写入请求的ODF整数毫米固定长度，不保证每个阅读器的屏幕像素或打印物理毫米；不按未经校准的Excel返回值缩放标准XML。
+
 ## 三个可运行场景
 
 `examples/generate/main.mbt` 一次生成以下合成数据，来源无个人信息：
@@ -78,6 +82,8 @@ Workbook/Sheet/Cell 为不透明类型，不能访问内部数组/Map绕过验�
 另有[独立模块的三场景完整输入→API→输出→断言](docs/REUSE_REVIEW_ZH.md)，从本地候选包消费，实际核对30个类型值和9 XML。
 
 额外 `edge.ods` 覆盖 XML 特殊字符、长文边界、极大/极小有限数、日期端点和空表。
+
+日期/单位边界诊断例：`moon run --target js -j 1 examples/compatibility`，生成`examples/compatibility/generated/compatibility.ods`。展示ODF历史Date、显式Text替代、可选1900策略日期/公式缓存、1/32/500mm属性。它用于理解边界，不是已通过Excel布局验证的报表；新增文件未做原生Office实读。
 
 ## 资源上限与错误
 
@@ -103,7 +109,7 @@ python scripts/acceptance.py --moon /absolute/path/to/existing/sdk/bin/moon
 python scripts/verify_reuse.py --moon /absolute/path/to/existing/sdk/bin/moon
 ```
 
-脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[最新证据](evidence/2026-10-01-office-final/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr 也随包保留。Excel 为单独的本机读取验证，不由该跨平台脚本或远端 CI 执行；真实记录在 [Excel 报告](evidence/office-2026-10-01-fixed/excel.json)。
+脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包；也运行新的日期/单位诊断例及独立7类型值/3 XML检查。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[最新完整证据](evidence/date-width-release/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr也保留。Excel为单独的本机读取验证，不由该跨平台脚本或远端CI执行；真实记录在[Excel报告](evidence/office-2026-10-01-fixed/excel.json)。新增诊断ODS没有原生Office实测，旧四个ODS哈希仍与既有Excel输入核对。
 
 `.github/workflows/ci.yml` 已提供相同检查及证据保存。它只在未来获准建立远端后运行；远端 CI、Ubuntu SDK 安装与网络依赖解析本次未测。
 
@@ -114,3 +120,5 @@ python scripts/verify_reuse.py --moon /absolute/path/to/existing/sdk/bin/moon
 zipc 的 Archive 按路径排序，会把 META-INF 放在 mimetype 前，因此本库编写小型固定路径 ZIP32 STORED 封装，复用 zipc 的 CRC32 实现；没有通用 ZIP writer/reader 或用户资产路径入口。依赖源码与摘要真实核对，归档保持上游 Apache-2.0 许可，项目原创代码为 MIT。详见 [来源](SOURCES.md)、[第三方声明](THIRD_PARTY_NOTICES.md)、[AI_USAGE](AI_USAGE.md)。
 
 [申报参考](docs/PROPOSAL_REFERENCE.md) 是 AI 辅助技术事实，不能冒充人工最终申报书。用户需理解并人工撰写；公开仓库、mooncakes 发布、报名及身份/银行/学籍/诚信材料仍待用户处理。
+
+本轮边界补充已完成统一技术复核，按真实工程阶段提交并生成新源码交付。Library历史v2对应`dc59462`的22项测试快照；本轮为25项测试及新增诊断例。公开仓库、包发布、远端CI和人工申报仍未完成，不把本地复核称为官方验收。

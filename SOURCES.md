@@ -49,3 +49,5 @@
 ## 已装Excel实读
 
 2026-10-01使用既有Microsoft Excel16.113.3、系统osascript读取四个自制无宏ODS；常规20组通过、整体PARTIAL。旧32768字截断后实现收紧至32767，修正后完整读取。公元0001年异常与绝对毫米列宽未校准保留；无LibreOffice实测或新增安装。未保存，输入SHA不变；Excel实际readOnly=false，不能声称强制只读。原始读取及命令在`evidence/office-2026-10-01-fixed/`，详见OFFICE_COMPATIBILITY_ZH。
+
+本轮再读ODF XML§18.3.14/§19.374日期及§20.254固定列宽/§18.3.26正长度和对应RNG定义，默认日期/毫米属性符合规范。新增来源：[Microsoft日期系统](https://support.microsoft.com/en-us/excel/date-systems-in-excel)、[Excel限制](https://support.microsoft.com/en-us/excel/excel-specifications-and-limits)、[VBA Range.Width](https://learn.microsoft.com/en-us/office/vba/api/excel.range.width)、[W3C XML Schema date](https://www.w3.org/TR/xmlschema-2/#date)。实际读取正文；支持极早日期属Excel范围差异的推断。VBA的point约定不能直接证明Mac JXA单位，既有Excel.sdef的range.width没有单位说明。本轮未启动Office或取焦点。只分发事实摘要/链接，不复制第三方文档整篇。

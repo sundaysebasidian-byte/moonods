@@ -116,13 +116,13 @@ fn example_samples() -> Array[Sample] {
 }
 
 ///|
-fn example_declarations() -> Array[(String, @ods.Value)] {
+fn example_declarations() -> Array[(String, @ods.Value)] raise @ods.OdsError {
   [
     // Deliberately inconsistent sum: proves cache is provided, not evaluated.
     ("of:=SUM([.A1:.A2])", Number(99.0)),
     ("of:=[.A1]<[.A2]", Boolean(true)),
     ("of:=\"下游中文 & 缓存\"", Text("下游中文 & 缓存")),
-    ("of:=DATE(2026;10;1)", Date(2026, 10, 1)),
+    ("of:=DATE(2026;10;1)", @ods.Cell::excel_1900_date(2026, 10, 1).value()),
   ]
 }
 

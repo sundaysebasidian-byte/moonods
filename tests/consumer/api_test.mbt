@@ -1,4 +1,18 @@
 ///|
+test "consumer can opt into Excel 1900 date policy without changing ODF default" {
+  assert_eq(@ods.Cell::new(Date(1, 1, 1)).value(), Date(1, 1, 1))
+  assert_eq(@ods.Cell::excel_1900_date(1900, 1, 1).value(), Date(1900, 1, 1))
+  assert_true(
+    try {
+      @ods.Cell::excel_1900_date(1899, 12, 31) |> ignore
+      false
+    } catch {
+      @ods.Invalid(_) => true
+    },
+  )
+}
+
+///|
 test "downstream package can build a styled formula workbook" {
   let w = @ods.Workbook::new()
   let s = w.add_sheet("客户")

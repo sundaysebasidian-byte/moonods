@@ -68,6 +68,14 @@ def main():
                 report['separate_office_evidence']['status'] = 'STALE INPUTS'
         run('schema-bytes', [sys.executable, ROOT / 'scripts/fetch_schemas.py'])
         run('external', [sys.executable, ROOT / 'scripts/verify_external.py', '--report', out / 'external.json'])
+        compatibility_file = ROOT / 'examples/compatibility/generated/compatibility.ods'
+        run('compatibility-first', [moon, 'run', '--target', 'js', '-j', '1', 'examples/compatibility'])
+        compatibility_hash = hashlib.sha256(compatibility_file.read_bytes()).hexdigest()
+        run('compatibility-second', [moon, 'run', '--target', 'js', '-j', '1', 'examples/compatibility'])
+        if hashlib.sha256(compatibility_file.read_bytes()).hexdigest() != compatibility_hash:
+            raise RuntimeError('Compatibility fixture cross-process determinism failed')
+        report['compatibility_fixture_determinism'] = {'status': 'PASS', 'sha256': compatibility_hash}
+        run('compatibility-regression', [sys.executable, ROOT / 'scripts/verify_compatibility.py', '--report', out / 'compatibility.json'])
         run('reuse', [sys.executable, ROOT / 'scripts/verify_reuse.py', '--moon', moon, '--output', out / 'reuse'])
         report['independent_module_reuse'] = json.loads((out / 'reuse/reuse.json').read_text())
         if report['independent_module_reuse']['status'] != 'PASS': raise RuntimeError('Independent module reuse failed')

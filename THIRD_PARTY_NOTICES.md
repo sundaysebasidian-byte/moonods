@@ -14,4 +14,4 @@ MoonODS original implementation is under MIT (`LICENSE`). Its license does not r
 
 The exact bundled zipc/flate archives and every contained source file have recorded SHA256 values in DEPENDENCIES.lock.json. Original LICENSE copies are also supplied in licenses. No archive file was modified; no upstream NOTICE file was present in these exact archives. No competitor implementation or fixtures were copied.
 
-All sales, experiment, formula and edge datasets are synthetic fixtures created for this project and licensed with its original code. They contain no personal records.
+All sales, experiment, formula, edge and compatibility diagnostic datasets are synthetic fixtures created for this project and licensed with its original code. They contain no personal records.

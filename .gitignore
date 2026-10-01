@@ -1,6 +1,7 @@
 _build/
 .mooncakes/
 examples/generated/
+examples/compatibility/generated/
 __pycache__/
 .venv/
 .schemas/

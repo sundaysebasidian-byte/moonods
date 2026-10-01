@@ -30,6 +30,9 @@ fn preset_styles() -> String {
 }
 
 ///|
+/// Emit the requested ODF fixed column length in integer millimeters (1..500).
+/// Viewer rounding, font metrics, zoom and physical print layout are not
+/// guaranteed. No app-specific pixel/point compensation is applied.
 pub fn Sheet::set_column_width(
   self : Sheet,
   col : Int,

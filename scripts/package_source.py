@@ -19,6 +19,8 @@ def main():
     payload = {n: (ROOT / n).read_bytes() for n in names}
     for name in ['sales', 'experiment', 'formulas', 'edge']:
         n = f'examples/generated/{name}.ods'; payload[n] = (ROOT / n).read_bytes()
+    compatibility = 'examples/compatibility/generated/compatibility.ods'
+    payload[compatibility] = (ROOT / compatibility).read_bytes()
     head = git('rev-parse', 'HEAD').decode().strip()
     with tempfile.TemporaryDirectory() as temp:
         bundle = Path(temp) / 'moonods-history.bundle'

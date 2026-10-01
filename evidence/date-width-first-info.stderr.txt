@@ -1,0 +1,194 @@
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:10:15 ]
+    │
+ 10 │   let dates = w.add_sheet("日期策略")
+    │               ─────────┬─────────────  
+    │                        ╰─────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:11:3 ]
+    │
+ 11 │   dates.set_column_width(0, 32)
+    │   ──────────────┬──────────────  
+    │                 ╰──────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:12:3 ]
+    │
+ 12 │   dates.set_column_width(1, 48)
+    │   ──────────────┬──────────────  
+    │                 ╰──────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:13:3 ]
+    │
+ 13 │   dates.set(0, 0, @ods.Cell::new(Text("ODF 日期")).styled(Header))
+    │   ───────────────────────────────┬────────────────────────────────  
+    │                                  ╰────────────────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:13:19 ]
+    │
+ 13 │   dates.set(0, 0, @ods.Cell::new(Text("ODF 日期")).styled(Header))
+    │                   ───────────────┬────────────────  
+    │                                  ╰────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:14:3 ]
+    │
+ 14 │ ╭─▶   dates.set(
+    ┆ ┆   
+ 18 │ ├─▶   )
+    │ │         
+    │ ╰───────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:17:5 ]
+    │
+ 17 │     @ods.Cell::new(Text("显式文本，不参与日期计算")).styled(Header),
+    │     ──────────────────┬─────────────────────────────  
+    │                       ╰─────────────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:19:3 ]
+    │
+ 19 │   dates.set(1, 0, @ods.Cell::new(Date(1, 1, 1)).styled(DateISO))
+    │   ───────────────────────────────┬──────────────────────────────  
+    │                                  ╰──────────────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:19:19 ]
+    │
+ 19 │   dates.set(1, 0, @ods.Cell::new(Date(1, 1, 1)).styled(DateISO))
+    │                   ──────────────┬──────────────  
+    │                                 ╰──────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:20:3 ]
+    │
+ 20 │   dates.set(1, 1, @ods.Cell::new(Text("0001-01-01")))
+    │   ─────────────────────────┬─────────────────────────  
+    │                            ╰─────────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:20:19 ]
+    │
+ 20 │   dates.set(1, 1, @ods.Cell::new(Text("0001-01-01")))
+    │                   ─────────────────┬────────────────  
+    │                                    ╰────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:21:3 ]
+    │
+ 21 │   dates.set(2, 0, @ods.Cell::excel_1900_date(1900, 1, 1))
+    │   ───────────────────────────┬───────────────────────────  
+    │                              ╰───────────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:21:19 ]
+    │
+ 21 │   dates.set(2, 0, @ods.Cell::excel_1900_date(1900, 1, 1))
+    │                   ───────────────────┬──────────────────  
+    │                                      ╰──────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:22:3 ]
+    │
+ 22 │   dates.set(3, 0, @ods.Cell::excel_1900_date(9999, 12, 31))
+    │   ────────────────────────────┬────────────────────────────  
+    │                               ╰────────────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:22:19 ]
+    │
+ 22 │   dates.set(3, 0, @ods.Cell::excel_1900_date(9999, 12, 31))
+    │                   ────────────────────┬───────────────────  
+    │                                       ╰───────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:23:15 ]
+    │
+ 23 │   let cache = @ods.Cell::excel_1900_date(1900, 1, 1).value()
+    │               ───────────────────┬──────────────────  
+    │                                  ╰──────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:24:3 ]
+    │
+ 24 │ ╭─▶   dates.set(
+    ┆ ┆   
+ 28 │ ├─▶   )
+    │ │         
+    │ ╰───────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:27:5 ]
+    │
+ 27 │     @ods.Cell::formula("of:=DATE(1900;1;1)", cache).styled(DateISO),
+    │     ───────────────────────┬───────────────────────  
+    │                            ╰───────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:29:3 ]
+    │
+ 29 │   dates.set(5, 0, @ods.Cell::new(Date(1899, 12, 31)).styled(DateISO))
+    │   ─────────────────────────────────┬─────────────────────────────────  
+    │                                    ╰─────────────────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:29:19 ]
+    │
+ 29 │   dates.set(5, 0, @ods.Cell::new(Date(1899, 12, 31)).styled(DateISO))
+    │                   ─────────────────┬────────────────  
+    │                                    ╰────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:30:3 ]
+    │
+ 30 │   dates.set(5, 1, @ods.Cell::new(Text("1899-12-31")))
+    │   ─────────────────────────┬─────────────────────────  
+    │                            ╰─────────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:30:19 ]
+    │
+ 30 │   dates.set(5, 1, @ods.Cell::new(Text("1899-12-31")))
+    │                   ─────────────────┬────────────────  
+    │                                    ╰────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:31:16 ]
+    │
+ 31 │   let widths = w.add_sheet("毫米属性")
+    │                ─────────┬─────────────  
+    │                         ╰─────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:33:5 ]
+    │
+ 33 │     widths.set_column_width(col, mm)
+    │     ────────────────┬───────────────  
+    │                     ╰───────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:34:5 ]
+    │
+ 34 │     widths.set(0, col, @ods.Cell::new(Text("\{mm}mm 请求值")))
+    │     ───────────────────────────┬──────────────────────────────  
+    │                                ╰──────────────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:34:24 ]
+    │
+ 34 │     widths.set(0, col, @ods.Cell::new(Text("\{mm}mm 请求值")))
+    │                        ─────────────────┬────────────────────  
+    │                                         ╰────────────────────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Error: [4122]
+    ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/main.mbt:36:68 ]
+    │
+ 36 │   write_file("examples/compatibility/generated/compatibility.ods", w.to_ods())
+    │                                                                    ─────┬────  
+    │                                                                         ╰────── Function with error is not allowed in `fn main`. You could use `fn main raise` to declare the main function with an error type.
+────╯
+Failed with 0 warnings, 27 errors.
