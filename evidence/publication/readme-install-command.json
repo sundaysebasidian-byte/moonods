@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "command": "moon add --no-update sundaysebasidian-byte/moonods@0.1.0",
+  "exit_code": 0,
+  "scope": "README add syntax and pinned dependency manifest checked in separate module using prior registry index and package cache; fresh registry proof is recorded separately",
+  "result_moon_mod": "name = \"moonods-audit/install-command-check\"\nversion = \"0.1.0\"\nlicense = \"MIT\"\n\nimport {\n  \"sundaysebasidian-byte/moonods@0.1.0\",\n}\n"
+}

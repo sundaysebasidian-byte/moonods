@@ -1,0 +1,14 @@
+{
+  "status": "FAIL",
+  "published": false,
+  "command": [
+    "moon",
+    "publish",
+    "--frozen",
+    "--dry-run"
+  ],
+  "exit_code": 255,
+  "cause": "Publish validates an extracted archive; --frozen forbids installing its missing pinned dependencies. Producer check passed, extracted dependency resolution failed.",
+  "next_action": "After successful remote CI, use standard moon publish so extracted validation can resolve declared pinned dependencies; keep all checks.",
+  "observed_utc": "2026-10-01T10:38:22.074645+00:00"
+}

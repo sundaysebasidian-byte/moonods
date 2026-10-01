@@ -1,0 +1,14 @@
+{
+  "observed_utc": "2026-10-01T10:40:04.993846+00:00",
+  "command": [
+    "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+    "publish"
+  ],
+  "head": "6dced9ed5798a7179d5259bde95145cc994f85df",
+  "exit_code": 0,
+  "status": "PASS",
+  "module": "sundaysebasidian-byte/moonods",
+  "version": "0.1.0",
+  "candidate_report": "evidence/publication/publish-candidate/reuse.json",
+  "registry_consumption_verified": false
+}

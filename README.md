@@ -1,6 +1,6 @@
 # MoonODS
 
-MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。公开仓库与 Mooncakes 首发已获用户批准；发行进度及真实验证结果见 [发行记录](docs/RELEASE_ZH.md)。
+MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。已公开 [GitHub](https://github.com/sundaysebasidian-byte/moonods) 并首发 Mooncakes `0.1.0`，MIT。真实 CI、空注册表消费和限制见 [发行记录](docs/RELEASE_ZH.md)。
 
 适合销售汇总、教学实验和调用方提供公式缓存的离线报表。它生成 ODS，不读取或转换已有文件。生态里已有 [markitdown-mb](https://github.com/ZSeanYves/markitdown) 的 ODS→Markdown 读取，以及 [mbtexcel](https://github.com/moonbitlang/office.mbt) 的 XLSX 读写；本项目聚焦有界、类型化、确定性的 ODF 1.3 writer。当前检索不等于证明生态里绝无同类项目，正式申报前需要再核查。
 
@@ -33,7 +33,7 @@ moon run --target js -j 1 examples/generate
 
 新检出需要解析 `moon.mod` 的固定依赖：`moon update`。源码包附带原封不动的 zipc/flate 源码归档，可用 `python3 scripts/restore_deps.py` 恢复到本项目 `.mooncakes`，再用 `scripts/verify_deps.py` 校验；这两个脚本只写本项目，不配置全局工具链。Moon 首次依赖解析仍可能需要 registry 索引/缓存；离线时应使用已准备的 SDK 缓存，不能把有网环境成功误称完全离线初始化成功。
 
-Mooncakes 发行版的下游依赖声明为 `sundaysebasidian-byte/moonods@0.1.0`。发布完成后可在自己的模块运行：
+Mooncakes 发行版的下游依赖声明为 `sundaysebasidian-byte/moonods@0.1.0`。在自己的模块运行：
 
 ```sh
 moon add sundaysebasidian-byte/moonods@0.1.0
@@ -42,7 +42,7 @@ moon check --target js -j 1
 
 源码、开发验证脚本和完整证据请从 [GitHub](https://github.com/sundaysebasidian-byte/moonods) 获取；Mooncakes 包只包含库、示例、接口、许可和说明。注册表消费结果单独记录，不用本地 workspace 成功代替。
 
-本地独立模块消费已实际验证：`scripts/verify_reuse.py`用`moon package`候选ZIP建立新目录，独立模块与解压候选组成`moon.work`，第三方依赖从现有可信缓存解析；尚未从Mooncakes安装本项目。手工本地workspace布局示意：
+本地独立模块消费已实际验证：`scripts/verify_reuse.py`用`moon package`候选ZIP建立新目录，独立模块与解压候选组成`moon.work`，第三方依赖从现有可信缓存解析；该本地阶段未从Mooncakes安装。之后首发0.1.0已在空注册表缓存验证，41文件与首发候选相同、4项消费测试和30类型值/9XML通过，见发行记录。手工本地workspace布局示意：
 
 ```text
 moon.work                         members = ["candidate", "consumer"]
@@ -120,7 +120,7 @@ python scripts/verify_reuse.py --moon /absolute/path/to/existing/sdk/bin/moon
 
 脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包；也运行新的日期/单位诊断例及独立7类型值/3 XML检查。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[最新完整证据](evidence/date-width-release/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr也保留。Excel为单独的本机读取验证，不由该跨平台脚本或远端CI执行；真实记录在[Excel报告](evidence/office-2026-10-01-fixed/excel.json)。新增诊断ODS没有原生Office实测，旧四个ODS哈希仍与既有Excel输入核对。
 
-`.github/workflows/ci.yml` 已提供相同检查及证据保存。真实远端执行的提交 SHA、运行链接及结论见发行记录；本地通过不替代远端结果。
+`.github/workflows/ci.yml` 已提供相同检查及证据保存。首发源码提交 `6dced9ed5798a7179d5259bde95145cc994f85df` 的真实远端CI通过，25核心/API和4独立消费测试均通过；运行链接与交付最新提交的CI记录见发行记录。
 
 ## 设计与合规
 

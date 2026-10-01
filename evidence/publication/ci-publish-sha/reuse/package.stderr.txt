@@ -1,0 +1,45 @@
+Running moon check ...
+Finished. moon: ran 12 tasks, now up to date
+Check passed
+AI_USAGE.md
+DEPENDENCIES.lock.json
+LICENSE
+README.md
+SOURCES.md
+THIRD_PARTY_NOTICES.md
+TOOLCHAIN.lock
+boundaries_wbtest.mbt
+cell.mbt
+cell_wbtest.mbt
+compatibility_wbtest.mbt
+docs/ACCEPTANCE_ZH.md
+docs/OFFICE_COMPATIBILITY_ZH.md
+docs/PROPOSAL_REFERENCE.md
+docs/RELEASE_ZH.md
+docs/REUSE_REVIEW_ZH.md
+docs/RULES_REVIEW_ZH.md
+examples/compatibility/main.mbt
+examples/compatibility/moon.pkg
+examples/compatibility/pkg.generated.mbti
+examples/generate/main.mbt
+examples/generate/moon.pkg
+examples/generate/pkg.generated.mbti
+licenses/flate-Apache-2.0.txt
+licenses/moonbit-core-Apache-2.0.txt
+licenses/zipc-Apache-2.0.txt
+moon.mod
+moon.pkg
+package.mbt
+package_wbtest.mbt
+pkg.generated.mbti
+requirements-verify.txt
+style.mbt
+style_wbtest.mbt
+tests/consumer/api_test.mbt
+tests/consumer/moon.pkg
+tests/consumer/pkg.generated.mbti
+workbook.mbt
+workbook_wbtest.mbt
+xml.mbt
+xml_wbtest.mbt
+Package to /home/runner/work/moonods/moonods/_build/publish/sundaysebasidian-byte-moonods-0.1.0.zip

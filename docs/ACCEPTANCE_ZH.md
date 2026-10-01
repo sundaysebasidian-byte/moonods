@@ -7,13 +7,13 @@
 | 官方条目（事实摘要） | 当前状态 | 材料与缺口 |
 |---|---|---|
 | 1. MoonBit为主要实现语言 | **本地满足** | Cell/Sheet/Workbook/XML/ZIP核心为MoonBit；Node仅示例文件适配器，Python仅独立验证 |
-| 2. GitHub公开、提交清晰 | **已授权，准备中** | 真实历史与首发进度见RELEASE_ZH；未把准备称公开成功 |
+| 2. GitHub公开、提交清晰 | **已公开** | https://github.com/sundaysebasidian-byte/moonods；完整真实历史；发行SHA/CI见RELEASE_ZH |
 | 3. 源码清晰并实现核心功能 | **本地验证通过** | 类型API、公式缓存、多表、基础样式/列宽/合并、固定ODF包；范围与预算明确 |
-| 4. README目标、安装、用法、示例可复现 | **本地完成；用户理解待做** | 工具链/依赖锁、真实日志、候选workspace消费通过；未从Mooncakes安装本项目 |
-| 5. CI覆盖检查、构建、测试 | **本地等价命令通过；远端未运行** | workflow存在，check/build/test通过；远端Linux及网络解析未测 |
+| 4. README目标、安装、用法、示例可复现 | **本地完成；用户理解待做** | 工具链/依赖锁、真实日志、本地候选及真实注册表消费均通过，细节见RELEASE_ZH |
+| 5. CI覆盖检查、构建、测试 | **远端PASS** | 首发源码6dced9e真实Linux CI含fmt/check/build/test/独立读取；最终交付提交结果见发行记录 |
 | 6. 至少一个可运行示例 | **本地通过** | 销售/实验多表/公式声明三场景及edge实际运行，4 ODS附包；另有独立消费3场景 |
 | 7. 完整测试覆盖核心路径 | **当前有界范围通过；非穷尽** | 25核心/API、4独立消费、RNG/odfpy/ZIP负控制；Excel常规通过、整体PARTIAL；不是任意ODF/规模/办公软件全测 |
-| 8. 发布mooncakes.io | **已授权，准备中** | 本地候选消费通过；真实发布和注册表结果见RELEASE_ZH |
+| 8. 发布mooncakes.io | **已发布0.1.0；注册表消费PASS** | 空缓存实下载、41文件同候选、4测试/30类型值/9XML通过 |
 | 9. OSI许可及引用/移植合规 | **材料已核** | 原创MIT；core/zipc/flate Apache-2.0原许可与引用、归档摘要；合成fixture；OASIS资料不重新授权MIT |
 
 ## 真实测试矩阵
@@ -36,7 +36,7 @@
 | Excel绝对毫米列宽 | **UNRESOLVED** | 返回单位假设point的检查FAIL保留；比例PASS，绝对物理单位待校准，不标通过 |
 | LibreOffice实际打开/核值 | **NOT TESTED** | 无已装工具且安装未授权；其他读取器不替代此项 |
 | Numbers / WPS | **NOT TESTED** | 存在已装应用不等于实测 |
-| 其他后端/OS、性能/RSS、远端CI | **NOT TESTED** | 数据/输出预算不是进程峰值内存证明 |
+| 其他后端、性能/RSS | **NOT TESTED** | JS Mac/Linux已核；数据/输出预算不是进程峰值内存证明 |
 
 最新串行结果：`evidence/date-width-release/acceptance.json`及stdout/stderr。Excel单独记录：`evidence/office-2026-10-01-fixed/excel.json`，详见[桌面兼容实测](OFFICE_COMPATIBILITY_ZH.md)。旧失败阶段保留：首次test-only导入、reuse-first/reuse-second、Office访问/打开失败、错误单位假设；不能用旧报告证明当前源码。
 
@@ -48,6 +48,8 @@
 
 章程十月截至10/24，官网10/31；内部按10/24前准备，最终截止待官方明确。章程原则上一项目、表单三次提交、用户已核群公告每人单月三项目保留各自来源。150启动/350完成均有审核条件，不保证1500净到手。详见[规则复核](RULES_REVIEW_ZH.md)。
 
-公开仓库及Mooncakes首发已获批准，实际完成状态见RELEASE_ZH；报名由用户处理；正式申报前复核同类与生态价值。当前检索不能证明唯一，九月LogLens不改成新项目。用户理解/审核未完成，不承诺一次过。
+公开仓库及Mooncakes0.1.0首发已完成，实际CI和注册表验证见RELEASE_ZH；报名由用户处理；正式申报前复核同类与生态价值。当前检索不能证明唯一，九月LogLens不改成新项目。用户理解/审核未完成，不承诺一次过。
 
 本轮新增可选Excel1900日期构造、历史日期/毫米回归与诊断例。默认ODF日期1..9999保留，不伪造Excel支持；Mac JXA单位无明确说明，VBA point约定不能直接套用。本轮25项测试与Library历史v2的22项快照区分；统一技术复核完成，按真实阶段提交，旧证据与失败记录保留。本次最终候选包括全部文档的逐文件SHA256匹配证据，避免已消费候选与最终说明滞后。
+
+真实注册表消费另见 `evidence/publication/registry/registry.json`，不是moon.work本地候选消费；空索引/包缓存启动，既有SDK/core、Python及官方schema复用，不称全新机器。首轮CI失败、frozen发布预检失败保留，修复后远端25+4和注册表4均通过。

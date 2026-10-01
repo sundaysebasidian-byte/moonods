@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "head_sha": "6dced9ed5798a7179d5259bde95145cc994f85df",
+  "run_id": 36850277453,
+  "url": "https://github.com/sundaysebasidian-byte/moonods/actions/runs/36850277453",
+  "conclusion": "success",
+  "report_path": "evidence/publication/ci-publish-sha/acceptance.json",
+  "report_sha256": "b8d29cb90b402eea58dd5abe65f5705e2666997395732b5692b90df7634fad92",
+  "unit_tests": {
+    "total": 25,
+    "passed": 25,
+    "failed": 0
+  },
+  "independent_tests": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0
+  },
+  "office_not_rerun_on_ci": true
+}
