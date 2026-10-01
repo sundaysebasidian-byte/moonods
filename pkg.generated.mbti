@@ -1,0 +1,59 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sundaysebasidian-byte/moonods"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+pub suberror OdsError {
+  Invalid(String)
+} derive(@debug.Debug)
+pub fn OdsError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+type Cell
+pub fn Cell::expression(Self) -> String?
+pub fn Cell::formula(String, Value) -> Self raise OdsError
+pub fn Cell::new(Value) -> Self raise OdsError
+pub fn Cell::styled(Self, Style) -> Self
+pub fn Cell::value(Self) -> Value
+
+type Sheet
+pub fn Sheet::get(Self, Int, Int) -> Cell?
+pub fn Sheet::merge(Self, Int, Int, Int, Int) -> Unit raise OdsError
+pub fn Sheet::name(Self) -> String
+pub fn Sheet::set(Self, Int, Int, Cell) -> Unit raise OdsError
+pub fn Sheet::set_column_width(Self, Int, Int) -> Unit raise OdsError
+
+pub(all) enum Style {
+  Plain
+  Header
+  Highlight
+  Decimal2
+  DateISO
+}
+
+pub(all) enum Value {
+  Empty
+  Text(String)
+  Number(Double)
+  Boolean(Bool)
+  Date(Int, Int, Int)
+} derive(Eq, @debug.Debug)
+pub fn Value::equal(Self, Self) -> Bool
+pub fn Value::not_equal(Self, Self) -> Bool
+pub fn Value::to_repr(Self) -> @debug.Repr
+
+type Workbook
+pub fn Workbook::add_sheet(Self, String) -> Sheet raise OdsError
+pub fn Workbook::content_xml(Self) -> String raise OdsError
+pub fn Workbook::new() -> Self
+pub fn Workbook::sheet_count(Self) -> Int
+pub fn Workbook::to_ods(Self) -> Bytes raise OdsError
+
+// Type aliases
+
+// Traits

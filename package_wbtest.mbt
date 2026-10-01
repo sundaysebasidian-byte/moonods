@@ -1,3 +1,4 @@
+///|
 test "ZIP first header and determinism" {
   let w = Workbook::new()
   w.add_sheet("Sheet1").set(0, 0, Cell::new(Text("中文")))

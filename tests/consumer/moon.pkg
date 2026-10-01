@@ -1,0 +1,3 @@
+import {
+  "sundaysebasidian-byte/moonods" @ods,
+} for "test"

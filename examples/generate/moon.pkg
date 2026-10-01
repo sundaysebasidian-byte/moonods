@@ -1,3 +1,9 @@
-import { "sundaysebasidian-byte/moonods" @ods }
+import {
+  "sundaysebasidian-byte/moonods" @ods,
+}
+
 pkgtype(kind: "executable")
-options(supported_targets: "js")
+
+options(
+  supported_targets: "js",
+)

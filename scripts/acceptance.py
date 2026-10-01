@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+"""Serial, fail-closed reproducible checks. Does not install tools or publish."""
+import argparse, datetime, hashlib, json, os, platform, re, shutil, subprocess, sys
+from pathlib import Path
+from verify_deps import ROOT, verify
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument('--moon', default=os.environ.get('MOON_BIN') or shutil.which('moon'))
+    p.add_argument('--output', type=Path, default=ROOT / 'evidence' / 'current')
+    args = p.parse_args()
+    out = args.output.resolve(); out.mkdir(parents=True, exist_ok=True)
+    env = os.environ.copy(); env['RUST_LOG'] = 'error'
+    steps = []
+    def run(name, argv):
+        result = subprocess.run([str(x) for x in argv], cwd=ROOT, env=env, capture_output=True, text=True, timeout=120)
+        (out / (name + '.stdout.txt')).write_text(result.stdout)
+        (out / (name + '.stderr.txt')).write_text(result.stderr)
+        steps.append({'name': name, 'command': [str(x) for x in argv], 'exit_code': result.returncode,
+                      'status': 'PASS' if result.returncode == 0 else 'FAIL'})
+        if result.returncode: raise RuntimeError(f'{name} failed; inspect saved logs')
+        return result.stdout + result.stderr
+    report = {'started_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'platform': platform.platform(), 'python': platform.python_version(), 'steps': steps,
+              'scope': 'JS backend core + examples + independent package/schema/reader checks',
+              'unmeasured': ['LibreOffice', 'Excel', 'Numbers', 'WPS', 'remote CI', 'native/wasm backends', 'peak RSS and performance']}
+    source_files = list(ROOT.glob('*.mbt')) + list((ROOT / 'examples').rglob('*.mbt')) + list((ROOT / 'tests').rglob('*.mbt')) + list((ROOT / 'scripts').glob('*.py'))
+    report['source_sha256'] = {str(f.relative_to(ROOT)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(source_files)}
+    try:
+        if not args.moon: raise RuntimeError('Existing moon binary required; no automatic installation')
+        moon = Path(args.moon).resolve()
+        compiler = moon.parent / 'moonc'
+        compiler_version = run('moonc-version', [compiler, '-v'])
+        if not compiler_version.startswith('v0.10.14+7d59c7ec9 '): raise RuntimeError('Compiler differs from TOOLCHAIN.lock')
+        tool_version = run('moon-version', [moon, 'version'])
+        if not tool_version.startswith('moon 0.1.20260920 (914d7da '): raise RuntimeError('Moon build tool differs from TOOLCHAIN.lock')
+        report['dependencies'] = verify()
+        run('node-version', ['node', '--version'])
+        run('format', [moon, 'fmt', '--check'])
+        run('check', [moon, 'check', '--target', 'js', '-j', '1', '--deny-warn'])
+        run('build', [moon, 'build', '--target', 'js', '-j', '1', '--deny-warn'])
+        tests = run('test', [moon, 'test', '--target', 'js', '-j', '1', '--deny-warn'])
+        m = re.search(r'Total tests: (\d+), passed: (\d+), failed: (\d+)', tests)
+        if not m or int(m[1]) < 20 or m[1] != m[2] or m[3] != '0': raise RuntimeError('Missing or incomplete test summary')
+        report['unit_tests'] = {'total': int(m[1]), 'passed': int(m[2]), 'failed': int(m[3])}
+        hashes = lambda: {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in (ROOT / 'examples/generated').glob('*.ods')}
+        run('examples-first', [moon, 'run', '--target', 'js', '-j', '1', 'examples/generate'])
+        first = hashes()
+        run('examples-second', [moon, 'run', '--target', 'js', '-j', '1', 'examples/generate'])
+        if set(first) != {'sales.ods', 'experiment.ods', 'formulas.ods', 'edge.ods'} or first != hashes():
+            raise RuntimeError('Cross-process output determinism failed')
+        report['cross_process_determinism'] = {'status': 'PASS', 'sha256': first}
+        run('schema-bytes', [sys.executable, ROOT / 'scripts/fetch_schemas.py'])
+        run('external', [sys.executable, ROOT / 'scripts/verify_external.py', '--report', out / 'external.json'])
+        report['status'] = 'PASS'
+    except Exception as e:
+        report['status'] = 'FAIL'; report['error'] = str(e)
+    report['finished_utc'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    (out / 'acceptance.json').write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n')
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0 if report['status'] == 'PASS' else 1
+
+if __name__ == '__main__': sys.exit(main())

@@ -1,6 +1,16 @@
 // Fixed vocabulary, typed data and escaped text; arbitrary XML is not accepted.
-priv struct XmlOutput { data : @buffer.Buffer }
-fn XmlOutput::new() -> XmlOutput { { data: @buffer.Buffer() } }
+
+///|
+priv struct XmlOutput {
+  data : @buffer.Buffer
+}
+
+///|
+fn XmlOutput::new() -> XmlOutput {
+  { data: @buffer.Buffer(), }
+}
+
+///|
 fn XmlOutput::write_string(self : XmlOutput, s : String) -> Unit raise OdsError {
   let bytes = @utf8.encode(s[:])
   if self.data.length() + bytes.length() > 16777216 {
@@ -8,8 +18,13 @@ fn XmlOutput::write_string(self : XmlOutput, s : String) -> Unit raise OdsError 
   }
   self.data.write_bytes(bytes[:])
 }
-fn XmlOutput::to_string(self : XmlOutput) -> String { @utf8.decode_lossy(self.data.to_bytes()[:]) }
 
+///|
+fn XmlOutput::to_string(self : XmlOutput) -> String {
+  @utf8.decode_lossy(self.data.to_bytes()[:])
+}
+
+///|
 fn xml_escape(s : String) -> String {
   let b = StringBuilder()
   for c in s {
@@ -28,6 +43,7 @@ fn xml_escape(s : String) -> String {
   b.to_string()
 }
 
+///|
 fn text_paragraph(s : String) -> String {
   let b = StringBuilder()
   b.write_string("<text:p>")
@@ -43,24 +59,32 @@ fn text_paragraph(s : String) -> String {
   b.to_string()
 }
 
+///|
 fn pad(n : Int, size : Int) -> String {
   let s = n.to_string()
   let b = StringBuilder()
-  for _ in 0..<(size - s.length()) { b.write_string("0") }
+  for _ in 0..<(size - s.length()) {
+    b.write_string("0")
+  }
   b.write_string(s)
   b.to_string()
 }
 
+///|
 fn Cell::xml(self : Cell, extra : String) -> String {
   let b = StringBuilder()
   b.write_string("<table:table-cell")
   b.write_string(extra)
   b.write_string(" table:style-name=\"\{self.style.id()}\"")
-  if self.formula is Some(f) { b.write_string(" table:formula=\"\{xml_escape(f)}\"") }
+  if self.formula is Some(f) {
+    b.write_string(" table:formula=\"\{xml_escape(f)}\"")
+  }
   let display = match self.value {
     Empty => ""
     Text(s) => {
-      b.write_string(" office:value-type=\"string\" office:string-value=\"\{xml_escape(s)}\"")
+      b.write_string(
+        " office:value-type=\"string\" office:string-value=\"\{xml_escape(s)}\"",
+      )
       s
     }
     Number(n) => {
@@ -70,7 +94,9 @@ fn Cell::xml(self : Cell, extra : String) -> String {
     }
     Boolean(v) => {
       let s = if v { "true" } else { "false" }
-      b.write_string(" office:value-type=\"boolean\" office:boolean-value=\"\{s}\"")
+      b.write_string(
+        " office:value-type=\"boolean\" office:boolean-value=\"\{s}\"",
+      )
       s
     }
     Date(y, m, d) => {
@@ -80,7 +106,9 @@ fn Cell::xml(self : Cell, extra : String) -> String {
     }
   }
   b.write_string(">")
-  if self.value != Empty { b.write_string(text_paragraph(display)) }
+  if self.value != Empty {
+    b.write_string(text_paragraph(display))
+  }
   b.write_string("</table:table-cell>")
   b.to_string()
 }

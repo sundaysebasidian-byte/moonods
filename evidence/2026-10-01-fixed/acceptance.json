@@ -1,0 +1,160 @@
+{
+  "started_utc": "2026-10-01T04:51:43.665685+00:00",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.14",
+  "steps": [
+    {
+      "name": "moonc-version",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moonc",
+        "-v"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "moon-version",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "version"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "node-version",
+      "command": [
+        "node",
+        "--version"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "check",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "check",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "build",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "build",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "test",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "test",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "examples-first",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "examples/generate"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "examples-second",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "examples/generate"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "schema-bytes",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/../.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/fetch_schemas.py"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "external",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/../.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/verify_external.py",
+        "--report",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/2026-10-01-fixed/external.json"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    }
+  ],
+  "scope": "JS backend core + examples + independent package/schema/reader checks",
+  "unmeasured": [
+    "LibreOffice",
+    "Excel",
+    "Numbers",
+    "WPS",
+    "remote CI",
+    "native/wasm backends",
+    "peak RSS and performance"
+  ],
+  "dependencies": {
+    "zipc": {
+      "version": "0.2.2",
+      "sha256": "e552ecca64446aa9be8ced2dfae21f413e77ced2d21dfd0934772f32f30c43de"
+    },
+    "flate": {
+      "version": "0.2.0",
+      "sha256": "935372d9a49a5d4bbb40a2fd057bd36b587f683d605c5de204adc143a2215e66"
+    }
+  },
+  "unit_tests": {
+    "total": 22,
+    "passed": 22,
+    "failed": 0
+  },
+  "cross_process_determinism": {
+    "status": "PASS",
+    "sha256": {
+      "sales.ods": "689c9409eba85bafa31eef29d0037a75818fad65380b63acb67870d9e77fd101",
+      "formulas.ods": "ecaf2fdbe2839d149ac7c83c433598f1e4c8dbdf9243a0f7fed877aa1524995c",
+      "edge.ods": "95c5fb10816e72bdc450ae95c0ba022c3c60b58b4e36c3838b762df82f594b43",
+      "experiment.ods": "5f1b55e56d67a3fe6e60496e48f9fecc97876483ccf6641e873968e3d57c23bd"
+    }
+  },
+  "status": "PASS",
+  "finished_utc": "2026-10-01T04:51:46.313176+00:00"
+}

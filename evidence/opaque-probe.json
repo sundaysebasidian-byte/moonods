@@ -1,0 +1,6 @@
+{
+  "intent": "downstream mutable workbook field access is rejected by compiler",
+  "exit_code": 255,
+  "status": "EXPECTED REJECTION",
+  "source": "pub fn bypass(w : @ods.Workbook) -> Unit { w.sheets.clear() }"
+}

@@ -1,0 +1,12 @@
+Error: [4028]
+   ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/tests/opaque-probe-ec11pfi1/probe.mbt:1:44 ]
+   │
+ 1 │ pub fn bypass(w : @ods.Workbook) -> Unit { w.sheets.clear() }
+   │                                            ────┬───  
+   │                                                ╰───── This expression has type @sundaysebasidian-byte/moonods.Workbook, which is a abstract type and not a struct.
+───╯
+Failed with 0 warnings, 1 errors.
+Error: failed to run check for target Js
+
+Caused by:
+    failed when checking project

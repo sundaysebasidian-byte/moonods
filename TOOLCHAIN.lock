@@ -4,3 +4,7 @@ core = bundled with this exact SDK
 zipc = moonbit-community/zipc@0.2.2
 flate = moonbit-community/flate@0.2.0
 verification: CPython 3.13.14, odfpy 1.4.1, lxml 6.0.2, defusedxml 0.7.1
+
+verified JS runtime: Node.js v24.18.0
+Target: js (only tested backend)
+Dependency archive/source hashes: DEPENDENCIES.lock.json

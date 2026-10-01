@@ -1,0 +1,19 @@
+Error: [0029]
+   ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/tests/consumer/moon.pkg:1:10 ]
+   │
+ 1 │ import { "sundaysebasidian-byte/moonods" @ods }
+   │          ───────────────┬───────────────  
+   │                         ╰───────────────── Error Warning (unused_package): Unused package 'sundaysebasidian-byte/moonods'
+───╯
+Error: [0029]
+   ╭─[ /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/tests/consumer/moon.pkg:1:42 ]
+   │
+ 1 │ import { "sundaysebasidian-byte/moonods" @ods }
+   │                                          ──┬─  
+   │                                            ╰─── Error Warning (unused_package): Unused package alias 'ods'
+───╯
+Failed with 0 warnings, 2 errors.
+Error: failed to run check for target Js
+
+Caused by:
+    failed when checking project
