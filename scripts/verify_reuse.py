@@ -28,9 +28,14 @@ def main():
     ap.add_argument('--moon', required=True, type=Path)
     ap.add_argument('--output', type=Path, default=ROOT / 'evidence/reuse-review')
     args = ap.parse_args()
+    # Resolve in the caller's directory before changing into the extracted
+    # consumer. A relative --moon path must keep referring to the same SDK.
+    requested_moon_path = str(args.moon)
+    args.moon = args.moon.resolve(strict=True)
     out = args.output.resolve(); out.mkdir(parents=True, exist_ok=True)
     steps = []
     report = {'started_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'steps': steps,
+              'requested_moon_path': requested_moon_path, 'resolved_moon_path': str(args.moon),
               'scope': 'Independent local module consumes extracted moon package candidate via moon.work',
               'mooncakes_published_or_remote_consumption': False,
               'unmeasured': ['office applications', 'fresh machine', 'network package installation', 'market demand']}

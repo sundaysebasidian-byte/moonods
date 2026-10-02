@@ -22,8 +22,10 @@
 
 公开0.1.0可以`moon add sundaysebasidian-byte/moonods@0.1.0`，但没有本轮新API/日期默认修复。0.2.0只用候选源码或`moon package`本地ZIP，加`moon.work`消费；模块依赖声明0.2.0。README有命令与代码，fixture是实际完整消费模块。本候选完整验收脚本会打包、解压新目录、检查所有包文件与checkout逐字节相同，再check/build/test/run消费。
 
-当前完整记录在`evidence/overnight-2026-10-02/final-budget`；应用另在`libreoffice-final`。源码ZIP另解压到新目录完整重跑，复用已有可信SDK/core、第三方缓存、官方schema与Python，明确不称全新机器无缓存安装。新候选远端CI未运行；旧公开19e8ca3/0.1.0的远端成功不能证明本源码通过。
+当前完整记录在`evidence/overnight-2026-10-02/final-cli`；应用另在`libreoffice-final`。源码ZIP另解压到新目录完整重跑，复用已有可信SDK/core、第三方缓存、官方schema与Python，明确不称全新机器无缓存安装。新候选远端CI未运行；旧公开19e8ca3/0.1.0的远端成功不能证明本源码通过。
 
 原MIT、Apache依赖、官方schema版权及合成fixture来源不变；新增代码/测试/说明同样AI辅助。10/2网页刷新未能访问飞书，规则引用仍为10/1完整阅读快照，未宣称最新所有规则已重新读完。人工撰写、个人材料、诚信、报名和任何新的push/publish均待用户本人决定。本轮没有代写禁止的最终人工声明。
 
 源码换目录30+5通过后补核资源覆盖，新增私有ZIP32封装的32MiB精确完整包边界、超一字节和单文件超限测试，当前31+5。该大包只在单线程单元测试内存中构造，不作为ODS样本分发；公开ODS的content.xml先受16MiB约束。它不新增任意资产/ZIP接口，也不是峰值RSS或性能实测。
+
+安装CLI再检发现`verify_reuse.py --moon ../...`在进入新consumer目录后找不到同一SDK；已在调用者目录解析工具绝对路径。完整验收现在故意向消费脚本传相对路径，持续检验这条回归，而非只以推荐绝对路径掩盖问题。首次失败与修正后的真实候选消费记录随交付附加。

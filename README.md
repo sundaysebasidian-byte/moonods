@@ -134,14 +134,14 @@ python scripts/acceptance.py --moon /absolute/path/to/existing/sdk/bin/moon
 python scripts/verify_reuse.py --moon /absolute/path/to/existing/sdk/bin/moon
 ```
 
-脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包；也运行日期/单位诊断例及独立7类型值/3 XML检查。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[本候选完整证据](evidence/overnight-2026-10-02/final-budget/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr也保留。新增 ZIP 本地/中央头、EOCD/尾部一致性和15个包负控制；运行环境漂移及用新候选冒充旧注册表发行均应被拒绝，CLI 负控制保留预期退出1。本候选31核心/API与5独立消费；不把重复运行累计成不同测试。
+脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包；也运行日期/单位诊断例及独立7类型值/3 XML检查。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[本候选完整证据](evidence/overnight-2026-10-02/final-cli/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr也保留。新增 ZIP 本地/中央头、EOCD/尾部一致性和15个包负控制；运行环境漂移及用新候选冒充旧注册表发行均应被拒绝，CLI 负控制保留预期退出1。本候选31核心/API与5独立消费；不把重复运行累计成不同测试。
 
 Excel及LibreOffice是单独的应用验证，不由该跨平台脚本或远端CI执行。Excel原记录在[Excel报告](evidence/office-2026-10-01-fixed/excel.json)，当前四个源输入摘要仍相同。已装 LibreOffice 必须显式传入精确工具路径，并使用临时 profile，示意：
 
 ```sh
 python scripts/verify_libreoffice.py \
   --soffice /absolute/path/to/existing/soffice \
-  --reuse-input evidence/overnight-2026-10-02/final-budget/reuse \
+  --reuse-input evidence/overnight-2026-10-02/final-cli/reuse \
   --output evidence/libreoffice-local
 ```
 

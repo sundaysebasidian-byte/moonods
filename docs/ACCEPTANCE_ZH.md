@@ -42,7 +42,7 @@
 | LibreOffice稳定版/GUI/打印 | NOT TESTED | 已测开发版headless，不等于所有LibreOffice版本或桌面版全通过 |
 | Numbers/WPS/其他后端/性能及RSS | NOT TESTED | 不虚构实测；数据和字节预算不是峰值内存或速度证明 |
 
-完整命令、实际退出码和stdout/stderr：`evidence/overnight-2026-10-02/final-budget/acceptance.json`；应用证据：`evidence/overnight-2026-10-02/libreoffice-final/libreoffice.json`。较早baseline、implementation、date-fix、LibreOffice-first和ods-probe均为有时间及源码快照的阶段记录；不把重复运行累计成独立测试数。源码ZIP换目录复现随交付提供，复用可信SDK/core、依赖缓存、现有Python/schema，不称全新机器或完全离线无缓存初始化。
+完整命令、实际退出码和stdout/stderr：`evidence/overnight-2026-10-02/final-cli/acceptance.json`；应用证据：`evidence/overnight-2026-10-02/libreoffice-final/libreoffice.json`。较早baseline、implementation、date-fix、LibreOffice-first和ods-probe均为有时间及源码快照的阶段记录；不把重复运行累计成独立测试数。源码ZIP换目录复现随交付提供，复用可信SDK/core、依赖缓存、现有Python/schema，不称全新机器或完全离线无缓存初始化。
 
 ## 人工规则与待办
 

@@ -83,7 +83,8 @@ def main():
             raise RuntimeError('Compatibility fixture cross-process determinism failed')
         report['compatibility_fixture_determinism'] = {'status': 'PASS', 'sha256': compatibility_hash}
         run('compatibility-regression', [sys.executable, ROOT / 'scripts/verify_compatibility.py', '--report', out / 'compatibility.json'])
-        run('reuse', [sys.executable, ROOT / 'scripts/verify_reuse.py', '--moon', moon, '--output', out / 'reuse'])
+        # Exercise relative SDK paths across the new consumer working directory.
+        run('reuse', [sys.executable, ROOT / 'scripts/verify_reuse.py', '--moon', os.path.relpath(moon, ROOT), '--output', out / 'reuse'])
         report['independent_module_reuse'] = json.loads((out / 'reuse/reuse.json').read_text())
         if report['independent_module_reuse']['status'] != 'PASS': raise RuntimeError('Independent module reuse failed')
         run('guards', [sys.executable, ROOT / 'scripts/verify_guards.py', '--moon', moon,
