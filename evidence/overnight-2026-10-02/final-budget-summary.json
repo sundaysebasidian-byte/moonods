@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "implementation_commit": "20a166387b212e27c601bc708506d84d0c26cd49",
+  "baseline_commit": "19e8ca30e481b9a1a685073f3f09dfa472bc72e6",
+  "local_candidate_version": "0.2.0",
+  "published_version": "0.1.0",
+  "core_api_tests": 31,
+  "consumer_tests": 5,
+  "negative_package_controls": 15,
+  "guards": [
+    {
+      "name": "runtime-drift",
+      "status": "PASS",
+      "expected_cli_exit_code": 1,
+      "observed_error": "Node/Python differs from TOOLCHAIN.lock"
+    },
+    {
+      "name": "wrong-registry-candidate",
+      "status": "PASS",
+      "expected_cli_exit_code": 1,
+      "observed_error": "Report is not the historical published 0.1.0 candidate"
+    }
+  ],
+  "libreoffice": {
+    "version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+    "headless_checks": "PASS",
+    "typed_values": 33,
+    "merges": 2,
+    "files": 8,
+    "overall": "PARTIAL"
+  },
+  "historical_excel_inputs_match": true,
+  "source_fingerprints_current": true,
+  "remote_ci_for_candidate": "NOT RUN",
+  "published_candidate": false,
+  "pushed_candidate": false,
+  "contest_submitted": false,
+  "final_human_application_generated": false,
+  "pending": [
+    "stable LibreOffice/GUI/print geometry",
+    "Excel0001 display/absolute millimeter widths",
+    "Numbers/WPS/other backends/performance/RSS",
+    "official rule refresh and final human application",
+    "any new push/publication requires user decision"
+  ],
+  "latest_acceptance": "final-budget/acceptance.json",
+  "package_cap_boundary": "PASS: synthetic private ZIP32 exact32MiB, complete envelope +1 and oversized data rejected",
+  "libreoffice_source_inputs_still_identical": true
+}

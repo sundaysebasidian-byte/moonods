@@ -49,7 +49,7 @@ def main():
         run('build', [moon, 'build', '--target', 'js', '-j', '1', '--deny-warn'])
         tests = run('test', [moon, 'test', '--target', 'js', '-j', '1', '--deny-warn'])
         m = re.search(r'Total tests: (\d+), passed: (\d+), failed: (\d+)', tests)
-        if not m or int(m[1]) < 30 or m[1] != m[2] or m[3] != '0': raise RuntimeError('Missing or incomplete test summary')
+        if not m or int(m[1]) < 31 or m[1] != m[2] or m[3] != '0': raise RuntimeError('Missing or incomplete test summary')
         report['unit_tests'] = {'total': int(m[1]), 'passed': int(m[2]), 'failed': int(m[3])}
         hashes = lambda: {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in (ROOT / 'examples/generated').glob('*.ods')}
         run('examples-first', [moon, 'run', '--target', 'js', '-j', '1', 'examples/generate'])

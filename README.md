@@ -2,7 +2,7 @@
 
 MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。已公开 [GitHub](https://github.com/sundaysebasidian-byte/moonods) 并首发 Mooncakes `0.1.0`，MIT。真实 CI、空注册表消费和限制见 [发行记录](docs/RELEASE_ZH.md)。
 
-**本工作目录是未发布、未推送的 0.2.0 本地候选。** 新增事务性整行写入 `Sheet::set_row`、日期公式缓存默认 DateISO，以及更严格的独立 ZIP/运行环境检查。Mooncakes 仍为 0.1.0；历史远端 CI 与注册表通过不能证明本候选已经发布或通过远端检查。当前候选的安装复现、30+5 测试和真实 LibreOfficeDev 读取见[本轮记录](docs/LOCAL_CANDIDATE_ZH.md)。
+**本工作目录是未发布、未推送的 0.2.0 本地候选。** 新增事务性整行写入 `Sheet::set_row`、日期公式缓存默认 DateISO，以及更严格的独立 ZIP/运行环境检查。Mooncakes 仍为 0.1.0；历史远端 CI 与注册表通过不能证明本候选已经发布或通过远端检查。当前候选的安装复现、31+5 测试和真实 LibreOfficeDev 读取见[本轮记录](docs/LOCAL_CANDIDATE_ZH.md)。
 
 适合销售汇总、教学实验和调用方提供公式缓存的离线报表。它生成 ODS，不读取或转换已有文件。生态里已有 [markitdown-mb](https://github.com/ZSeanYves/markitdown) 的 ODS→Markdown 读取，以及 [mbtexcel](https://github.com/moonbitlang/office.mbt) 的 XLSX 读写；本项目聚焦有界、类型化、确定性的 ODF 1.3 writer。当前检索不等于证明生态里绝无同类项目，正式申报前需要再核查。
 
@@ -134,14 +134,14 @@ python scripts/acceptance.py --moon /absolute/path/to/existing/sdk/bin/moon
 python scripts/verify_reuse.py --moon /absolute/path/to/existing/sdk/bin/moon
 ```
 
-脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包；也运行日期/单位诊断例及独立7类型值/3 XML检查。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[本候选完整证据](evidence/overnight-2026-10-02/final/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr也保留。新增 ZIP 本地/中央头、EOCD/尾部一致性和15个包负控制；运行环境漂移及用新候选冒充旧注册表发行均应被拒绝，CLI 负控制保留预期退出1。本候选30核心/API与5独立消费；不把重复运行累计成不同测试。
+脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包；也运行日期/单位诊断例及独立7类型值/3 XML检查。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[本候选完整证据](evidence/overnight-2026-10-02/final-budget/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr也保留。新增 ZIP 本地/中央头、EOCD/尾部一致性和15个包负控制；运行环境漂移及用新候选冒充旧注册表发行均应被拒绝，CLI 负控制保留预期退出1。本候选31核心/API与5独立消费；不把重复运行累计成不同测试。
 
 Excel及LibreOffice是单独的应用验证，不由该跨平台脚本或远端CI执行。Excel原记录在[Excel报告](evidence/office-2026-10-01-fixed/excel.json)，当前四个源输入摘要仍相同。已装 LibreOffice 必须显式传入精确工具路径，并使用临时 profile，示意：
 
 ```sh
 python scripts/verify_libreoffice.py \
   --soffice /absolute/path/to/existing/soffice \
-  --reuse-input evidence/overnight-2026-10-02/final/reuse \
+  --reuse-input evidence/overnight-2026-10-02/final-budget/reuse \
   --output evidence/libreoffice-local
 ```
 
@@ -159,4 +159,4 @@ zipc 的 Archive 按路径排序，会把 META-INF 放在 mimetype 前，因此�
 
 本轮边界补充已完成统一技术复核，按真实工程阶段提交并生成新源码交付。Library历史v2对应`dc59462`的22项测试快照；本轮为25项测试及新增诊断例。公开、首发及远端CI的最新状态见发行记录；人工申报仍由用户完成，不把工程验证称为官方验收。
 
-以上25项/发行段落描述历史0.1.0阶段。2026-10-02本地0.2.0候选新增30+5及真实LibreOfficeDev导入证据；其源码与已发布0.1.0不同，尚未推送、发布或申报。历史提交、失败日志及Library旧版本保留，详见本轮记录。
+以上25项/发行段落描述历史0.1.0阶段。2026-10-02本地0.2.0候选新增31+5及真实LibreOfficeDev导入证据；其源码与已发布0.1.0不同，尚未推送、发布或申报。历史提交、失败日志及Library旧版本保留，详见本轮记录。

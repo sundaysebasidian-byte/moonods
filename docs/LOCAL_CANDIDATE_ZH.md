@@ -12,7 +12,7 @@
 ## 真实验证
 
 - 基线25核心/API与4消费通过，记录baseline。
-- 新增整行阶段29+5；日期修复后的当前总量30核心/API与5消费，均通过。不把重复执行加总。
+- 新增整行阶段29+5；日期修复后的当前总量31核心/API与5消费，均通过。不把重复执行加总。
 - 主4ODS、日期单位例与消费3ODS按相同输入两进程生成一致；odfpy分别38/7/30类型值，官方ODF1.3 RNG分别12/3/9 XML；包负控制、schema负控制与版本/注册表隔离控制保留。
 - 复用已装Codex运行环境LibreOfficeDev26.8.0.0.alpha0，没有安装：8文件、33类型值、2合并的无界面Calc导入/原生ODS回存通过，源输入SHA不变。整体PARTIAL，稳定版/GUI/打印/物理毫米未测。
 - 首次XLSX类型检查FAIL及原生DATE样式探测保留：不能说所有app导出保持原缓存。原生ODS缓存99仍99，XLSX输出重算3；MoonODS本身没有公式求值。
@@ -22,6 +22,8 @@
 
 公开0.1.0可以`moon add sundaysebasidian-byte/moonods@0.1.0`，但没有本轮新API/日期默认修复。0.2.0只用候选源码或`moon package`本地ZIP，加`moon.work`消费；模块依赖声明0.2.0。README有命令与代码，fixture是实际完整消费模块。本候选完整验收脚本会打包、解压新目录、检查所有包文件与checkout逐字节相同，再check/build/test/run消费。
 
-当前完整记录在`evidence/overnight-2026-10-02/final`；应用另在`libreoffice-final`。源码ZIP另解压到新目录完整重跑，复用已有可信SDK/core、第三方缓存、官方schema与Python，明确不称全新机器无缓存安装。新候选远端CI未运行；旧公开19e8ca3/0.1.0的远端成功不能证明本源码通过。
+当前完整记录在`evidence/overnight-2026-10-02/final-budget`；应用另在`libreoffice-final`。源码ZIP另解压到新目录完整重跑，复用已有可信SDK/core、第三方缓存、官方schema与Python，明确不称全新机器无缓存安装。新候选远端CI未运行；旧公开19e8ca3/0.1.0的远端成功不能证明本源码通过。
 
 原MIT、Apache依赖、官方schema版权及合成fixture来源不变；新增代码/测试/说明同样AI辅助。10/2网页刷新未能访问飞书，规则引用仍为10/1完整阅读快照，未宣称最新所有规则已重新读完。人工撰写、个人材料、诚信、报名和任何新的push/publish均待用户本人决定。本轮没有代写禁止的最终人工声明。
+
+源码换目录30+5通过后补核资源覆盖，新增私有ZIP32封装的32MiB精确完整包边界、超一字节和单文件超限测试，当前31+5。该大包只在单线程单元测试内存中构造，不作为ODS样本分发；公开ODS的content.xml先受16MiB约束。它不新增任意资产/ZIP接口，也不是峰值RSS或性能实测。

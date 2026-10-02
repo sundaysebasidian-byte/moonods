@@ -1,0 +1,81 @@
+{
+  "status": "PASS",
+  "versions": {
+    "odfpy": "1.4.1",
+    "lxml": "6.0.2",
+    "defusedxml": "0.7.1"
+  },
+  "schema_sha256": {
+    "document": "40bad03efdbb02825230d357da0aa6ac679934c5bf56c6281752c0c24d58e4e6",
+    "manifest": "8aee71f03484be112af972d622cc9031280c007b0a454ae8815e8e333c9bdd17"
+  },
+  "zip_profile_scope": "Exact deterministic MoonODS profile; stricter than general ODF ZIP requirements",
+  "negative_schema_control": "PASS (document and manifest)",
+  "negative_package_controls": [
+    "path",
+    "order",
+    "mimetype",
+    "crc",
+    "local-crc",
+    "local-size",
+    "local-flags",
+    "local-version",
+    "local-time",
+    "local-date",
+    "central-crc",
+    "central-attributes",
+    "end-count",
+    "end-central-size",
+    "trailing-bytes"
+  ],
+  "typed_cell_assertions": 38,
+  "files": [
+    {
+      "file": "examples/generated/sales.ods",
+      "sha256": "689c9409eba85bafa31eef29d0037a75818fad65380b63acb67870d9e77fd101",
+      "bytes": 6771,
+      "tables": [
+        "销售报表"
+      ],
+      "official_rng": "PASS (content, styles, manifest)",
+      "zip_crc_paths_headers": "PASS",
+      "odfpy_values": "PASS"
+    },
+    {
+      "file": "examples/generated/experiment.ods",
+      "sha256": "5f1b55e56d67a3fe6e60496e48f9fecc97876483ccf6641e873968e3d57c23bd",
+      "bytes": 74834,
+      "tables": [
+        "样本",
+        "元数据"
+      ],
+      "official_rng": "PASS (content, styles, manifest)",
+      "zip_crc_paths_headers": "PASS",
+      "odfpy_values": "PASS"
+    },
+    {
+      "file": "examples/generated/formulas.ods",
+      "sha256": "ecaf2fdbe2839d149ac7c83c433598f1e4c8dbdf9243a0f7fed877aa1524995c",
+      "bytes": 4975,
+      "tables": [
+        "公式缓存"
+      ],
+      "official_rng": "PASS (content, styles, manifest)",
+      "zip_crc_paths_headers": "PASS",
+      "odfpy_values": "PASS"
+    },
+    {
+      "file": "examples/generated/edge.ods",
+      "sha256": "9c1f36342ee7f3f96ddcb3618effbb5ad423d7c252147c9dd07ae438bb3b9841",
+      "bytes": 70685,
+      "tables": [
+        "边界 & XML",
+        "空表"
+      ],
+      "official_rng": "PASS (content, styles, manifest)",
+      "zip_crc_paths_headers": "PASS",
+      "odfpy_values": "PASS"
+    }
+  ],
+  "libreoffice": "NOT RUN BY THIS SCRIPT; separate application evidence required"
+}
