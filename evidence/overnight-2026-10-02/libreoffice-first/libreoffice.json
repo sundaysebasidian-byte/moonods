@@ -1,0 +1,140 @@
+{
+  "started_utc": "2026-10-02T17:54:36.243470+00:00",
+  "scope": "Installed LibreOffice headless Calc imports fixed no-macro ODS and exports XLSX; independently read cached values",
+  "not_tested": [
+    "GUI appearance",
+    "print layout",
+    "absolute physical millimeter widths",
+    "stable LibreOffice release versions",
+    "all ODF date ranges",
+    "arbitrary formulas"
+  ],
+  "steps": [
+    {
+      "name": "version",
+      "command": [
+        "/Users/sebasidian/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+        "--version"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "calc-import-export",
+      "command": [
+        "/Users/sebasidian/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+        "-env:UserInstallation=file:///var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-lo-tzfqyjoc/profile",
+        "--headless",
+        "--nologo",
+        "--nodefault",
+        "--norestore",
+        "--convert-to",
+        "xlsx:Calc MS Excel 2007 XML",
+        "--outdir",
+        "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-lo-tzfqyjoc/xlsx",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/sales.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/experiment.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/formulas.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/edge.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/generated/compatibility.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/implementation/reuse/business.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/implementation/reuse/laboratory.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/implementation/reuse/declarations.ods"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "assertions": [
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "A1",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "B3",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "C5",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "D5",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "A3",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "A2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "C2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "D2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "B3",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "C3",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "元数据",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "formulas",
+      "sheet": "公式缓存",
+      "cell": "A3",
+      "status": "PASS"
+    }
+  ],
+  "application_version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+  "inputs_unchanged_sha256": {
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/sales.ods": "689c9409eba85bafa31eef29d0037a75818fad65380b63acb67870d9e77fd101",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/experiment.ods": "5f1b55e56d67a3fe6e60496e48f9fecc97876483ccf6641e873968e3d57c23bd",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/formulas.ods": "ecaf2fdbe2839d149ac7c83c433598f1e4c8dbdf9243a0f7fed877aa1524995c",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/edge.ods": "9c1f36342ee7f3f96ddcb3618effbb5ad423d7c252147c9dd07ae438bb3b9841",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/generated/compatibility.ods": "95f96203cbdf8698c062ee7ee677c256cbf94cf5ec3373a52357ec5406d53414",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/implementation/reuse/business.ods": "95504f27df11060e92014462e4ff18fda8111b3f68a028c058f578cbc3f3d3ce",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/implementation/reuse/laboratory.ods": "596cc7f9fb489714dab6b96f3a76e0810304093e6b00cddcc3b278029c4365dd",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/implementation/reuse/declarations.ods": "4cf791220b9288e9cfe7d4964cf21ff542e731f37429e08a8eadb8ef82102ecb"
+  },
+  "status": "FAIL",
+  "error": "AssertionError(('formulas', '公式缓存', 'B1', 1.0, True))",
+  "finished_utc": "2026-10-02T17:54:40.434199+00:00"
+}

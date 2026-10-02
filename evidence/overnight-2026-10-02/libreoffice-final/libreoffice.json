@@ -1,0 +1,357 @@
+{
+  "started_utc": "2026-10-02T18:16:57.012532+00:00",
+  "verifier_sha256": "c2f7b50c5443739b02e4e804eff33193d1dfee38a721c32c243e01f930b3e213",
+  "scope": "Installed LibreOffice headless Calc imports fixed no-macro ODS and saves native ODS; odfpy independently reads saved typed values",
+  "not_tested": [
+    "GUI appearance",
+    "print layout",
+    "absolute physical millimeter widths",
+    "stable LibreOffice release versions",
+    "all ODF date ranges",
+    "arbitrary formulas"
+  ],
+  "steps": [
+    {
+      "name": "version",
+      "command": [
+        "/Users/sebasidian/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+        "--version"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "calc-import-export",
+      "command": [
+        "/Users/sebasidian/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+        "-env:UserInstallation=file:///var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-lo-lou5hvdk/profile",
+        "--headless",
+        "--nologo",
+        "--nodefault",
+        "--norestore",
+        "--convert-to",
+        "ods:calc8",
+        "--outdir",
+        "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-lo-lou5hvdk/ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/sales.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/experiment.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/formulas.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/edge.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/generated/compatibility.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/reuse/business.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/reuse/laboratory.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/reuse/declarations.ods"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "assertions": [
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "A1",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "B3",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "C5",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "D5",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "A3",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "C2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "D2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "B3",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "C3",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "A2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "元数据",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "formulas",
+      "sheet": "公式缓存",
+      "cell": "A3",
+      "status": "PASS"
+    },
+    {
+      "book": "formulas",
+      "sheet": "公式缓存",
+      "cell": "B1",
+      "status": "PASS"
+    },
+    {
+      "book": "formulas",
+      "sheet": "公式缓存",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "formulas",
+      "sheet": "公式缓存",
+      "cell": "B3",
+      "status": "PASS"
+    },
+    {
+      "book": "edge",
+      "sheet": "边界 & XML",
+      "cell": "A1",
+      "status": "PASS"
+    },
+    {
+      "book": "edge",
+      "sheet": "边界 & XML",
+      "cell": "A4",
+      "status": "PASS"
+    },
+    {
+      "book": "edge",
+      "sheet": "边界 & XML",
+      "cell": "A5",
+      "status": "PASS"
+    },
+    {
+      "book": "edge",
+      "sheet": "边界 & XML",
+      "cell": "A6",
+      "status": "PASS"
+    },
+    {
+      "book": "edge",
+      "sheet": "边界 & XML",
+      "cell": "A9",
+      "status": "PASS"
+    },
+    {
+      "book": "business",
+      "sheet": "业务汇总",
+      "cell": "A3",
+      "status": "PASS"
+    },
+    {
+      "book": "business",
+      "sheet": "业务汇总",
+      "cell": "B5",
+      "status": "PASS"
+    },
+    {
+      "book": "business",
+      "sheet": "业务汇总",
+      "cell": "C5",
+      "status": "PASS"
+    },
+    {
+      "book": "laboratory",
+      "sheet": "测量",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "laboratory",
+      "sheet": "测量",
+      "cell": "C2",
+      "status": "PASS"
+    },
+    {
+      "book": "laboratory",
+      "sheet": "测量",
+      "cell": "D2",
+      "status": "PASS"
+    },
+    {
+      "book": "laboratory",
+      "sheet": "测量",
+      "cell": "C3",
+      "status": "PASS"
+    },
+    {
+      "book": "laboratory",
+      "sheet": "测量",
+      "cell": "A2",
+      "status": "PASS"
+    },
+    {
+      "book": "declarations",
+      "sheet": "调用方缓存",
+      "cell": "B1",
+      "status": "PASS"
+    },
+    {
+      "book": "declarations",
+      "sheet": "调用方缓存",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "declarations",
+      "sheet": "调用方缓存",
+      "cell": "B3",
+      "status": "PASS"
+    },
+    {
+      "book": "declarations",
+      "sheet": "调用方缓存",
+      "cell": "B4",
+      "status": "PASS"
+    }
+  ],
+  "application_version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+  "inputs_unchanged_sha256": {
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/sales.ods": "689c9409eba85bafa31eef29d0037a75818fad65380b63acb67870d9e77fd101",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/experiment.ods": "5f1b55e56d67a3fe6e60496e48f9fecc97876483ccf6641e873968e3d57c23bd",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/formulas.ods": "ecaf2fdbe2839d149ac7c83c433598f1e4c8dbdf9243a0f7fed877aa1524995c",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/edge.ods": "9c1f36342ee7f3f96ddcb3618effbb5ad423d7c252147c9dd07ae438bb3b9841",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/generated/compatibility.ods": "95f96203cbdf8698c062ee7ee677c256cbf94cf5ec3373a52357ec5406d53414",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/reuse/business.ods": "95504f27df11060e92014462e4ff18fda8111b3f68a028c058f578cbc3f3d3ce",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/reuse/laboratory.ods": "596cc7f9fb489714dab6b96f3a76e0810304093e6b00cddcc3b278029c4365dd",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/reuse/declarations.ods": "fb6f621b41f405c4d33858475d1963c99df27b4f155f092cb5b6199784c8a7ee"
+  },
+  "imported_files": 8,
+  "source_rng_xml_count": 24,
+  "roundtrip_output_schema_claim": "Not validated against ODF1.3 RNG; application may save its own ODF version/profile",
+  "merge_assertions": 2,
+  "formula_cache_observation": {
+    "input_odf_cache": 99,
+    "calc_native_save_cache": 99.0,
+    "interpretation": "Native ODS save can keep a supplied cache; prior XLSX export recalculated to 3. Reader save/export behavior is not a MoonODS calculation engine."
+  },
+  "date_and_width_observations": {
+    "日期策略": {
+      "cells": {
+        "A1": {
+          "value": "ODF 日期",
+          "type": "string",
+          "formula": null,
+          "style": "Header"
+        },
+        "B1": {
+          "value": "显式文本，不参与日期计算",
+          "type": "string",
+          "formula": null,
+          "style": "Header"
+        },
+        "A2": {
+          "value": "0001-01-01",
+          "type": "date",
+          "formula": null,
+          "style": null
+        },
+        "B2": {
+          "value": "0001-01-01",
+          "type": "string",
+          "formula": null,
+          "style": null
+        },
+        "A3": {
+          "value": "1900-01-01",
+          "type": "date",
+          "formula": null,
+          "style": null
+        },
+        "A4": {
+          "value": "9999-12-31",
+          "type": "date",
+          "formula": null,
+          "style": null
+        },
+        "A5": {
+          "value": "1900-01-01",
+          "type": "date",
+          "formula": "of:=DATE(1900;1;1)",
+          "style": null
+        },
+        "A6": {
+          "value": "1899-12-31",
+          "type": "date",
+          "formula": null,
+          "style": null
+        },
+        "B6": {
+          "value": "1899-12-31",
+          "type": "string",
+          "formula": null,
+          "style": null
+        }
+      },
+      "merges": []
+    },
+    "毫米属性": {
+      "cells": {
+        "A1": {
+          "value": "1mm 请求值",
+          "type": "string",
+          "formula": null,
+          "style": null
+        },
+        "B1": {
+          "value": "32mm 请求值",
+          "type": "string",
+          "formula": null,
+          "style": null
+        },
+        "C1": {
+          "value": "500mm 请求值",
+          "type": "string",
+          "formula": null,
+          "style": null
+        }
+      },
+      "merges": []
+    }
+  },
+  "passed": 33,
+  "failed": 0,
+  "headless_value_checks": "PASS",
+  "status": "PARTIAL",
+  "interpretation": "Listed headless checks retain every failure; GUI, physical layout and other versions remain unverified",
+  "finished_utc": "2026-10-02T18:17:02.864189+00:00"
+}

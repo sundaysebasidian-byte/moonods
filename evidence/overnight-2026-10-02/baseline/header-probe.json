@@ -1,0 +1,6 @@
+{
+  "status": "INCORRECTLY ACCEPTED",
+  "scope": "Validator coverage defect: local CRC disagrees with central CRC; synthetic self-generated fixture only",
+  "source_sha256": "689c9409eba85bafa31eef29d0037a75818fad65380b63acb67870d9e77fd101",
+  "probe_sha256": "b2598d10a39fc63f42506b0e3435e9621833de11bcd0c84fff6287b38d4a6688"
+}

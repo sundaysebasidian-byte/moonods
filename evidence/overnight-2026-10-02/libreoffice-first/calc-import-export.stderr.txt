@@ -1,0 +1,11 @@
+Fontconfig warning: no <cachedir> elements found. Check configuration.
+Fontconfig warning: adding <cachedir>/@.__________________________________________________OOO/var/cache/fontconfig</cachedir>
+Fontconfig warning: adding <cachedir prefix="xdg">fontconfig</cachedir>
+
+Fontconfig error: No writable cache directories
+	/@.__________________________________________________OOO/var/cache/fontconfig
+	/Users/sebasidian/.cache/fontconfig
+
+Fontconfig error: No writable cache directories
+	/@.__________________________________________________OOO/var/cache/fontconfig
+	/Users/sebasidian/.cache/fontconfig

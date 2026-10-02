@@ -1,0 +1,12 @@
+{
+  "status": "FAIL (historical compatibility probe; retained)",
+  "source_cache_type": "date",
+  "source_date": "2026-10-01",
+  "saved_cache_type": "float",
+  "saved_numeric_value": "46296",
+  "source_sha256": "4cf791220b9288e9cfe7d4964cf21ff542e731f37429e08a8eadb8ef82102ecb",
+  "saved_sha256": "398279e11d598661dc72b4554b204370261c658e468498ab0e5ef0412f80dd62",
+  "formula_constructor_sha256": "0f1c84262f85333be98037e3bb89ac94bdc1fbb7b583f1e90e1f115505cd43da",
+  "constructor_matches_published_0_1_0": true,
+  "fix": "0.2.0 Cell::formula(Date) defaults DateISO; native final B4 date assertion PASS"
+}

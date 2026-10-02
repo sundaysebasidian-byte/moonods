@@ -1,0 +1,2 @@
+convert /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/formulas.ods as a Calc document -> /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/libreoffice-ods-probe/formulas.ods using filter : calc8
+convert /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/implementation/reuse/declarations.ods as a Calc document -> /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/libreoffice-ods-probe/declarations.ods using filter : calc8

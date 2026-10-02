@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/sebasidian/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+    "-env:UserInstallation=file:///var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-lo-probe-43gcioc0",
+    "--headless",
+    "--convert-to",
+    "ods",
+    "--outdir",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/libreoffice-ods-probe",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/formulas.ods",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/implementation/reuse/declarations.ods"
+  ],
+  "exit_code": 0
+}

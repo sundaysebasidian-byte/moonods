@@ -1,0 +1,598 @@
+{
+  "started_utc": "2026-10-02T18:15:34.744934+00:00",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.14",
+  "steps": [
+    {
+      "name": "moonc-version",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moonc",
+        "-v"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "moon-version",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "version"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "node-version",
+      "command": [
+        "node",
+        "--version"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "format",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "fmt",
+        "--check"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "check",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "check",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "build",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "build",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "test",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "test",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "examples-first",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "examples/generate"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "examples-second",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "examples/generate"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "schema-bytes",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/../.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/fetch_schemas.py"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "external",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/../.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/verify_external.py",
+        "--report",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/external.json"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "compatibility-first",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "examples/compatibility"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "compatibility-second",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "examples/compatibility"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "compatibility-regression",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/../.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/verify_compatibility.py",
+        "--report",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/compatibility.json"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "reuse",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/../.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/verify_reuse.py",
+        "--moon",
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "--output",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/reuse"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "guards",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/../.verify-venv/bin/python",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/scripts/verify_guards.py",
+        "--moon",
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "--candidate-report",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/reuse/reuse.json",
+        "--output",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-02/final/guards"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    }
+  ],
+  "scope": "JS backend core + examples + independent package/schema/reader checks",
+  "not_run_by_this_script": [
+    "LibreOffice",
+    "Excel",
+    "Numbers",
+    "WPS",
+    "remote CI",
+    "native/wasm backends",
+    "peak RSS and performance"
+  ],
+  "source_sha256": {
+    "boundaries_wbtest.mbt": "3fbbbb587487af543b08f7f75f4d65654343eeda7a3a3cf0003acc350e6dfe85",
+    "cell.mbt": "7603b09651b46bf49da47a3958d515aa9498fc385e1545482505dbd642f3948e",
+    "cell_wbtest.mbt": "afa9db346cf861007a00087706f97d59b182f401ab2b3b3c9eb51727906aaa85",
+    "compatibility_wbtest.mbt": "8c8c4d42de4d7302a89b38c59ccda9f007e7d2b6799738c299ceff8a0dedfdcc",
+    "examples/compatibility/main.mbt": "ac07ed80dd07d80e2bc40cfdeb9524817248ccafcd0ec1929880219fe207af07",
+    "examples/generate/main.mbt": "f4cbfe8c348314c5d3a10e10d2792a765c78709078c9d6f80c97ef9b161c2763",
+    "fixtures/registry-consumer-0.1.0/src/main.mbt": "e644693538cf7b740cdf880e30812b4f71763e45c5699964da067b01f6b8f3c5",
+    "fixtures/registry-consumer-0.1.0/src/reuse_wbtest.mbt": "2a2d82203acf5dcac142ca0b7d415c6d497eb01b7c6d606698d438ba1260b4db",
+    "fixtures/reuse-consumer/src/main.mbt": "4e296d3ea10afd7a6c7d461380d758bf3ab31b3b13b813bb1f17f62b3a6c8bc6",
+    "fixtures/reuse-consumer/src/reuse_wbtest.mbt": "3c8643896e3d4bb04fdb033509234b567395584751d77e6fb356dd83d619c36e",
+    "package.mbt": "3db24b3d3fd785da47e5a4b5b90065cbf4be15e37fabf6e383778e9a1c2ec630",
+    "package_wbtest.mbt": "fd342855e8486b6e390f4a228349eab3f095142d0164ae5f947cee5276744601",
+    "row_wbtest.mbt": "620729d0d0dbc5f9b83e23e88b5a8e121221cc223b0f855a16d74f0e1514db55",
+    "scripts/acceptance.py": "4d72b595f0165226b0f2948eeb3f59ffae0435bb9cff727bda9cdc19a1ffdf8d",
+    "scripts/fetch_schemas.py": "65f92755ac636fd37f2a4868d1e9952e0e0c0aaf867f7ed01c7e7743c3007caf",
+    "scripts/package_source.py": "3931c801f6df4d7adc869dcb42ef87459d1563b82d3354d7e24cf7f3d0a7f829",
+    "scripts/restore_deps.py": "29fa68f7b726beba75278d2c5a8745e2e6afb15662c57f9f4dd7cdb713e4a073",
+    "scripts/verify_compatibility.py": "a1090031a76066476fe27a1948347af8ddba3d5f85b03bbb82c19fd52bbcb6cf",
+    "scripts/verify_consumer_outputs.py": "10668e02b2258ca54ddd057b8d6ee725b60d95d31296fa1c0c4dddb21a33794c",
+    "scripts/verify_deps.py": "59574e8d4b22b0814bfb88dafbcb2f579aafa3259b0d88a7865a2e729a4d186e",
+    "scripts/verify_excel.py": "41bf855854f886201157f1a38ad3f9b0b0679b7d9835a07233277485167567ce",
+    "scripts/verify_external.py": "a28d8bf4061ef5faf1baca37a389d531904b11849b19c04f00deb024e3d05efe",
+    "scripts/verify_guards.py": "e1907daaeaadd9c4428fab3d7d3a14e1e8af43c8a0f374d1612feabddd81f217",
+    "scripts/verify_libreoffice.py": "c2f7b50c5443739b02e4e804eff33193d1dfee38a721c32c243e01f930b3e213",
+    "scripts/verify_registry.py": "b6aadd4033793b2d32c8ac2f1a917f65df62c7ce1d3ab62e82e6ddb43dd9c288",
+    "scripts/verify_reuse.py": "bd75143d35e8937a38f2343834cd72d08fab0dcbc1572ff3849071c4d8f9a9d2",
+    "style.mbt": "fefb89007460bda1a6f2c6dd12cfcd5a8d7c7fd3a282b0aab8048226bebdfe5e",
+    "style_wbtest.mbt": "04705f9d4d118df76a2aaf7d5b42fcb159069cd38f82b05b50a4ed3c3c98e02d",
+    "tests/consumer/api_test.mbt": "809553a0fa82f1a3562d2648ac748f379011308d55387dd58ba0e8b2d9c8b724",
+    "workbook.mbt": "439bc7068bdd77ad39be6af2c1f85387cfa3e8b83337114d895bd1ce16f3face",
+    "workbook_wbtest.mbt": "6b79e1f4eeb5bba44ddd1b6068c13135aa41700e0f3cbaca7d8ed4a53b4456f7",
+    "xml.mbt": "5c5935442dc508b8aade02077561cd9296867c9c1f913234a48889451f7e9430",
+    "xml_wbtest.mbt": "f88bf99df7743a678f5d11d466f753e5a3b72e17313966a03c3f8632146fa8b7"
+  },
+  "runtime_versions": {
+    "node": "v24.18.0",
+    "python": "3.13.14",
+    "odfpy": "1.4.1",
+    "lxml": "6.0.2",
+    "defusedxml": "0.7.1"
+  },
+  "dependencies": {
+    "zipc": {
+      "version": "0.2.2",
+      "sha256": "e552ecca64446aa9be8ced2dfae21f413e77ced2d21dfd0934772f32f30c43de"
+    },
+    "flate": {
+      "version": "0.2.0",
+      "sha256": "935372d9a49a5d4bbb40a2fd057bd36b587f683d605c5de204adc143a2215e66"
+    }
+  },
+  "unit_tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0
+  },
+  "cross_process_determinism": {
+    "status": "PASS",
+    "sha256": {
+      "sales.ods": "689c9409eba85bafa31eef29d0037a75818fad65380b63acb67870d9e77fd101",
+      "formulas.ods": "ecaf2fdbe2839d149ac7c83c433598f1e4c8dbdf9243a0f7fed877aa1524995c",
+      "edge.ods": "9c1f36342ee7f3f96ddcb3618effbb5ad423d7c252147c9dd07ae438bb3b9841",
+      "experiment.ods": "5f1b55e56d67a3fe6e60496e48f9fecc97876483ccf6641e873968e3d57c23bd"
+    }
+  },
+  "separate_office_evidence": {
+    "file": "evidence/office-2026-10-01-fixed/excel.json",
+    "sha256": "74f3a58d2a6d9666876375247e02fd012573c64627a8cfe5383db7d91419ef1d",
+    "provenance": "Previously executed native application read; not rerun by this script",
+    "application": "Microsoft Excel",
+    "version": "16.113.3",
+    "status": "PARTIAL",
+    "normal_cases": {
+      "status": "PASS",
+      "assertion_groups": 20,
+      "empty_value_note": "Excel value2 presents both explicit Empty and Text(\"\") as empty string; independent ODS check distinguishes them"
+    },
+    "boundaries": {
+      "status": "PARTIAL",
+      "issues": [
+        "Absolute column-width check assuming points failed; physical-mm calibration unresolved",
+        "Year 0001 date has no value through Excel value2 API"
+      ],
+      "long_text_length_read": 32767,
+      "date_displays": [
+        "#N/A",
+        "12/31/99"
+      ]
+    },
+    "matches_current_generated_ods": true
+  },
+  "compatibility_fixture_determinism": {
+    "status": "PASS",
+    "sha256": "95f96203cbdf8698c062ee7ee677c256cbf94cf5ec3373a52357ec5406d53414"
+  },
+  "independent_module_reuse": {
+    "started_utc": "2026-10-02T18:15:41.165564+00:00",
+    "steps": [
+      {
+        "name": "package",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "package",
+          "--frozen",
+          "--list"
+        ],
+        "cwd": "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-format",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "fmt",
+          "--check",
+          "src"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-i1tobv03/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-check",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "check",
+          "--target",
+          "js",
+          "-j",
+          "1",
+          "--deny-warn"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-i1tobv03/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-build",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "build",
+          "--target",
+          "js",
+          "-j",
+          "1",
+          "--deny-warn"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-i1tobv03/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-test",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "test",
+          "--target",
+          "js",
+          "-j",
+          "1",
+          "--deny-warn",
+          "src"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-i1tobv03/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-first",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "run",
+          "--target",
+          "js",
+          "-j",
+          "1",
+          "src"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-i1tobv03/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "consumer-second",
+        "command": [
+          "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+          "run",
+          "--target",
+          "js",
+          "-j",
+          "1",
+          "src"
+        ],
+        "cwd": "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-i1tobv03/consumer",
+        "exit_code": 0,
+        "status": "PASS"
+      }
+    ],
+    "scope": "Independent local module consumes extracted moon package candidate via moon.work",
+    "mooncakes_published_or_remote_consumption": false,
+    "unmeasured": [
+      "office applications",
+      "fresh machine",
+      "network package installation",
+      "market demand"
+    ],
+    "verified_dependencies": {
+      "zipc": {
+        "version": "0.2.2",
+        "sha256": "e552ecca64446aa9be8ced2dfae21f413e77ced2d21dfd0934772f32f30c43de"
+      },
+      "flate": {
+        "version": "0.2.0",
+        "sha256": "935372d9a49a5d4bbb40a2fd057bd36b587f683d605c5de204adc143a2215e66"
+      }
+    },
+    "candidate_version": "0.2.0",
+    "candidate": {
+      "file": "moonods-local-candidate-0.2.0.zip",
+      "sha256": "db09f4943397cc43e2d81d43106bbeb1e132593fb23380bf21d1bea3e9f888ee",
+      "bytes": 74296,
+      "files": [
+        "moon.pkg",
+        "moon.mod",
+        "row_wbtest.mbt",
+        "xml.mbt",
+        "TOOLCHAIN.lock",
+        "compatibility_wbtest.mbt",
+        "LICENSE",
+        "licenses/flate-Apache-2.0.txt",
+        "licenses/moonbit-core-Apache-2.0.txt",
+        "licenses/zipc-Apache-2.0.txt",
+        "SOURCES.md",
+        "package.mbt",
+        "style_wbtest.mbt",
+        "boundaries_wbtest.mbt",
+        "workbook_wbtest.mbt",
+        "DEPENDENCIES.lock.json",
+        "pkg.generated.mbti",
+        "tests/consumer/moon.pkg",
+        "tests/consumer/pkg.generated.mbti",
+        "tests/consumer/api_test.mbt",
+        "cell_wbtest.mbt",
+        "workbook.mbt",
+        "THIRD_PARTY_NOTICES.md",
+        "docs/OFFICE_COMPATIBILITY_ZH.md",
+        "docs/ACCEPTANCE_ZH.md",
+        "docs/REUSE_REVIEW_ZH.md",
+        "docs/LOCAL_CANDIDATE_ZH.md",
+        "docs/RELEASE_ZH.md",
+        "docs/RULES_REVIEW_ZH.md",
+        "docs/PROPOSAL_REFERENCE.md",
+        "README.md",
+        "xml_wbtest.mbt",
+        "package_wbtest.mbt",
+        "style.mbt",
+        "examples/compatibility/moon.pkg",
+        "examples/compatibility/main.mbt",
+        "examples/compatibility/pkg.generated.mbti",
+        "examples/generate/moon.pkg",
+        "examples/generate/main.mbt",
+        "examples/generate/pkg.generated.mbti",
+        "requirements-verify.txt",
+        "cell.mbt",
+        "AI_USAGE.md"
+      ],
+      "source_sha256": {
+        "moon.pkg": "db4df9cb2a38cc73d956036004cd5effe4593e8177d3015349f94dcb9a5ff7cd",
+        "moon.mod": "c73c51a6a589841424fdecf5dc31758df79f282a7bc579b9b12a14fd496df50f",
+        "row_wbtest.mbt": "620729d0d0dbc5f9b83e23e88b5a8e121221cc223b0f855a16d74f0e1514db55",
+        "xml.mbt": "5c5935442dc508b8aade02077561cd9296867c9c1f913234a48889451f7e9430",
+        "compatibility_wbtest.mbt": "8c8c4d42de4d7302a89b38c59ccda9f007e7d2b6799738c299ceff8a0dedfdcc",
+        "package.mbt": "3db24b3d3fd785da47e5a4b5b90065cbf4be15e37fabf6e383778e9a1c2ec630",
+        "style_wbtest.mbt": "04705f9d4d118df76a2aaf7d5b42fcb159069cd38f82b05b50a4ed3c3c98e02d",
+        "boundaries_wbtest.mbt": "3fbbbb587487af543b08f7f75f4d65654343eeda7a3a3cf0003acc350e6dfe85",
+        "workbook_wbtest.mbt": "6b79e1f4eeb5bba44ddd1b6068c13135aa41700e0f3cbaca7d8ed4a53b4456f7",
+        "tests/consumer/api_test.mbt": "809553a0fa82f1a3562d2648ac748f379011308d55387dd58ba0e8b2d9c8b724",
+        "cell_wbtest.mbt": "afa9db346cf861007a00087706f97d59b182f401ab2b3b3c9eb51727906aaa85",
+        "workbook.mbt": "439bc7068bdd77ad39be6af2c1f85387cfa3e8b83337114d895bd1ce16f3face",
+        "xml_wbtest.mbt": "f88bf99df7743a678f5d11d466f753e5a3b72e17313966a03c3f8632146fa8b7",
+        "package_wbtest.mbt": "fd342855e8486b6e390f4a228349eab3f095142d0164ae5f947cee5276744601",
+        "style.mbt": "fefb89007460bda1a6f2c6dd12cfcd5a8d7c7fd3a282b0aab8048226bebdfe5e",
+        "examples/compatibility/main.mbt": "ac07ed80dd07d80e2bc40cfdeb9524817248ccafcd0ec1929880219fe207af07",
+        "examples/generate/main.mbt": "f4cbfe8c348314c5d3a10e10d2792a765c78709078c9d6f80c97ef9b161c2763",
+        "cell.mbt": "7603b09651b46bf49da47a3958d515aa9498fc385e1545482505dbd642f3948e"
+      },
+      "all_files_sha256": {
+        "moon.pkg": "db4df9cb2a38cc73d956036004cd5effe4593e8177d3015349f94dcb9a5ff7cd",
+        "moon.mod": "c73c51a6a589841424fdecf5dc31758df79f282a7bc579b9b12a14fd496df50f",
+        "row_wbtest.mbt": "620729d0d0dbc5f9b83e23e88b5a8e121221cc223b0f855a16d74f0e1514db55",
+        "xml.mbt": "5c5935442dc508b8aade02077561cd9296867c9c1f913234a48889451f7e9430",
+        "TOOLCHAIN.lock": "fe2ed5fe640b256808f8138fb3303052037dfeab1510215e7206d1c2dce49c07",
+        "compatibility_wbtest.mbt": "8c8c4d42de4d7302a89b38c59ccda9f007e7d2b6799738c299ceff8a0dedfdcc",
+        "LICENSE": "7aed9943672c49428e033adb160dfc72ae9d245108ea27c3453ff979110c8091",
+        "licenses/flate-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "licenses/moonbit-core-Apache-2.0.txt": "86460c45017ffacb9aa9e18850fa9fdb036339dc8851125465f4a3f3442fc894",
+        "licenses/zipc-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "SOURCES.md": "e14ee3ef1af890af74fcf9d5f361ae41ef038a731d824deb96dc93c1e6564c53",
+        "package.mbt": "3db24b3d3fd785da47e5a4b5b90065cbf4be15e37fabf6e383778e9a1c2ec630",
+        "style_wbtest.mbt": "04705f9d4d118df76a2aaf7d5b42fcb159069cd38f82b05b50a4ed3c3c98e02d",
+        "boundaries_wbtest.mbt": "3fbbbb587487af543b08f7f75f4d65654343eeda7a3a3cf0003acc350e6dfe85",
+        "workbook_wbtest.mbt": "6b79e1f4eeb5bba44ddd1b6068c13135aa41700e0f3cbaca7d8ed4a53b4456f7",
+        "DEPENDENCIES.lock.json": "c45563142b797dbf62ac730a6cb804ece359cb23cfa99a9c63ed43aa9da060eb",
+        "pkg.generated.mbti": "a33dbd5c6a9b21d90a4e987e65918e33a10e7d83b08d84f301ae41c850555f2e",
+        "tests/consumer/moon.pkg": "0d914b0ff6f314479b17e014f4454223e24dc2ea246bf06d829d26497346faf0",
+        "tests/consumer/pkg.generated.mbti": "55dfe860142f9161edcffdf0084b9db6ea58faa4c0215de1369b09dd5edcc5b1",
+        "tests/consumer/api_test.mbt": "809553a0fa82f1a3562d2648ac748f379011308d55387dd58ba0e8b2d9c8b724",
+        "cell_wbtest.mbt": "afa9db346cf861007a00087706f97d59b182f401ab2b3b3c9eb51727906aaa85",
+        "workbook.mbt": "439bc7068bdd77ad39be6af2c1f85387cfa3e8b83337114d895bd1ce16f3face",
+        "THIRD_PARTY_NOTICES.md": "0c0c8a7a0f00980e9ee6e03c2130272b8779e9f0654ca8533afa9adb8d60cccb",
+        "docs/OFFICE_COMPATIBILITY_ZH.md": "d4faf02e1629fe119a8bd50898d94a17ee5ed64df4562e5daff8451b4ced58ea",
+        "docs/ACCEPTANCE_ZH.md": "d8356c522f06bb363bc3721a9fb1c1c769089b596c9d80a0b06a430655464369",
+        "docs/REUSE_REVIEW_ZH.md": "4934a0f4a7521ca82865dd4a5c4e54534dbbcf50981ccfea14eb8f162110f968",
+        "docs/LOCAL_CANDIDATE_ZH.md": "67b4baa0359ee911c241113279ee3003d54aca917198229d5459893a0193e886",
+        "docs/RELEASE_ZH.md": "953566308a96d97d1c6b93d134355aff9da9130cd83765b915261b53f45282de",
+        "docs/RULES_REVIEW_ZH.md": "ee6127551a27fd9e4254da689848b36619adf4712ef19468c97f76f4f168caec",
+        "docs/PROPOSAL_REFERENCE.md": "1583df23b3756ce56bd8f87f2b8b8458c16c1ee607baa698a744fdf67c66d76c",
+        "README.md": "b1b499d1e1689201b135d68a4120b2844427cc1af1ea25dd7f03a5b4815b8781",
+        "xml_wbtest.mbt": "f88bf99df7743a678f5d11d466f753e5a3b72e17313966a03c3f8632146fa8b7",
+        "package_wbtest.mbt": "fd342855e8486b6e390f4a228349eab3f095142d0164ae5f947cee5276744601",
+        "style.mbt": "fefb89007460bda1a6f2c6dd12cfcd5a8d7c7fd3a282b0aab8048226bebdfe5e",
+        "examples/compatibility/moon.pkg": "692316774b063ee959d0fba67df0587cb44ff309f9df705315dfe5bec12cca4d",
+        "examples/compatibility/main.mbt": "ac07ed80dd07d80e2bc40cfdeb9524817248ccafcd0ec1929880219fe207af07",
+        "examples/compatibility/pkg.generated.mbti": "e766d50c8be1d1a1a3aca522a090d5a55d8bd0f599a1436d4f887d5acd0a57c4",
+        "examples/generate/moon.pkg": "692316774b063ee959d0fba67df0587cb44ff309f9df705315dfe5bec12cca4d",
+        "examples/generate/main.mbt": "f4cbfe8c348314c5d3a10e10d2792a765c78709078c9d6f80c97ef9b161c2763",
+        "examples/generate/pkg.generated.mbti": "b8ea8e756f3e442505079734dd31e0ebd865d0b44a4da3dd0a435bcbbb80f475",
+        "requirements-verify.txt": "069819b2fac9540113accf84f60ff7ed4371301e53981d69746818635a030b2e",
+        "cell.mbt": "7603b09651b46bf49da47a3958d515aa9498fc385e1545482505dbd642f3948e",
+        "AI_USAGE.md": "9a15e65a8510af894e1582f255e0a490f9fecbc6cc8cb6758a6be6ee0dcc16a7"
+      },
+      "all_candidate_bytes_match_checkout": true
+    },
+    "consumer_source_sha256": {
+      "moon.mod": "bde8bf94c99d24cf5bd3d18b29cd2ffc6ebd14a5bbdd59c524661f14ed430953",
+      "src/main.mbt": "4e296d3ea10afd7a6c7d461380d758bf3ab31b3b13b813bb1f17f62b3a6c8bc6",
+      "src/moon.pkg": "a3cb20dc94fa8dca2a4c297b9db610452cac9f1c9f19661539b6845779886408",
+      "src/reuse_wbtest.mbt": "3c8643896e3d4bb04fdb033509234b567395584751d77e6fb356dd83d619c36e"
+    },
+    "workspace_config": "members = [\n  \"candidate\",\n  \"consumer\",\n]\n",
+    "tests": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "independent_reader": {
+      "status": "PASS",
+      "typed_cell_assertions": 30,
+      "official_rng_xml_count": 9,
+      "package_checks": "PASS",
+      "inconsistent_cache_preserved": 99,
+      "calculation_performed": false
+    },
+    "cross_process_determinism": {
+      "status": "PASS",
+      "sha256": {
+        "declarations.ods": "fb6f621b41f405c4d33858475d1963c99df27b4f155f092cb5b6199784c8a7ee",
+        "laboratory.ods": "596cc7f9fb489714dab6b96f3a76e0810304093e6b00cddcc3b278029c4365dd",
+        "business.ods": "95504f27df11060e92014462e4ff18fda8111b3f68a028c058f578cbc3f3d3ce"
+      }
+    },
+    "status": "PASS",
+    "finished_utc": "2026-10-02T18:15:46.138801+00:00"
+  },
+  "fail_closed_guards": {
+    "status": "PASS",
+    "controls": [
+      {
+        "name": "runtime-drift",
+        "status": "PASS",
+        "expected_cli_exit_code": 1,
+        "observed_error": "Node/Python differs from TOOLCHAIN.lock"
+      },
+      {
+        "name": "wrong-registry-candidate",
+        "status": "PASS",
+        "expected_cli_exit_code": 1,
+        "observed_error": "Report is not the historical published 0.1.0 candidate"
+      }
+    ],
+    "network_calls_performed": false,
+    "global_environment_changed": false
+  },
+  "status": "PASS",
+  "finished_utc": "2026-10-02T18:15:47.071063+00:00"
+}

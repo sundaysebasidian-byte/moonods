@@ -1,0 +1,89 @@
+{
+  "started_utc": "2026-10-02T18:15:46.325803+00:00",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.14",
+  "steps": [
+    {
+      "name": "moonc-version",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moonc",
+        "-v"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "moon-version",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "version"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "node-version",
+      "command": [
+        "node",
+        "--version"
+      ],
+      "exit_code": 0,
+      "status": "PASS"
+    }
+  ],
+  "scope": "JS backend core + examples + independent package/schema/reader checks",
+  "not_run_by_this_script": [
+    "LibreOffice",
+    "Excel",
+    "Numbers",
+    "WPS",
+    "remote CI",
+    "native/wasm backends",
+    "peak RSS and performance"
+  ],
+  "source_sha256": {
+    "boundaries_wbtest.mbt": "3fbbbb587487af543b08f7f75f4d65654343eeda7a3a3cf0003acc350e6dfe85",
+    "cell.mbt": "7603b09651b46bf49da47a3958d515aa9498fc385e1545482505dbd642f3948e",
+    "cell_wbtest.mbt": "afa9db346cf861007a00087706f97d59b182f401ab2b3b3c9eb51727906aaa85",
+    "compatibility_wbtest.mbt": "8c8c4d42de4d7302a89b38c59ccda9f007e7d2b6799738c299ceff8a0dedfdcc",
+    "examples/compatibility/main.mbt": "ac07ed80dd07d80e2bc40cfdeb9524817248ccafcd0ec1929880219fe207af07",
+    "examples/generate/main.mbt": "f4cbfe8c348314c5d3a10e10d2792a765c78709078c9d6f80c97ef9b161c2763",
+    "fixtures/registry-consumer-0.1.0/src/main.mbt": "e644693538cf7b740cdf880e30812b4f71763e45c5699964da067b01f6b8f3c5",
+    "fixtures/registry-consumer-0.1.0/src/reuse_wbtest.mbt": "2a2d82203acf5dcac142ca0b7d415c6d497eb01b7c6d606698d438ba1260b4db",
+    "fixtures/reuse-consumer/src/main.mbt": "4e296d3ea10afd7a6c7d461380d758bf3ab31b3b13b813bb1f17f62b3a6c8bc6",
+    "fixtures/reuse-consumer/src/reuse_wbtest.mbt": "3c8643896e3d4bb04fdb033509234b567395584751d77e6fb356dd83d619c36e",
+    "package.mbt": "3db24b3d3fd785da47e5a4b5b90065cbf4be15e37fabf6e383778e9a1c2ec630",
+    "package_wbtest.mbt": "fd342855e8486b6e390f4a228349eab3f095142d0164ae5f947cee5276744601",
+    "row_wbtest.mbt": "620729d0d0dbc5f9b83e23e88b5a8e121221cc223b0f855a16d74f0e1514db55",
+    "scripts/acceptance.py": "4d72b595f0165226b0f2948eeb3f59ffae0435bb9cff727bda9cdc19a1ffdf8d",
+    "scripts/fetch_schemas.py": "65f92755ac636fd37f2a4868d1e9952e0e0c0aaf867f7ed01c7e7743c3007caf",
+    "scripts/package_source.py": "3931c801f6df4d7adc869dcb42ef87459d1563b82d3354d7e24cf7f3d0a7f829",
+    "scripts/restore_deps.py": "29fa68f7b726beba75278d2c5a8745e2e6afb15662c57f9f4dd7cdb713e4a073",
+    "scripts/verify_compatibility.py": "a1090031a76066476fe27a1948347af8ddba3d5f85b03bbb82c19fd52bbcb6cf",
+    "scripts/verify_consumer_outputs.py": "10668e02b2258ca54ddd057b8d6ee725b60d95d31296fa1c0c4dddb21a33794c",
+    "scripts/verify_deps.py": "59574e8d4b22b0814bfb88dafbcb2f579aafa3259b0d88a7865a2e729a4d186e",
+    "scripts/verify_excel.py": "41bf855854f886201157f1a38ad3f9b0b0679b7d9835a07233277485167567ce",
+    "scripts/verify_external.py": "a28d8bf4061ef5faf1baca37a389d531904b11849b19c04f00deb024e3d05efe",
+    "scripts/verify_guards.py": "e1907daaeaadd9c4428fab3d7d3a14e1e8af43c8a0f374d1612feabddd81f217",
+    "scripts/verify_libreoffice.py": "c2f7b50c5443739b02e4e804eff33193d1dfee38a721c32c243e01f930b3e213",
+    "scripts/verify_registry.py": "b6aadd4033793b2d32c8ac2f1a917f65df62c7ce1d3ab62e82e6ddb43dd9c288",
+    "scripts/verify_reuse.py": "bd75143d35e8937a38f2343834cd72d08fab0dcbc1572ff3849071c4d8f9a9d2",
+    "style.mbt": "fefb89007460bda1a6f2c6dd12cfcd5a8d7c7fd3a282b0aab8048226bebdfe5e",
+    "style_wbtest.mbt": "04705f9d4d118df76a2aaf7d5b42fcb159069cd38f82b05b50a4ed3c3c98e02d",
+    "tests/consumer/api_test.mbt": "809553a0fa82f1a3562d2648ac748f379011308d55387dd58ba0e8b2d9c8b724",
+    "workbook.mbt": "439bc7068bdd77ad39be6af2c1f85387cfa3e8b83337114d895bd1ce16f3face",
+    "workbook_wbtest.mbt": "6b79e1f4eeb5bba44ddd1b6068c13135aa41700e0f3cbaca7d8ed4a53b4456f7",
+    "xml.mbt": "5c5935442dc508b8aade02077561cd9296867c9c1f913234a48889451f7e9430",
+    "xml_wbtest.mbt": "f88bf99df7743a678f5d11d466f753e5a3b72e17313966a03c3f8632146fa8b7"
+  },
+  "runtime_versions": {
+    "node": "v0.0.0",
+    "python": "3.13.14",
+    "odfpy": "1.4.1",
+    "lxml": "6.0.2",
+    "defusedxml": "0.7.1"
+  },
+  "status": "FAIL",
+  "error": "Node/Python differs from TOOLCHAIN.lock",
+  "finished_utc": "2026-10-02T18:15:46.906848+00:00"
+}
