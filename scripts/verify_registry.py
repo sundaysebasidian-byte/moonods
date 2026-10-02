@@ -24,7 +24,8 @@ def main():
     for name in ['bin', 'lib', 'include']: (home / name).symlink_to(args.sdk.resolve() / name)
     (home / 'registry').mkdir()
     consumer = work / 'consumer'
-    shutil.copytree(ROOT / 'fixtures/reuse-consumer', consumer,
+    fixture = ROOT / 'fixtures/registry-consumer-0.1.0'
+    shutil.copytree(fixture, consumer,
                     ignore=shutil.ignore_patterns('_build', '.mooncakes'))
     env = os.environ.copy(); env['MOON_HOME'] = str(home); env['RUST_LOG'] = 'error'
     moon = home / 'bin/moon'
@@ -44,13 +45,18 @@ def main():
         if r.returncode: raise RuntimeError(name + ' failed; retained logs')
         return r.stdout + r.stderr
     try:
+        expected = json.loads(args.candidate_report.read_text())['candidate']['all_files_sha256']
+        frozen_origin = json.loads((fixture / 'ORIGIN.json').read_text())
+        assert expected['moon.mod'] == frozen_origin['published_moon_mod_sha256'], 'Report is not the historical published 0.1.0 candidate'
+        fixture_hashes = {name: hashlib.sha256((fixture/name).read_bytes()).hexdigest() for name in frozen_origin['files_sha256']}
+        assert fixture_hashes == frozen_origin['files_sha256'], 'Frozen registry consumer changed'
+        report['frozen_consumer_origin'] = frozen_origin
         assert not list((home / 'registry').iterdir())
         assert not (consumer / 'moon.work').exists()
         run('registry-update', [moon, 'update'])
         run('consumer-format', [moon, 'fmt', '--check', 'src'])
         run('consumer-check', [moon, 'check', '--target', 'js', '-j', '1', '--deny-warn'])
         installed = consumer / '.mooncakes/sundaysebasidian-byte/moonods'
-        expected = json.loads(args.candidate_report.read_text())['candidate']['all_files_sha256']
         actual = hashes(installed)
         assert actual == expected, 'Registry package bytes differ from approved candidate'
         report['published_package'] = {'module': 'sundaysebasidian-byte/moonods', 'version': '0.1.0',

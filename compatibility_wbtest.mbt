@@ -41,6 +41,19 @@ test "ODF historical dates remain dates while Excel 1900 policy rejects them" {
 }
 
 ///|
+test "date formula cache defaults to ISO presentation with explicit override" {
+  let c = Cell::formula("of:=DATE(2026;10;1)", Date(2026, 10, 1))
+  assert_eq(c.value(), Date(2026, 10, 1))
+  assert_true(c.xml("").contains("table:style-name=\"DateISO\""))
+  assert_true(c.styled(Header).xml("").contains("table:style-name=\"Header\""))
+  assert_true(
+    Cell::formula("of:=1+1", Number(99.0))
+    .xml("")
+    .contains("table:style-name=\"Plain\""),
+  )
+}
+
+///|
 test "requested millimeter width mapping and rejected mutation remain exact" {
   let w = Workbook::new()
   let s = w.add_sheet("单位边界")

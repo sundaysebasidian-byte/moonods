@@ -13,6 +13,27 @@ test "consumer can opt into Excel 1900 date policy without changing ODF default"
 }
 
 ///|
+test "public row API handles width limits and typed formula cache" {
+  let w = @ods.Workbook::new()
+  let s = w.add_sheet("API")
+  s.set_row(0, 126, [
+    @ods.Cell::new(Text("边界")),
+    @ods.Cell::formula("of:=1+1", Number(99.0)),
+  ])
+  assert_eq(s.get(0, 127).unwrap().value(), Number(99.0))
+  let saved = w.to_ods()
+  assert_true(
+    try {
+      s.set_row(1, 127, [@ods.Cell::new(Empty), @ods.Cell::new(Empty)])
+      false
+    } catch {
+      @ods.Invalid(_) => true
+    },
+  )
+  assert_eq(w.to_ods(), saved)
+}
+
+///|
 test "downstream package can build a styled formula workbook" {
   let w = @ods.Workbook::new()
   let s = w.add_sheet("客户")

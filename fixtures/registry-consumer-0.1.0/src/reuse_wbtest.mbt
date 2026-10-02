@@ -10,30 +10,6 @@ test "business adapter supports different and empty input lists" {
 }
 
 ///|
-test "consumer row import rejects a later merge conflict without partial data" {
-  let w = @ods.Workbook::new()
-  let s = w.add_sheet("事务导入")
-  s.set_row(0, 0, [@ods.Cell::new(Text("保留"))])
-  s.merge(0, 1, 1, 2)
-  let before = w.to_ods()
-  assert_true(
-    try {
-      s.set_row(0, 0, [
-        @ods.Cell::new(Text("不应写入")),
-        @ods.Cell::new(Number(1.0)),
-        @ods.Cell::new(Number(2.0)),
-      ])
-      false
-    } catch {
-      @ods.Invalid(_) => true
-    },
-  )
-  assert_eq(w.to_ods(), before)
-  assert_eq(s.get(0, 0).unwrap().value(), Text("保留"))
-  assert_true(s.get(0, 1) is None)
-}
-
-///|
 test "laboratory adapter supports empty observations and arbitrary metadata" {
   let w = laboratory_report([], "另一个实验来源")
   assert_eq(w.sheet_count(), 2)

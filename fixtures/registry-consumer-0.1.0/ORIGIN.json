@@ -1,0 +1,12 @@
+{
+  "source_commit": "6dced9ed5798a7179d5259bde95145cc994f85df",
+  "purpose": "Frozen original independent consumer for published 0.1.0 only; not the new local 0.2.0 consumer",
+  "license": "MIT; original project fixture; AI-assisted",
+  "files_sha256": {
+    "moon.mod": "ce0fbe9becaa5042c6b14353e10a88bc814a16c2afbf7eb7bcdd390a6ed3579c",
+    "src/main.mbt": "e644693538cf7b740cdf880e30812b4f71763e45c5699964da067b01f6b8f3c5",
+    "src/reuse_wbtest.mbt": "2a2d82203acf5dcac142ca0b7d415c6d497eb01b7c6d606698d438ba1260b4db",
+    "src/moon.pkg": "a3cb20dc94fa8dca2a4c297b9db610452cac9f1c9f19661539b6845779886408"
+  },
+  "published_moon_mod_sha256": "54488ec890423a86358198797c527194194da4a4cdc80c7ca2a6bff1d569d1c4"
+}

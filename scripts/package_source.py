@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Package tracked source, committed evidence, examples and local Git history."""
-import argparse, hashlib, json, subprocess, tempfile, zipfile
+import argparse, hashlib, json, re, subprocess, tempfile, zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -10,7 +10,9 @@ def git(*args):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--output', type=Path, default=ROOT.parent / 'outputs/MoonODS-source-0.1.0.zip')
+    version = re.search(r'^version = "([^"]+)"$', (ROOT / 'moon.mod').read_text(), re.M)
+    if not version: raise SystemExit('Missing module version')
+    p.add_argument('--output', type=Path, default=ROOT.parent / f'outputs/MoonODS-source-{version[1]}.zip')
     args = p.parse_args()
     if git('status', '--porcelain', '--untracked-files=no').strip():
         raise SystemExit('Commit reviewed source/evidence before packaging')
@@ -27,7 +29,7 @@ def main():
         subprocess.run(['git', 'bundle', 'create', str(bundle), '--all'], cwd=ROOT, check=True)
         payload['moonods-history.bundle'] = bundle.read_bytes()
     payload['GIT_HISTORY.txt'] = git('log', '--reverse', '--format=%H %s')
-    state = {'head': head, 'commit_count': int(git('rev-list', '--count', 'HEAD')),
+    state = {'head': head, 'module_version': version[1], 'commit_count': int(git('rev-list', '--count', 'HEAD')),
              'remote_configured': bool(git('remote').strip()),
              'files_sha256': {n: hashlib.sha256(d).hexdigest() for n,d in sorted(payload.items())}}
     payload['SOURCE_STATE.json'] = (json.dumps(state, ensure_ascii=False, indent=2)+'\n').encode()

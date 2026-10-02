@@ -1,5 +1,17 @@
 # 已装桌面软件真实读取
 
+## 2026-10-02：既有LibreOfficeDev的真实无界面读取
+
+发现Codex文档运行环境已经附带`LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5`。本轮没有下载或安装LibreOffice。通过指定该工具的完整路径、一次性UserInstallation目录、无界面Calc导入8份固定无宏合成ODS，原生回存到另一目录，再用odfpy核对33类型值与2合并；全部通过，输入SHA256未变。脚本退出后临时profile删除，没有服务监听或持久访问。详细命令、stdout/stderr、原生回存文件及输入摘要见`evidence/overnight-2026-10-02/libreoffice-final/libreoffice.json`。
+
+整体兼容状态仍为**PARTIAL**：测试的是已带开发版和无界面导入/保存，未进行稳定版、GUI显示、打印或绝对毫米列宽校准。Numbers/WPS仍未测。应用回存可能采用其自身ODF版本，不能把回存文件声称为MoonODS生成的确定性ODF1.3包。
+
+首次XLSX导出检验把布尔公式的数值输出1与预期Boolean比较，FAIL保留在`libreoffice-first`；这表明XLSX转换会改变结果表示，不能用来声称ODS布尔缓存丢失。随后原生ODS探测保留Boolean，却把Plain样式的DATE公式缓存变为float46296。0.2.0修复`Cell::formula(Date(...))`的默认样式为DateISO；复测原生ODS回存保持日期类型及日期值。仍可显式覆盖样式，且库不会求值或修正缓存。
+
+故意不一致的SUM缓存99在原生ODS回存仍为99；首次XLSX导出重算为3。两种真实应用路径都有记录，不能承诺所有办公软件或导出方式都保留原缓存。33断言也核查中文、CR/tab/LF、emoji、32767字长文、极大/极小有限数、两表、布尔及公式四类缓存。
+
+本轮未重开Excel；四份原Excel输入与当前生成字节相同，旧20组结果仍可作为这些固定文件的历史证据，不证明新整行API或所有新输入都已在Excel验证。以下保留原始2026-10-01桌面实测记录。
+
 2026-10-01使用既有Microsoft Excel16.113.3打开四个任务自制无宏ODS，仅读取，未保存。虽传入只读参数，Excel实际报告readOnly=false，不能声称强制只读；逐文件SHA证明输入未改变。系统osascript、执行脚本、stdout/stderr保留，无新增安装。
 
 ## 通过范围

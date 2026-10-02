@@ -28,20 +28,16 @@ fn sales_report(items : Array[Sale]) -> @ods.Workbook raise @ods.OdsError {
   let mut quantity = 0.0
   let mut amount = 0.0
   for i, item in items {
-    s.set_row(i + 2, 0, [
-      @ods.Cell::new(Text(item.product)),
-      @ods.Cell::new(Number(item.quantity)),
-      @ods.Cell::new(Number(item.amount)).styled(Decimal2),
-    ])
+    s.set(i + 2, 0, @ods.Cell::new(Text(item.product)))
+    s.set(i + 2, 1, @ods.Cell::new(Number(item.quantity)))
+    s.set(i + 2, 2, @ods.Cell::new(Number(item.amount)).styled(Decimal2))
     quantity += item.quantity
     amount += item.amount
   }
   // Aggregation belongs to the consumer; MoonODS only stores typed values.
-  s.set_row(items.length() + 2, 0, [
-    @ods.Cell::new(Text("合计")).styled(Highlight),
-    @ods.Cell::new(Number(quantity)),
-    @ods.Cell::new(Number(amount)).styled(Decimal2),
-  ])
+  s.set(items.length() + 2, 0, @ods.Cell::new(Text("合计")).styled(Highlight))
+  s.set(items.length() + 2, 1, @ods.Cell::new(Number(quantity)))
+  s.set(items.length() + 2, 2, @ods.Cell::new(Number(amount)).styled(Decimal2))
   for c, mm in [65, 20, 35] {
     s.set_column_width(c, mm)
   }
@@ -68,12 +64,10 @@ fn laboratory_report(
   }
   for i, sample in samples {
     let (y, m, d) = sample.date
-    s.set_row(i + 1, 0, [
-      @ods.Cell::new(Date(y, m, d)).styled(DateISO),
-      @ods.Cell::new(Number(sample.reading)),
-      @ods.Cell::new(Boolean(sample.accepted)),
-      @ods.Cell::new(Text(sample.note)),
-    ])
+    s.set(i + 1, 0, @ods.Cell::new(Date(y, m, d)).styled(DateISO))
+    s.set(i + 1, 1, @ods.Cell::new(Number(sample.reading)))
+    s.set(i + 1, 2, @ods.Cell::new(Boolean(sample.accepted)))
+    s.set(i + 1, 3, @ods.Cell::new(Text(sample.note)))
   }
   let metadata = w.add_sheet("记录来源")
   metadata.set(0, 0, @ods.Cell::new(Text(source)))

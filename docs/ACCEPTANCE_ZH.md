@@ -1,55 +1,53 @@
 # MoonODS 中文验收矩阵
 
-状态日期2026-10-01，按实际完整阅读的[章程§5.1](https://bxup9uklfcb.feishu.cn/wiki/Dx4Bwd6D1i3GfHkajQCcF7SznEd)阶段三原顺序整理。本地交付状态不是官方终验通过，不保证一次验收或奖金额度。
+状态：2026-10-02 **本地0.2.0候选**。历史0.1.0已公开/发布；当前新源码未推送、未发布、未报名。本文件是AI辅助客观工程记录，不是最终人工申报书或官方终验结论。不保证一次验收或奖金额度。
 
 ## 终验九条
 
-| 官方条目（事实摘要） | 当前状态 | 材料与缺口 |
+按已完整阅读的章程§5.1阶段三顺序整理；10/2尝试更新官方页面，飞书网页工具未能访问，因此规则仍依据10/1完整快照，不冒称已再次读取全部最新章程。
+
+| 官方条目（事实摘要） | 当前候选状态 | 材料与缺口 |
 |---|---|---|
-| 1. MoonBit为主要实现语言 | **本地满足** | Cell/Sheet/Workbook/XML/ZIP核心为MoonBit；Node仅示例文件适配器，Python仅独立验证 |
-| 2. GitHub公开、提交清晰 | **已公开** | https://github.com/sundaysebasidian-byte/moonods；完整真实历史；发行SHA/CI见RELEASE_ZH |
-| 3. 源码清晰并实现核心功能 | **本地验证通过** | 类型API、公式缓存、多表、基础样式/列宽/合并、固定ODF包；范围与预算明确 |
-| 4. README目标、安装、用法、示例可复现 | **本地完成；用户理解待做** | 工具链/依赖锁、真实日志、本地候选及真实注册表消费均通过，细节见RELEASE_ZH |
-| 5. CI覆盖检查、构建、测试 | **远端PASS** | 首发源码6dced9e真实Linux CI含fmt/check/build/test/独立读取；最终交付提交结果见发行记录 |
-| 6. 至少一个可运行示例 | **本地通过** | 销售/实验多表/公式声明三场景及edge实际运行，4 ODS附包；另有独立消费3场景 |
-| 7. 完整测试覆盖核心路径 | **当前有界范围通过；非穷尽** | 25核心/API、4独立消费、RNG/odfpy/ZIP负控制；Excel常规通过、整体PARTIAL；不是任意ODF/规模/办公软件全测 |
-| 8. 发布mooncakes.io | **已发布0.1.0；注册表消费PASS** | 空缓存实下载、41文件同候选、4测试/30类型值/9XML通过 |
-| 9. OSI许可及引用/移植合规 | **材料已核** | 原创MIT；core/zipc/flate Apache-2.0原许可与引用、归档摘要；合成fixture；OASIS资料不重新授权MIT |
+| 1. MoonBit为主要实现语言 | 本地满足 | Cell/Sheet/Workbook/XML/ZIP核心为MoonBit；Node只保存示例Bytes，Python只验证 |
+| 2. GitHub公开、提交清晰 | 历史0.1.0已公开；新改动仅本地 | 真实Git历史随源码包；本轮无push，新候选不在公开仓库中 |
+| 3. 源码清晰并实现核心功能 | 本地验证通过 | 类型值、缓存、多表、5样式/列宽/合并、固定ODF包；新增整行原子写入和日期缓存默认样式 |
+| 4. README目标、安装、用法、示例可复现 | 本地通过；用户理解待做 | 区分0.1.0注册表安装与0.2.0本地workspace；实际候选换目录消费，源码ZIP换目录复现另附记录 |
+| 5. CI覆盖检查、构建、测试 | 工作流已具备，本候选远端NOT RUN | 本地fmt/check/build/test通过；远端旧25+4只证明0.1.0的旧SHA，不迁移为30+5通过 |
+| 6. 至少一个可运行示例 | 本地通过 | 销售、实验多表、公式声明、edge及日期/单位例；独立消费三完整场景 |
+| 7. 完整测试覆盖核心路径 | 有界范围通过；非穷尽 | 30核心/API、5独立消费、官方RNG/odfpy/ZIP/负控制；Excel与LibreOffice整体PARTIAL；规模/RSS/其他后端未测 |
+| 8. 发布mooncakes.io | 0.1.0历史首发通过；0.2.0未发布 | 新代码与发布版不同，禁止拿旧注册表41文件/4测试报告冒充新版本发行 |
+| 9. OSI许可及引用/移植合规 | 材料已核 | 原创MIT；core/zipc/flate Apache-2.0；原OASIS资料不重新授权MIT；fixture合成；AI来源如实声明 |
 
 ## 真实测试矩阵
 
-| 检查 | 状态 | 证据范围 |
+| 检查 | 结果 | 当前证据/解释 |
 |---|---|---|
-| JS fmt/check/build `--deny-warn` | **PASS** | 锁定moonc0.10.14与moon0.1.20260920，既有MacSDK，`-j 1` |
-| 核心22 + 同模块公共API3 | **25 PASS / 0 FAIL** | 中文/XML转义/非法字符、非法/重复表名、非有限数、无效日期、空值/空字符串、长文、合并冲突/越界/数据损失、列宽、事务性错误与各资源预算 |
-| 独立模块本地候选消费 | **4 PASS / 0 FAIL** | 不同模块从真实候选ZIP解压消费；3场景、30类型值、9 XML；不是Mooncakes安装 |
-| 不透明API编译负控制 | **按预期拒绝** | `w.sheets.clear()`报Error4028；opaque-probe证据，不是正常运行失败 |
-| 官方ODF1.3 RNG | **PASS** | 固定摘要官方原schema；4 ODS共12 XML；document/manifest无效控制被拒绝 |
-| Python zipfile及负控制 | **PASS** | CRC、固定4路径、mimetype首项/STORED/no-extra/ASCII、headers/时间戳；路径/顺序/MIME/CRC破坏被拒绝 |
-| 独立odfpy | **PASS** | 38类型值，中文空白/长文/多表/公式四类缓存；不导入MoonODS解析 |
-| 新增日期/单位回归例 | **PASS（ODF层；Office未测）** | 7类型值、3官方XML，年0/负列宽负控制；1/32/500mm映射与显式Date/Text |
-| 样式/列宽/合并XML语义 | **PASS** | Header/Decimal2、毫米属性、covered格；不等同于绝对视觉几何 |
-| 两个独立生成进程 | **PASS** | 同SDK相同输入四ODS字节一致，不承诺任意SDK/后端一致 |
-| Excel16.113.3真实打开/核值 | **常规20组PASS；整体PARTIAL** | 四自制文件，真实API/截图；值/样式/合并/公式导入；未保存，SHA不变 |
-| Excel旧32768字边界 | **FAIL：截至32767，已修实现** | 修正前失败保留；上限收紧32767，精确总预算边界不降标准；修正后32767完整 |
-| Excel极早日期 | **兼容缺口未解决** | 0001-01-01显示#N/A/API无值；ODF合法1..9999保留，不保证Excel全范围 |
-| Excel绝对毫米列宽 | **UNRESOLVED** | 返回单位假设point的检查FAIL保留；比例PASS，绝对物理单位待校准，不标通过 |
-| LibreOffice实际打开/核值 | **NOT TESTED** | 无已装工具且安装未授权；其他读取器不替代此项 |
-| Numbers / WPS | **NOT TESTED** | 存在已装应用不等于实测 |
-| 其他后端、性能/RSS | **NOT TESTED** | JS Mac/Linux已核；数据/输出预算不是进程峰值内存证明 |
+| JS fmt/check/build `--deny-warn` | PASS | 精确moonc0.10.14/moon0.1.20260920，既有SDK；`-j 1`；Node/Python/独立验证依赖现已严格核锁 |
+| 核心26 + 同模块公共API4 | 30 PASS / 0 FAIL | 保留旧25；新增整行类型值/边界、后段合并冲突整批回滚、净替换预算、外部API列边界及日期公式默认样式 |
+| 独立模块0.2.0候选消费 | 5 PASS / 0 FAIL | 真`moon package`、解压新目录；销售与实验真实用set_row；30类型值、9 XML；不从注册表安装0.2.0 |
+| 官方ODF1.3 RNG | PASS | 固定摘要官方原schema，主4ODS/12XML；日期单位3XML；独立消费9XML；非法document/manifest控制拒绝 |
+| ZIP、CRC及严格头部验证 | PASS | 路径/MIME/顺序/CRC；本地与中央头逐字段、EOCD/连续条目/尾部一致性；15个坏包控制被拒绝 |
+| 原本地头CRC缺口 | 原FAIL，验证器已修复 | baseline/header-probe.json记录旧验证器错误接受本地CRC不一致的自制包；不是writer曾写错CRC |
+| odfpy核值与XML语义 | PASS | 主例38类型值；独立30；诊断7；中文、转义、CR/tab/LF/emoji、Empty≠空字符串、长文、日期、四类公式缓存、样式/列宽/covered格 |
+| 两独立进程确定性 | PASS | 主4文件、诊断1、消费3；相同数据/表序/SDK/JS后端字节相同，不承诺其他工具链或app回存相同 |
+| 验收CLI运行环境漂移控制 | 按预期拒绝，控制PASS | 任务临时PATH中只模拟node版本v0.0.0；CLI退出1，在编译测试之前拒绝，无全局环境修改 |
+| 新候选冒充旧注册表报告控制 | 按预期拒绝，控制PASS | 0.2.0候选SHA不匹配冻结0.1.0moon.mod；退出1且未调用registry-update，不联网 |
+| 既有LibreOfficeDev实际导入/ODS原生回存 | 33值 + 2合并 PASS；整体PARTIAL | 26.8.0.0.alpha0；8固定无宏输入，临时profile；原文件SHA不变；独立odfpy读应用回存 |
+| LibreOffice首次XLSX试验 | FAIL保留 | 布尔公式在XLSX导出表现为数值1；原生ODS保持Boolean；不宣称XLSX转换无类型变化 |
+| LibreOffice原生DATE缓存探测 | 原缺口已修 | Plain缓存回存float46296；日期公式默认DateISO后保持Date及2026-10-01；显式改样式仍由调用方负责 |
+| Excel16.113.3历史桌面读取 | 常规20组PASS；整体PARTIAL | 本轮没重开Excel；当前主4ODS哈希与旧输入完全一致；不因此声称set_row所有新输入均测过 |
+| Excel旧32768字样本 | 原FAIL，已修并真实重读 | 原截至32767；库限制32767 UTF-16，旧失败保留；当前LO原生回存也核32767完整 |
+| Excel极早日期 | 兼容缺口保留 | 0001年#N/A/API无值；ODF有效日期1..9999仍支持，未偷偷改类型 |
+| 绝对毫米列宽 | UNRESOLVED | XML请求值/比例通过；旧point假设FAIL保留；GUI/打印物理毫米没有校准 |
+| LibreOffice稳定版/GUI/打印 | NOT TESTED | 已测开发版headless，不等于所有LibreOffice版本或桌面版全通过 |
+| Numbers/WPS/其他后端/性能及RSS | NOT TESTED | 不虚构实测；数据和字节预算不是峰值内存或速度证明 |
 
-最新串行结果：`evidence/date-width-release/acceptance.json`及stdout/stderr。Excel单独记录：`evidence/office-2026-10-01-fixed/excel.json`，详见[桌面兼容实测](OFFICE_COMPATIBILITY_ZH.md)。旧失败阶段保留：首次test-only导入、reuse-first/reuse-second、Office访问/打开失败、错误单位假设；不能用旧报告证明当前源码。
+完整命令、实际退出码和stdout/stderr：`evidence/overnight-2026-10-02/final/acceptance.json`；应用证据：`evidence/overnight-2026-10-02/libreoffice-final/libreoffice.json`。较早baseline、implementation、date-fix、LibreOffice-first和ods-probe均为有时间及源码快照的阶段记录；不把重复运行累计成独立测试数。源码ZIP换目录复现随交付提供，复用可信SDK/core、依赖缓存、现有Python/schema，不称全新机器或完全离线无缓存初始化。
 
-先前源码ZIP换目录检查在`evidence/source-package-check.json`，只证明较早快照。本轮源码ZIP独立换目录检查随交付另提供；均使用同一既有工具/schema/第三方缓存，不称全新机器或无缓存初始化。
+## 人工规则与待办
 
-## 申报规则和待办（不是终验第九条）
+已读取章程11章/附录、十月表单16字段与诚信承诺。章程第五章5.1原句“申报书务必人工撰写”，表单“不要使用 AI 编写”。技术参考不能直接提交或机械改写冒充人工；用户需理解后自行写一页内Markdown，至少3完整场景、至少10有效提交的认可由官方判断。真实历史保留，不空提交、补造日期或机械拆分凑数。本轮无最终申报/代签/同意动作。
 
-完整读取章程11章/附录、十月表单16字段及诚信承诺。十月表单明确至少3完整场景、至少10有效提交；按真实阶段提交，不凑次数。章程“申报书务必人工撰写”，表单“不要使用 AI 编写”。AI参考不是最终申报书，用户需理解并自行撰写一页内Markdown；个人身份/电话/邮箱/银行/学籍/诚信由用户处理，未代填/签署。
+章程10/24与官网10/31旧快照冲突保留；内部10/24前准备，最终适用时刻未确认。章程原则上一项目、表单三次提交与用户核群公告每人单月最多三项目分别保留。150+350均有审核条件，不保证自动到账或1500净收入。个人身份/电话/银行/学籍/诚信由用户处理。
 
-章程十月截至10/24，官网10/31；内部按10/24前准备，最终截止待官方明确。章程原则上一项目、表单三次提交、用户已核群公告每人单月三项目保留各自来源。150启动/350完成均有审核条件，不保证1500净到手。详见[规则复核](RULES_REVIEW_ZH.md)。
-
-公开仓库及Mooncakes0.1.0首发已完成，实际CI和注册表验证见RELEASE_ZH；报名由用户处理；正式申报前复核同类与生态价值。当前检索不能证明唯一，九月LogLens不改成新项目。用户理解/审核未完成，不承诺一次过。
-
-本轮新增可选Excel1900日期构造、历史日期/毫米回归与诊断例。默认ODF日期1..9999保留，不伪造Excel支持；Mac JXA单位无明确说明，VBA point约定不能直接套用。本轮25项测试与Library历史v2的22项快照区分；统一技术复核完成，按真实阶段提交，旧证据与失败记录保留。本次最终候选包括全部文档的逐文件SHA256匹配证据，避免已消费候选与最终说明滞后。
-
-真实注册表消费另见 `evidence/publication/registry/registry.json`，不是moon.work本地候选消费；空索引/包缓存启动，既有SDK/core、Python及官方schema复用，不称全新机器。首轮CI失败、frozen发布预检失败保留，修复后远端25+4和注册表4均通过。
+本轮不改已提交ABNF、MoonSTOMP或九月LogLens；不push/publish/submit。源码ZIP和Library更新属于本地交付，不能称官方验收通过。AI辅助事实、依赖来源与许可见AI_USAGE、SOURCES及THIRD_PARTY_NOTICES。

@@ -50,6 +50,8 @@ pub fn Cell::excel_1900_date(
 
 ///|
 /// OpenFormula text must begin of:=. This validates storage, not formula syntax.
+/// Date caches default to DateISO so readers keep the date presentation when
+/// evaluating DATE formulas. Callers may still explicitly override the style.
 pub fn Cell::formula(expression : String, cache : Value) -> Cell raise OdsError {
   validate_text(expression)
   if !expression.has_prefix("of:=") || expression.length() <= 4 {
@@ -59,7 +61,11 @@ pub fn Cell::formula(expression : String, cache : Value) -> Cell raise OdsError 
   if cache == Empty {
     raise Invalid("formula requires a typed nonempty cache")
   }
-  { value: cache, formula: Some(expression), style: Plain, }
+  let style = match cache {
+    Date(_, _, _) => DateISO
+    _ => Plain
+  }
+  { value: cache, formula: Some(expression), style, }
 }
 
 ///|

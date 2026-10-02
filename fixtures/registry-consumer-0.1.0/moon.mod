@@ -9,5 +9,5 @@ preferred_target = "js"
 source = "src"
 
 import {
-  "sundaysebasidian-byte/moonods@0.2.0",
+  "sundaysebasidian-byte/moonods@0.1.0",
 }

@@ -28,6 +28,7 @@ pub fn Sheet::merge(Self, Int, Int, Int, Int) -> Unit raise OdsError
 pub fn Sheet::name(Self) -> String
 pub fn Sheet::set(Self, Int, Int, Cell) -> Unit raise OdsError
 pub fn Sheet::set_column_width(Self, Int, Int) -> Unit raise OdsError
+pub fn Sheet::set_row(Self, Int, Int, Array[Cell]) -> Unit raise OdsError
 
 pub(all) enum Style {
   Plain

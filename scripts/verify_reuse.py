@@ -44,9 +44,13 @@ def main():
         return r.stdout + r.stderr
     try:
         report['verified_dependencies'] = verify()
+        module_version = re.search(r'^version = "([^"]+)"$', (ROOT / 'moon.mod').read_text(), re.M)
+        assert module_version, 'Missing candidate version'
+        candidate_version = module_version[1]
+        report['candidate_version'] = candidate_version
         run('package', [args.moon, 'package', '--frozen', '--list'], ROOT)
-        original = ROOT / '_build/publish/sundaysebasidian-byte-moonods-0.1.0.zip'
-        candidate = out / 'moonods-local-candidate-0.1.0.zip'
+        original = ROOT / '_build/publish' / f'sundaysebasidian-byte-moonods-{candidate_version}.zip'
+        candidate = out / f'moonods-local-candidate-{candidate_version}.zip'
         shutil.copyfile(original, candidate)
         with zipfile.ZipFile(candidate) as z:
             names = z.namelist()
@@ -80,7 +84,7 @@ def main():
             run('consumer-build', [args.moon, 'build', '--target', 'js', '-j', '1', '--deny-warn'], consumer)
             tests = run('consumer-test', [args.moon, 'test', '--target', 'js', '-j', '1', '--deny-warn', 'src'], consumer)
             match = re.search(r'Total tests: (\d+), passed: (\d+), failed: (\d+)', tests)
-            assert match and match[1] == match[2] and match[3] == '0' and int(match[1]) >= 4
+            assert match and match[1] == match[2] and match[3] == '0' and int(match[1]) >= 5
             report['tests'] = {'total': int(match[1]), 'passed': int(match[2]), 'failed': int(match[3])}
             run('consumer-first', [args.moon, 'run', '--target', 'js', '-j', '1', 'src'], consumer)
             generated = consumer / 'generated'

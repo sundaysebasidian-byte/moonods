@@ -110,24 +110,50 @@ pub fn Sheet::set(
   col : Int,
   cell : Cell,
 ) -> Unit raise OdsError {
-  position(row, col)
-  if self.covered.contains((row, col)) {
-    raise Invalid("cannot write covered merge cell")
+  self.set_row(row, col, [cell])
+}
+
+///|
+/// Write a contiguous row atomically. All cells are validated before mutation,
+/// including merge coverage and the net text budget after replacements. An
+/// empty array is a no-op at a valid coordinate and does not grow the grid.
+pub fn Sheet::set_row(
+  self : Sheet,
+  row : Int,
+  start_col : Int,
+  cells : Array[Cell],
+) -> Unit raise OdsError {
+  position(row, start_col)
+  if cells.length() > 128 - start_col {
+    raise Invalid("row write exceeds 128 columns")
+  }
+  if cells.is_empty() {
+    return
   }
   let rows = if row + 1 > self.rows { row + 1 } else { self.rows }
-  let cols = if col + 1 > self.cols { col + 1 } else { self.cols }
+  let end_col = start_col + cells.length()
+  let cols = if end_col > self.cols { end_col } else { self.cols }
   if rows * cols > 65536 {
     raise Invalid("sheet rendered grid exceeds 65536 cells")
   }
-  let old = match self.cells.get((row, col)) {
-    Some(c) => c.units()
-    None => 0
+  let mut units = self.text_units
+  for i, cell in cells {
+    let col = start_col + i
+    if self.covered.contains((row, col)) {
+      raise Invalid("cannot write covered merge cell")
+    }
+    let old = match self.cells.get((row, col)) {
+      Some(c) => c.units()
+      None => 0
+    }
+    units = units - old + cell.units()
   }
-  let units = self.text_units - old + cell.units()
   if units > 2097152 {
     raise Invalid("sheet text exceeds 2097152 UTF-16 units")
   }
-  self.cells.set((row, col), cell)
+  for i, cell in cells {
+    self.cells.set((row, start_col + i), cell)
+  }
   self.rows = rows
   self.cols = cols
   self.text_units = units

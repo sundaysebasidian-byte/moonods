@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Serial, fail-closed reproducible checks. Does not install tools or publish."""
 import argparse, datetime, hashlib, json, os, platform, re, shutil, subprocess, sys
+from importlib.metadata import version
 from pathlib import Path
 from verify_deps import ROOT, verify
 
@@ -35,14 +36,20 @@ def main():
         if not compiler_version.startswith('v0.10.14+7d59c7ec9 '): raise RuntimeError('Compiler differs from TOOLCHAIN.lock')
         tool_version = run('moon-version', [moon, 'version'])
         if not tool_version.startswith('moon 0.1.20260920 (914d7da '): raise RuntimeError('Moon build tool differs from TOOLCHAIN.lock')
+        node_version = run('node-version', ['node', '--version']).strip()
+        verifier_versions = {k: version(k) for k in ['odfpy', 'lxml', 'defusedxml']}
+        report['runtime_versions'] = {'node': node_version, 'python': platform.python_version(), **verifier_versions}
+        if node_version != 'v24.18.0' or platform.python_version() != '3.13.14':
+            raise RuntimeError('Node/Python differs from TOOLCHAIN.lock')
+        if verifier_versions != {'odfpy': '1.4.1', 'lxml': '6.0.2', 'defusedxml': '0.7.1'}:
+            raise RuntimeError('Verifier dependencies differ from TOOLCHAIN.lock')
         report['dependencies'] = verify()
-        run('node-version', ['node', '--version'])
         run('format', [moon, 'fmt', '--check'])
         run('check', [moon, 'check', '--target', 'js', '-j', '1', '--deny-warn'])
         run('build', [moon, 'build', '--target', 'js', '-j', '1', '--deny-warn'])
         tests = run('test', [moon, 'test', '--target', 'js', '-j', '1', '--deny-warn'])
         m = re.search(r'Total tests: (\d+), passed: (\d+), failed: (\d+)', tests)
-        if not m or int(m[1]) < 20 or m[1] != m[2] or m[3] != '0': raise RuntimeError('Missing or incomplete test summary')
+        if not m or int(m[1]) < 30 or m[1] != m[2] or m[3] != '0': raise RuntimeError('Missing or incomplete test summary')
         report['unit_tests'] = {'total': int(m[1]), 'passed': int(m[2]), 'failed': int(m[3])}
         hashes = lambda: {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in (ROOT / 'examples/generated').glob('*.ods')}
         run('examples-first', [moon, 'run', '--target', 'js', '-j', '1', 'examples/generate'])
@@ -79,6 +86,9 @@ def main():
         run('reuse', [sys.executable, ROOT / 'scripts/verify_reuse.py', '--moon', moon, '--output', out / 'reuse'])
         report['independent_module_reuse'] = json.loads((out / 'reuse/reuse.json').read_text())
         if report['independent_module_reuse']['status'] != 'PASS': raise RuntimeError('Independent module reuse failed')
+        run('guards', [sys.executable, ROOT / 'scripts/verify_guards.py', '--moon', moon,
+                       '--candidate-report', out / 'reuse/reuse.json', '--output', out / 'guards'])
+        report['fail_closed_guards'] = json.loads((out / 'guards/guards.json').read_text())
         report['status'] = 'PASS'
     except Exception as e:
         report['status'] = 'FAIL'; report['error'] = str(e)

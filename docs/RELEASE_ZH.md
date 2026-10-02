@@ -1,5 +1,7 @@
 # MoonODS 0.1.0 发行记录
 
+**本文件的发行与远端CI证据对应历史0.1.0。** 2026-10-02工作目录已推进为0.2.0本地候选，新增整行事务接口和日期公式样式修复；源码与0.1.0已不同。新候选没有推送、发布或报名，见[当前本地状态](LOCAL_CANDIDATE_ZH.md)。下方注册表/CI成功不能当作0.2.0的发行或远端验证。
+
 公开 GitHub 与首发 Mooncakes 已获用户明确批准。此文件记录工程事实，不是人工申报书或官方验收结论。
 
 | 项目 | 当前状态 |
@@ -27,6 +29,6 @@ Mooncakes 内容在发布时固定；后续仓库新增的发行结果文档/证
 
 随后 `scripts/verify_registry.py` 从**空索引及包缓存**启动，只复用既有SDK/bin/core/include，未复制凭据，不用moon.work。真实日志包含下载 `sundaysebasidian-byte/moonods@0.1.0`，安装的41份文件SHA256与首发候选全部相同；独立consumer的fmt/check/build/test通过，4测试/0失败。三场景两进程输出一致，odfpy核30类型值，官方RNG核9 XML，故意不一致公式缓存99完整保留，无求值器。记录在 `evidence/publication/registry/registry.json` 和 `release-summary.json`。不是全新机器，也没有再测原生Office。
 
-本仓库发行结果文档/证据在首发之后补齐；Mooncakes中的README/发行进度是发布时的阶段快照。**已发布核心源码与当前核心相同**，逐文件发行摘要记录在候选/注册表报告中。后续本地重新打包用于交付审核，不冒称已上传包的新字节。公开包的功能版本仍为0.1.0。
+0.1.0仓库发行结果文档/证据在首发之后补齐；Mooncakes中的README/发行进度是发布时的阶段快照。**首发核心与当时19e8ca3快照核心相同**，逐文件发行摘要记录在候选/注册表报告中。现在的0.2.0源码已改变，仅作为本地候选，不冒称已上传包的新字节。公开包的功能版本仍为0.1.0。
 
 源码ZIP包含完整真实Git历史、SOURCE_STATE、中文验收矩阵和测试证据。最终交付SHA及该SHA远端CI在ZIP补充文件 `evidence/delivery-ci/DELIVERY_CI.json` 及Library交付清单记录；该补充CI证据在最终提交之后产生，因此不冒称已在该提交树内。首发SHA和后续文档提交分别记录。
