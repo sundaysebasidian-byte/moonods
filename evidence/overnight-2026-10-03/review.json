@@ -1,0 +1,34 @@
+{
+  "time_utc": "2026-10-03T17:41:39.746344+00:00",
+  "status": "PASS",
+  "review_type": "Codex source/evidence consistency review plus independent odfpy and actual installed Calc; no human reviewer or extra agent claim",
+  "baseline_head": "0d159b16a4c63918f5bf39cce0e0aede0498ae2a",
+  "core_API_unchanged": true,
+  "schema_sha256": {
+    "document.rng": "40bad03efdbb02825230d357da0aa6ac679934c5bf56c6281752c0c24d58e4e6",
+    "manifest.rng": "8aee71f03484be112af972d622cc9031280c007b0a454ae8815e8e333c9bdd17"
+  },
+  "norm_sections_read": [
+    "ODF1.3 XML 20.193",
+    "20.294",
+    "20.295",
+    "RNG fontWeight attributes",
+    "RNG column-width positiveLength"
+  ],
+  "core_api_tests": 31,
+  "consumer_tests": 5,
+  "format_assertions": 50,
+  "format_negative_controls": 7,
+  "office_input_hashes_match_current": true,
+  "historical_excel_association": "STALE INPUTS",
+  "remaining": [
+    "GUI/print typography",
+    "physical printed millimeters",
+    "stable LibreOffice",
+    "current Excel/Numbers/WPS",
+    "candidate remote CI",
+    "publication approval",
+    "manual application and personal materials"
+  ],
+  "no_new_install_push_publish_submit": true
+}

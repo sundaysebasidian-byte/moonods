@@ -127,6 +127,8 @@ def main():
             width = '{'+n['style']+'}column-width'
             assert [x.attrib[width] for x in content.xpath('//style:table-column-properties', namespaces=n)] == ['24mm', '32mm', '34mm', '64mm']
             assert styles.xpath('//style:style[@style:name="Header"]/style:table-cell-properties/@fo:background-color', namespaces=n) == ['#17324D']
+            for weight in ['fo:font-weight', 'style:font-weight-asian', 'style:font-weight-complex']:
+                assert styles.xpath('//style:style[@style:name="Header"]/style:text-properties/@' + weight, namespaces=n) == ['bold']
             assert styles.xpath('//number:number-style[@style:name="N2"]/number:number/@number:decimal-places', namespaces=n) == ['2']
         elif name == 'experiment':
             assert list(tables) == ['样本', '元数据']

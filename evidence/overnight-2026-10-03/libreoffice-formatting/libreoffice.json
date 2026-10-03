@@ -1,0 +1,1082 @@
+{
+  "started_utc": "2026-10-03T17:35:49.613855+00:00",
+  "verifier_sha256": "d9ff6dfb9b2f56a142388a5a521b2cea8c918f3e3a849934bc63a060625a8985",
+  "scope": "Installed LibreOffice headless Calc imports fixed no-macro ODS and saves native ODS; odfpy independently reads saved typed values",
+  "not_tested": [
+    "GUI appearance",
+    "print layout",
+    "absolute physical millimeter widths",
+    "stable LibreOffice release versions",
+    "all ODF date ranges",
+    "arbitrary formulas"
+  ],
+  "steps": [
+    {
+      "name": "version",
+      "command": [
+        "/Users/sebasidian/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+        "--version"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "calc-import-export",
+      "command": [
+        "/Users/sebasidian/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+        "-env:UserInstallation=file:///var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-lo-l27bpkk5/profile",
+        "--headless",
+        "--nologo",
+        "--nodefault",
+        "--norestore",
+        "--convert-to",
+        "ods:calc8",
+        "--outdir",
+        "/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-lo-l27bpkk5/ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/sales.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/experiment.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/formulas.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/edge.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/generated/compatibility.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-03/implementation/reuse/business.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-03/implementation/reuse/laboratory.ods",
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-03/implementation/reuse/declarations.ods"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "assertions": [
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "A1",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "B3",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "C5",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "D5",
+      "status": "PASS"
+    },
+    {
+      "book": "sales",
+      "sheet": "销售报表",
+      "cell": "A3",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "C2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "D2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "B3",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "C3",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "样本",
+      "cell": "A2",
+      "status": "PASS"
+    },
+    {
+      "book": "experiment",
+      "sheet": "元数据",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "formulas",
+      "sheet": "公式缓存",
+      "cell": "A3",
+      "status": "PASS"
+    },
+    {
+      "book": "formulas",
+      "sheet": "公式缓存",
+      "cell": "B1",
+      "status": "PASS"
+    },
+    {
+      "book": "formulas",
+      "sheet": "公式缓存",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "formulas",
+      "sheet": "公式缓存",
+      "cell": "B3",
+      "status": "PASS"
+    },
+    {
+      "book": "edge",
+      "sheet": "边界 & XML",
+      "cell": "A1",
+      "status": "PASS"
+    },
+    {
+      "book": "edge",
+      "sheet": "边界 & XML",
+      "cell": "A4",
+      "status": "PASS"
+    },
+    {
+      "book": "edge",
+      "sheet": "边界 & XML",
+      "cell": "A5",
+      "status": "PASS"
+    },
+    {
+      "book": "edge",
+      "sheet": "边界 & XML",
+      "cell": "A6",
+      "status": "PASS"
+    },
+    {
+      "book": "edge",
+      "sheet": "边界 & XML",
+      "cell": "A9",
+      "status": "PASS"
+    },
+    {
+      "book": "business",
+      "sheet": "业务汇总",
+      "cell": "A3",
+      "status": "PASS"
+    },
+    {
+      "book": "business",
+      "sheet": "业务汇总",
+      "cell": "B5",
+      "status": "PASS"
+    },
+    {
+      "book": "business",
+      "sheet": "业务汇总",
+      "cell": "C5",
+      "status": "PASS"
+    },
+    {
+      "book": "laboratory",
+      "sheet": "测量",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "laboratory",
+      "sheet": "测量",
+      "cell": "C2",
+      "status": "PASS"
+    },
+    {
+      "book": "laboratory",
+      "sheet": "测量",
+      "cell": "D2",
+      "status": "PASS"
+    },
+    {
+      "book": "laboratory",
+      "sheet": "测量",
+      "cell": "C3",
+      "status": "PASS"
+    },
+    {
+      "book": "laboratory",
+      "sheet": "测量",
+      "cell": "A2",
+      "status": "PASS"
+    },
+    {
+      "book": "declarations",
+      "sheet": "调用方缓存",
+      "cell": "B1",
+      "status": "PASS"
+    },
+    {
+      "book": "declarations",
+      "sheet": "调用方缓存",
+      "cell": "B2",
+      "status": "PASS"
+    },
+    {
+      "book": "declarations",
+      "sheet": "调用方缓存",
+      "cell": "B3",
+      "status": "PASS"
+    },
+    {
+      "book": "declarations",
+      "sheet": "调用方缓存",
+      "cell": "B4",
+      "status": "PASS"
+    }
+  ],
+  "application_version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+  "inputs_unchanged_sha256": {
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/sales.ods": "ad8472c93b081c4d028c6afe820653576cf78f83c73cb5ee535b17e9f92b1f32",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/experiment.ods": "f7f37c0be18feae2ceb81ccb4a9044ddf21e41f0a0f305efd40bebc501c3b8a9",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/formulas.ods": "6c88c44319fa29160a4106bdb10be855c3220497a72a713aa4583a46a4668b79",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/generated/edge.ods": "0bfd15d9e12f9268de806cf879f9336ca71e0a4c9c647082ea60f7dc238dcfe5",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/examples/compatibility/generated/compatibility.ods": "da164510fc8c0eb99a1374e159547d4ffa981475491599385cdf3ea968a1d359",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-03/implementation/reuse/business.ods": "ef698352d76d9a75c864eaed4018a07643d171ba16096ef288acef33445143a2",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-03/implementation/reuse/laboratory.ods": "be98f1fc02cb20c552a6f83d8cec40b3599b36216f05da54b5088140a836bc4f",
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/overnight-2026-10-03/implementation/reuse/declarations.ods": "4d8d19ae8a02ca1626b88d692816cd3c81e038ba64f59157e7e97615a5919a13"
+  },
+  "imported_files": 8,
+  "source_rng_xml_count": 24,
+  "roundtrip_output_schema_claim": "Not validated against ODF1.3 RNG; application may save its own ODF version/profile",
+  "merge_assertions": 2,
+  "formula_cache_observation": {
+    "input_odf_cache": 99,
+    "calc_native_save_cache": 99.0,
+    "interpretation": "Native ODS save can keep a supplied cache; prior XLSX export recalculated to 3. Reader save/export behavior is not a MoonODS calculation engine."
+  },
+  "date_and_width_observations": {
+    "日期策略": {
+      "cells": {
+        "A1": {
+          "value": "ODF 日期",
+          "type": "string",
+          "formula": null,
+          "style": "Header"
+        },
+        "B1": {
+          "value": "显式文本，不参与日期计算",
+          "type": "string",
+          "formula": null,
+          "style": "Header"
+        },
+        "A2": {
+          "value": "0001-01-01",
+          "type": "date",
+          "formula": null,
+          "style": null
+        },
+        "B2": {
+          "value": "0001-01-01",
+          "type": "string",
+          "formula": null,
+          "style": null
+        },
+        "A3": {
+          "value": "1900-01-01",
+          "type": "date",
+          "formula": null,
+          "style": null
+        },
+        "A4": {
+          "value": "9999-12-31",
+          "type": "date",
+          "formula": null,
+          "style": null
+        },
+        "A5": {
+          "value": "1900-01-01",
+          "type": "date",
+          "formula": "of:=DATE(1900;1;1)",
+          "style": null
+        },
+        "A6": {
+          "value": "1899-12-31",
+          "type": "date",
+          "formula": null,
+          "style": null
+        },
+        "B6": {
+          "value": "1899-12-31",
+          "type": "string",
+          "formula": null,
+          "style": null
+        }
+      },
+      "merges": []
+    },
+    "毫米属性": {
+      "cells": {
+        "A1": {
+          "value": "1mm 请求值",
+          "type": "string",
+          "formula": null,
+          "style": null
+        },
+        "B1": {
+          "value": "32mm 请求值",
+          "type": "string",
+          "formula": null,
+          "style": null
+        },
+        "C1": {
+          "value": "500mm 请求值",
+          "type": "string",
+          "formula": null,
+          "style": null
+        }
+      },
+      "merges": []
+    }
+  },
+  "saved_formatting": {
+    "scope": "odfpy inspection of saved ODF properties; no GUI/physical-layout claim",
+    "width_tolerance_mm": "0.02",
+    "assertions": [
+      {
+        "check": "sales/销售报表/A1/font-weight",
+        "expected": "bold",
+        "observed": "bold",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A1/font-weight-asian",
+        "expected": "bold",
+        "observed": "bold",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A1/font-weight-complex",
+        "expected": "bold",
+        "observed": "bold",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A1/color",
+        "expected": "#ffffff",
+        "observed": "#ffffff",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A1/background-color",
+        "expected": "#17324d",
+        "observed": "#17324d",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A1/wrap-option",
+        "expected": "wrap",
+        "observed": "wrap",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A2/font-weight",
+        "expected": "bold",
+        "observed": "bold",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A2/font-weight-asian",
+        "expected": "bold",
+        "observed": "bold",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A2/font-weight-complex",
+        "expected": "bold",
+        "observed": "bold",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A2/color",
+        "expected": "#ffffff",
+        "observed": "#ffffff",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A2/background-color",
+        "expected": "#17324d",
+        "observed": "#17324d",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/A2/wrap-option",
+        "expected": "wrap",
+        "observed": "wrap",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "business/业务汇总/A1/font-weight",
+        "expected": "bold",
+        "observed": "bold",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "business/业务汇总/A1/font-weight-asian",
+        "expected": "bold",
+        "observed": "bold",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "business/业务汇总/A1/font-weight-complex",
+        "expected": "bold",
+        "observed": "bold",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "business/业务汇总/A1/color",
+        "expected": "#ffffff",
+        "observed": "#ffffff",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "business/业务汇总/A1/background-color",
+        "expected": "#17324d",
+        "observed": "#17324d",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "business/业务汇总/A1/wrap-option",
+        "expected": "wrap",
+        "observed": "wrap",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/B5/background-color",
+        "expected": "#fff2cc",
+        "observed": "#fff2cc",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "sales/销售报表/B5/wrap-option",
+        "expected": "wrap",
+        "observed": "wrap",
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "experiment/样本/D2/wrap-option",
+        "expected": "wrap",
+        "observed": "wrap",
+        "status": "PASS",
+        "style_origin": "column"
+      },
+      {
+        "check": "sales/销售报表/D3/two-decimals",
+        "expected": [
+          [
+            "2",
+            "1"
+          ]
+        ],
+        "observed": [
+          [
+            "2",
+            "1"
+          ]
+        ],
+        "status": "PASS",
+        "style_origin": "column"
+      },
+      {
+        "check": "sales/销售报表/D3/alignment",
+        "expected": "end",
+        "observed": "end",
+        "status": "PASS"
+      },
+      {
+        "check": "experiment/样本/B2/two-decimals",
+        "expected": [
+          [
+            "2",
+            "1"
+          ]
+        ],
+        "observed": [
+          [
+            "2",
+            "1"
+          ]
+        ],
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "experiment/样本/B2/alignment",
+        "expected": "end",
+        "observed": "end",
+        "status": "PASS"
+      },
+      {
+        "check": "formulas/公式缓存/A3/two-decimals",
+        "expected": [
+          [
+            "2",
+            "1"
+          ]
+        ],
+        "observed": [
+          [
+            "2",
+            "1"
+          ]
+        ],
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "formulas/公式缓存/A3/alignment",
+        "expected": "end",
+        "observed": "end",
+        "status": "PASS"
+      },
+      {
+        "check": "sales/销售报表/A3/iso-date-pattern",
+        "expected": [
+          [
+            "year",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "month",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "day",
+            {
+              "style": "long"
+            },
+            ""
+          ]
+        ],
+        "observed": [
+          [
+            "year",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "month",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "day",
+            {
+              "style": "long"
+            },
+            ""
+          ]
+        ],
+        "status": "PASS",
+        "style_origin": "column"
+      },
+      {
+        "check": "formulas/公式缓存/B3/iso-date-pattern",
+        "expected": [
+          [
+            "year",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "month",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "day",
+            {
+              "style": "long"
+            },
+            ""
+          ]
+        ],
+        "observed": [
+          [
+            "year",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "month",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "day",
+            {
+              "style": "long"
+            },
+            ""
+          ]
+        ],
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "declarations/调用方缓存/B4/iso-date-pattern",
+        "expected": [
+          [
+            "year",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "month",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "day",
+            {
+              "style": "long"
+            },
+            ""
+          ]
+        ],
+        "observed": [
+          [
+            "year",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "month",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "day",
+            {
+              "style": "long"
+            },
+            ""
+          ]
+        ],
+        "status": "PASS",
+        "style_origin": "cell"
+      },
+      {
+        "check": "compatibility/日期策略/A3/iso-date-pattern",
+        "expected": [
+          [
+            "year",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "month",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "day",
+            {
+              "style": "long"
+            },
+            ""
+          ]
+        ],
+        "observed": [
+          [
+            "year",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "month",
+            {
+              "style": "long"
+            },
+            ""
+          ],
+          [
+            "text",
+            {},
+            "-"
+          ],
+          [
+            "day",
+            {
+              "style": "long"
+            },
+            ""
+          ]
+        ],
+        "status": "PASS",
+        "style_origin": "column"
+      },
+      {
+        "check": "experiment/样本/B2/Calc-display-text",
+        "expected": "-0.13",
+        "observed": "-0.13",
+        "status": "PASS"
+      },
+      {
+        "check": "sales/销售报表/column-0/stored-width-mm",
+        "expected": "32",
+        "observed": "31.99892",
+        "status": "PASS",
+        "serialized_length": "1.2598in",
+        "error_mm": "0.00108"
+      },
+      {
+        "check": "sales/销售报表/column-1/stored-width-mm",
+        "expected": "64",
+        "observed": "63.99022",
+        "status": "PASS",
+        "serialized_length": "2.5193in",
+        "error_mm": "0.00978"
+      },
+      {
+        "check": "sales/销售报表/column-2/stored-width-mm",
+        "expected": "24",
+        "observed": "24.01062",
+        "status": "PASS",
+        "serialized_length": "0.9453in",
+        "error_mm": "0.01062"
+      },
+      {
+        "check": "sales/销售报表/column-3/stored-width-mm",
+        "expected": "34",
+        "observed": "34.0106",
+        "status": "PASS",
+        "serialized_length": "1.339in",
+        "error_mm": "0.0106"
+      },
+      {
+        "check": "experiment/样本/column-0/stored-width-mm",
+        "expected": "32",
+        "observed": "31.99892",
+        "status": "PASS",
+        "serialized_length": "1.2598in",
+        "error_mm": "0.00108"
+      },
+      {
+        "check": "experiment/样本/column-1/stored-width-mm",
+        "expected": "30",
+        "observed": "29.99994",
+        "status": "PASS",
+        "serialized_length": "1.1811in",
+        "error_mm": "0.00006"
+      },
+      {
+        "check": "experiment/样本/column-2/stored-width-mm",
+        "expected": "20",
+        "observed": "19.99996",
+        "status": "PASS",
+        "serialized_length": "0.7874in",
+        "error_mm": "0.00004"
+      },
+      {
+        "check": "experiment/样本/column-3/stored-width-mm",
+        "expected": "80",
+        "observed": "79.98968",
+        "status": "PASS",
+        "serialized_length": "3.1492in",
+        "error_mm": "0.01032"
+      },
+      {
+        "check": "experiment/元数据/column-1/stored-width-mm",
+        "expected": "100",
+        "observed": "99.98964",
+        "status": "PASS",
+        "serialized_length": "3.9366in",
+        "error_mm": "0.01036"
+      },
+      {
+        "check": "compatibility/日期策略/column-0/stored-width-mm",
+        "expected": "32",
+        "observed": "31.99892",
+        "status": "PASS",
+        "serialized_length": "1.2598in",
+        "error_mm": "0.00108"
+      },
+      {
+        "check": "compatibility/日期策略/column-1/stored-width-mm",
+        "expected": "48",
+        "observed": "48.00092",
+        "status": "PASS",
+        "serialized_length": "1.8898in",
+        "error_mm": "0.00092"
+      },
+      {
+        "check": "compatibility/毫米属性/column-0/stored-width-mm",
+        "expected": "1",
+        "observed": "1.01092",
+        "status": "PASS",
+        "serialized_length": "0.0398in",
+        "error_mm": "0.01092"
+      },
+      {
+        "check": "compatibility/毫米属性/column-1/stored-width-mm",
+        "expected": "32",
+        "observed": "31.99892",
+        "status": "PASS",
+        "serialized_length": "1.2598in",
+        "error_mm": "0.00108"
+      },
+      {
+        "check": "compatibility/毫米属性/column-2/stored-width-mm",
+        "expected": "500",
+        "observed": "499.98884",
+        "status": "PASS",
+        "serialized_length": "19.6846in",
+        "error_mm": "0.01116"
+      },
+      {
+        "check": "business/业务汇总/column-0/stored-width-mm",
+        "expected": "65",
+        "observed": "65.00114",
+        "status": "PASS",
+        "serialized_length": "2.5591in",
+        "error_mm": "0.00114"
+      },
+      {
+        "check": "business/业务汇总/column-1/stored-width-mm",
+        "expected": "20",
+        "observed": "19.99996",
+        "status": "PASS",
+        "serialized_length": "0.7874in",
+        "error_mm": "0.00004"
+      },
+      {
+        "check": "business/业务汇总/column-2/stored-width-mm",
+        "expected": "35",
+        "observed": "35.0012",
+        "status": "PASS",
+        "serialized_length": "1.378in",
+        "error_mm": "0.0012"
+      },
+      {
+        "check": "laboratory/测量/column-3/stored-width-mm",
+        "expected": "100",
+        "observed": "99.98964",
+        "status": "PASS",
+        "serialized_length": "3.9366in",
+        "error_mm": "0.01036"
+      }
+    ],
+    "files_sha256": {
+      "sales": "7fd3518a781e557f2c4216834512abcbc04cf2d3aede711e84b9fbd7af67b681",
+      "experiment": "97649932b1c689b9caf59aff49e8373958be968ac9aa619b9afc31717a9aef5e",
+      "formulas": "58fcbbb88f31e2ff9b130f151574a330e30cbe8dbdbbbfdafe33f28426b4d47d",
+      "compatibility": "f2d16b1141d2148fa3844ad0b23b0d2111a5ec1631ef6fa7cec0e159aaca389d",
+      "business": "3ab6618807341c45e38f623aa63e3dfe442b3b7eb23ac96d92f0a80e4f0f1cbe",
+      "laboratory": "e0c4c7a6f8bf8483a227740c14bc50d966cb1fb8b2c2478df35e87236a4b3586",
+      "declarations": "61e78189779bd831748aaf39987948aa1efd20dc6eef1a1fe8cc00bba74fbbc5"
+    },
+    "passed": 50,
+    "failed": 0,
+    "status": "PASS"
+  },
+  "formatting_negative_controls": {
+    "status": "PASS",
+    "scope": "In-memory verifier negative controls; no application invocation or malformed-file import claim",
+    "controls": [
+      {
+        "name": "Asian header weight changed to normal",
+        "status": "PASS",
+        "rejection_evidence": [
+          "sales/销售报表/A1/font-weight-asian",
+          "sales/销售报表/A2/font-weight-asian"
+        ]
+      },
+      {
+        "name": "Column width changed by 1mm",
+        "status": "PASS",
+        "rejection_evidence": [
+          "sales/销售报表/column-0/stored-width-mm"
+        ]
+      },
+      {
+        "name": "Number format changed to three decimals",
+        "status": "PASS",
+        "rejection_evidence": [
+          "sales/销售报表/D3/two-decimals"
+        ]
+      },
+      {
+        "name": "Date format changed to short year",
+        "status": "PASS",
+        "rejection_evidence": [
+          "compatibility/日期策略/A3/iso-date-pattern"
+        ]
+      },
+      {
+        "name": "Inherited column date style replaced with Plain",
+        "status": "PASS",
+        "rejection_evidence": [
+          "compatibility/日期策略/A3/iso-date-pattern"
+        ]
+      },
+      {
+        "name": "Cyclic Header inheritance",
+        "status": "PASS",
+        "rejection_evidence": [
+          "Cyclic or excessive fixture style inheritance"
+        ]
+      },
+      {
+        "name": "Missing non-default parent style",
+        "status": "PASS",
+        "rejection_evidence": [
+          "Missing referenced fixture style: AbsentStyle"
+        ]
+      }
+    ]
+  },
+  "passed": 33,
+  "failed": 0,
+  "headless_value_checks": "PASS",
+  "headless_formatting_checks": "PASS",
+  "status": "PARTIAL",
+  "interpretation": "Listed headless checks retain every failure; GUI, physical layout and other versions remain unverified",
+  "finished_utc": "2026-10-03T17:35:52.372325+00:00"
+}

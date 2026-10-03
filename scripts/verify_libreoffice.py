@@ -12,6 +12,7 @@ from verify_external import check_package
 from odf.opendocument import load
 from odf.table import Table, TableRow
 from odf import teletype
+from verify_formatting import verify_saved_formats, formatting_controls
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -143,16 +144,23 @@ def main():
         report['formula_cache_observation'] = {'input_odf_cache':99, 'calc_native_save_cache':books['declarations']['调用方缓存']['cells']['B1']['value'],
             'interpretation':'Native ODS save can keep a supplied cache; prior XLSX export recalculated to 3. Reader save/export behavior is not a MoonODS calculation engine.'}
         report['date_and_width_observations'] = books['compatibility']
+        report['saved_formatting'] = verify_saved_formats(out)
+        report['formatting_negative_controls'] = formatting_controls(out)
         report['passed'] = sum(a['status'] == 'PASS' for a in report['assertions'])
         report['failed'] = sum(a['status'] == 'FAIL' for a in report['assertions'])
         report['headless_value_checks'] = 'PASS' if report['failed'] == 0 else 'PARTIAL'
-        report['status'] = 'PARTIAL'
+        report['headless_formatting_checks'] = report['saved_formatting']['status']
+        report['status'] = 'PARTIAL' if (report['headless_value_checks'] == 'PASS' and
+            report['headless_formatting_checks'] == 'PASS' and
+            report['formatting_negative_controls']['status'] == 'PASS') else 'FAIL'
         report['interpretation'] = 'Listed headless checks retain every failure; GUI, physical layout and other versions remain unverified'
     except Exception as e:
         report['status'] = 'FAIL'; report['error'] = repr(e)
     report['finished_utc'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     (out / 'libreoffice.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
-    print(json.dumps({k:report[k] for k in ['status','application_version','headless_value_checks','passed','failed','error'] if k in report}, ensure_ascii=False))
-    return 0 if report.get('headless_value_checks') == 'PASS' else 1
+    print(json.dumps({k:report[k] for k in ['status','application_version','headless_value_checks','headless_formatting_checks','passed','failed','error'] if k in report}, ensure_ascii=False))
+    return 0 if (report.get('headless_value_checks') == 'PASS' and
+                 report.get('headless_formatting_checks') == 'PASS' and
+                 report.get('formatting_negative_controls', {}).get('status') == 'PASS') else 1
 
 if __name__ == '__main__': raise SystemExit(main())

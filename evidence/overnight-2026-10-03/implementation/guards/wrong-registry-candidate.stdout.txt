@@ -1,0 +1,17 @@
+{
+  "started_utc": "2026-10-03T17:34:58.696502+00:00",
+  "steps": [],
+  "scope": "Real published registry consumption with initially empty registry index/package cache",
+  "local_workspace": false,
+  "initial_registry_entries": [],
+  "credentials_copied": false,
+  "existing_sdk_core_reused": true,
+  "not_measured": [
+    "fresh machine",
+    "office applications",
+    "other compiler backends"
+  ],
+  "status": "FAIL",
+  "error": "Report is not the historical published 0.1.0 candidate",
+  "finished_utc": "2026-10-03T17:34:58.696696+00:00"
+}

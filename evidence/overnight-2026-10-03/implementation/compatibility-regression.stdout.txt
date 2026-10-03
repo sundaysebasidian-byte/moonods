@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "input": "examples/compatibility/generated/compatibility.ods",
+  "sha256": "da164510fc8c0eb99a1374e159547d4ffa981475491599385cdf3ea968a1d359",
+  "typed_cell_assertions": 7,
+  "official_rng_xml": 3,
+  "column_mm_mapping": [
+    "1mm",
+    "32mm",
+    "500mm"
+  ],
+  "negative_date_year_zero": "REJECTED",
+  "negative_width": "REJECTED",
+  "native_office": "NOT RUN; no UI activation; this proves ODF serialization, not application rendering"
+}

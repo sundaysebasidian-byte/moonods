@@ -1,5 +1,9 @@
 # 已装桌面软件真实读取
 
+## 2026-10-03：当前样式修复及格式验证
+
+Header补齐亚洲/复杂文字字重后，当前ODS字节已改变；旧Excel输入哈希不再匹配，旧实测保留为历史，不声称当前Excel已测。实际重新调用已装LibreOfficeDev核8新文件：33值、2合并及50保存格式属性PASS，7检验器负控制PASS；其中18列宽保存长度在声明0.02mm容差内符合请求。整体PARTIAL；GUI字形、稳定版、纸面毫米与Excel单位校准未测。[本轮详情](FORMAT_VERIFICATION_ZH.md)。
+
 ## 2026-10-02：既有LibreOfficeDev的真实无界面读取
 
 发现Codex文档运行环境已经附带`LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5`。本轮没有下载或安装LibreOffice。通过指定该工具的完整路径、一次性UserInstallation目录、无界面Calc导入8份固定无宏合成ODS，原生回存到另一目录，再用odfpy核对33类型值与2合并；全部通过，输入SHA256未变。脚本退出后临时profile删除，没有服务监听或持久访问。详细命令、stdout/stderr、原生回存文件及输入摘要见`evidence/overnight-2026-10-02/libreoffice-final/libreoffice.json`。
@@ -33,7 +37,7 @@ Excel value2把Empty与Text("")均呈现空字符串，源区别由独立读取/
 
 `evidence/office-2026-10-01/`为修正前，保留访问/打开失败、单位假设和长文截断。销售/formulas截图视觉核对过；早期错名实验截图改为`duplicate-sales-window.png`，不能当实验截图。正确实验截图为`office-2026-10-01-fixed/experiment-window.png`，通过指定Excel窗口编号截取、视觉核对。截图辅助核值，以真实API日志为主。
 
-LibreOffice、Numbers、WPS未实测。没有安装LibreOffice，也不把Excel/odfpy称为LibreOffice通过。
+截至10/1该阶段，LibreOffice、Numbers、WPS尚未实测；10/2、10/3另有已装LibreOfficeDev真实无界面记录，Numbers/WPS仍未测。全程没有新安装LibreOffice，不把Excel/odfpy称为LibreOffice通过。
 
 ## 本轮规范判定与有界处理
 
@@ -45,6 +49,6 @@ ODF §20.254/§18.3.26的column-width为固定positiveLength，毫米单位合�
 
 Microsoft[VBA Range.Width](https://learn.microsoft.com/en-us/office/vba/api/excel.range.width)定义为point，但本次实测是Mac AppleScript/JXA，不是VBA；既有Excel16.113.3的sdef仅说明返回范围宽度，**未注明单位**。不能直接套VBA约定。数据近似96单位/英寸只是假设，不是校准；原point换算FAIL继续保留，绝对毫米UNRESOLVED，不改成PASS或向writer加入像素补偿。
 
-本轮仅读规范/本机字典和执行非原生回归，未激活Office、System Events或截图，不占Pixel焦点。新的诊断例未原生实读。Library历史v2及旧真实报告保留；审查草稿结果在`evidence/date-width-final/`，最终重打包/消费结果在`evidence/date-width-release/`。统一技术复核后按真实阶段提交；较早spec-review记录中的待提交状态属于草稿阶段。
+10/1日期单位复核阶段仅读规范/本机字典和执行非原生回归，未激活Office、System Events或截图，不占Pixel焦点。新的诊断例未原生实读。Library历史v2及旧真实报告保留；审查草稿结果在`evidence/date-width-final/`，最终重打包/消费结果在`evidence/date-width-release/`。统一技术复核后按真实阶段提交；较早spec-review记录中的待提交状态属于草稿阶段。
 
-`excel_1900_date`只是日期范围政策，不是完整Excel兼容过滤器。Microsoft还列出公式8192字符、单元格253换行、列宽255字符等上限；MoonODS的ODF存储限制不同，没有声称这些合法ODF输入全能在Excel保留或计算。任意公式与500mm边界的原生读取仍未测，不把字典/规范检查称为实测。
+`excel_1900_date`只是日期范围政策，不是完整Excel兼容过滤器。Microsoft还列出公式8192字符、单元格253换行、列宽255字符等上限；MoonODS的ODF存储限制不同，没有声称这些合法ODF输入全能在Excel保留或计算。任意公式仍未测；500mm保存属性在10/3 Calc中实测，屏幕/打印物理宽度仍未测，不把字典/规范检查称为实测。

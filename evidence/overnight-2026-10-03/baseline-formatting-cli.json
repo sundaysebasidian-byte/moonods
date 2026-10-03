@@ -1,0 +1,16 @@
+{
+  "time_utc": "2026-10-03T17:34:19.432566+00:00",
+  "command": [
+    "../.verify-venv/bin/python",
+    "scripts/verify_formatting.py",
+    "--input",
+    "evidence/overnight-2026-10-02/libreoffice-final",
+    "--report",
+    "evidence/overnight-2026-10-03/baseline-formatting.json"
+  ],
+  "exit_code": 1,
+  "scope": "Reinspect actual Oct2 Calc native saves with stricter ODF cross-script formatting expectations; no new app invocation",
+  "old_application_report_sha256": "a283552f6370bba5058bf856939940af2943895c405eb91f729940bd7d29ad1b",
+  "style_source_sha256": "fefb89007460bda1a6f2c6dd12cfcd5a8d7c7fd3a282b0aab8048226bebdfe5e",
+  "status": "CONFIRMED GAP"
+}
