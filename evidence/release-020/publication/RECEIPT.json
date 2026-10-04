@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "module": "sundaysebasidian-byte/moonods",
+  "version": "0.2.0",
+  "published_source_sha": "4cd43f395b15164282e2a56c5e66c9aa2b95b750",
+  "published_utc": "2026-10-04T05:34:05.162142+00:00",
+  "prepublish_CI": 37178702277,
+  "CI_conclusion": "success",
+  "archive_sha256": "718a4b001190fe4bbf52ad9fb8fcc3f06c437a54c60080e0c478f5ad6af75b35",
+  "registry_checksum_matches_candidate": true,
+  "package_file_count": 46,
+  "all_registry_bytes_match_publish_candidate": true,
+  "backend_tests": {
+    "js": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "wasm-gc": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    }
+  },
+  "js_reader": {
+    "status": "PASS",
+    "typed_cell_assertions": 30,
+    "official_rng_xml_count": 9,
+    "package_checks": "PASS",
+    "inconsistent_cache_preserved": 99,
+    "calculation_performed": false
+  },
+  "wasm_reader": {
+    "status": "PASS",
+    "typed_cell_assertions": 30,
+    "official_rng_xml_count": 9,
+    "package_checks": "PASS",
+    "inconsistent_cache_preserved": 99,
+    "calculation_performed": false
+  },
+  "cross_process_and_backend_bytes": {
+    "status": "PASS",
+    "sha256": {
+      "business.ods": "ef698352d76d9a75c864eaed4018a07643d171ba16096ef288acef33445143a2",
+      "declarations.ods": "4d8d19ae8a02ca1626b88d692816cd3c81e038ba64f59157e7e97615a5919a13",
+      "laboratory.ods": "be98f1fc02cb20c552a6f83d8cec40b3599b36216f05da54b5088140a836bc4f"
+    }
+  },
+  "existing_sdk_core_reused": true,
+  "credentials_copied": false,
+  "first_invocation": "Local missing-login-file failure retained; no upload",
+  "Office": "PARTIAL; previous actual LibreOfficeDev evidence, no new app test",
+  "application_submitted": false,
+  "later_documentation_commits": "Do not alter immutable published0.2.0 package bytes"
+}

@@ -1,0 +1,17 @@
+{
+  "started_utc": "2026-10-04T05:31:28.205640+00:00",
+  "command": [
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/.moonhome/bin/moon",
+    "publish"
+  ],
+  "head": "4cd43f395b15164282e2a56c5e66c9aa2b95b750",
+  "module": "sundaysebasidian-byte/moonods",
+  "version": "0.2.0",
+  "publish_attempts": 1,
+  "uses_existing_credentials": true,
+  "stdin": "closed; no automatic prompt consent",
+  "status": "COMMAND FAILED",
+  "exit_code": 255,
+  "server_200_observed": false,
+  "finished_utc": "2026-10-04T05:31:28.229279+00:00"
+}

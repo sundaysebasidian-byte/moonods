@@ -1,8 +1,8 @@
 # MoonODS
 
-MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。已公开 [GitHub](https://github.com/sundaysebasidian-byte/moonods)，原创MIT。0.1.0为历史首发；此源码版本为0.2.0。真实 CI、空注册表消费和限制见 [发行记录](docs/RELEASE_ZH.md)。
+MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。已公开 [GitHub](https://github.com/sundaysebasidian-byte/moonods)，原创MIT。**0.2.0已正式发布到[Mooncakes](https://mooncakes.io/docs/sundaysebasidian-byte/moonods)**，并通过空缓存正式包消费验证；0.1.0为历史首发。当前发行证据见[0.2.0记录](docs/RELEASE_020_ZH.md)，历史见[首发记录](docs/RELEASE_ZH.md)。
 
-**本源码版本为0.2.0。** 包含整行原子写入`set_row`、日期公式缓存DateISO默认和Header三文字字重。JS及Wasm GC各31核心/API、各5独立消费者；三场景的ODS字节在两个后端及重复生成进程中一致。版本安装使用`moon add sundaysebasidian-byte/moonods@0.2.0`；准确发布快照、远端CI与正式注册表消费结果分别记录，见[0.2.0发行说明](docs/RELEASE_020_ZH.md)。
+**当前发行版本为0.2.0。** 包含整行原子写入`set_row`、日期公式缓存DateISO默认和Header三文字字重。JS及Wasm GC各31核心/API、各5独立消费者；三场景的ODS字节在两个后端及重复生成进程中一致。版本安装使用`moon add sundaysebasidian-byte/moonods@0.2.0`。发布快照为`4cd43f395b15164282e2a56c5e66c9aa2b95b750`；正式安装的46文件全部与CI候选相同，详见[发行说明](docs/RELEASE_020_ZH.md)。后续发布证据文档提交不改变已发布包字节。
 
 适合销售汇总、教学实验和调用方提供公式缓存的离线报表。它生成 ODS，不读取或转换已有文件。生态里已有 [markitdown-mb](https://github.com/ZSeanYves/markitdown) 的 ODS→Markdown 读取，以及 [mbtexcel](https://github.com/moonbitlang/office.mbt) 的 XLSX 读写；本项目聚焦有界、类型化、确定性的 ODF 1.3 writer。当前检索不等于证明生态里绝无同类项目，正式申报前需要再核查。
 
@@ -48,7 +48,7 @@ moon check --target wasm-gc -j 1
 
 源码、开发验证脚本和完整证据请从 [GitHub](https://github.com/sundaysebasidian-byte/moonods) 获取；Mooncakes 包只包含库、示例、接口、许可和说明。注册表消费结果单独记录，不用本地 workspace 成功代替。
 
-本地独立模块消费已实际验证：`scripts/verify_reuse.py`用`moon package`候选ZIP建立新目录，独立模块与解压候选组成`moon.work`，第三方依赖从现有可信缓存解析；该本地阶段未从Mooncakes安装。之后首发0.1.0已在空注册表缓存验证，41文件与首发候选相同、4项消费测试和30类型值/9XML通过，见发行记录。手工本地workspace布局示意：
+本地独立模块消费已实际验证：`scripts/verify_reuse.py`用`moon package`候选ZIP建立新目录，独立模块与解压候选组成`moon.work`，第三方依赖从现有可信缓存解析；该本地阶段未从Mooncakes安装。正式0.2.0另用`scripts/verify_registry_release.py`在空索引/包缓存且没有`moon.work`的新目录，从Mooncakes下载安装；46文件与发布候选相同，JS/Wasm GC各5消费测试、各30类型值/9XML通过，实际ODS跨进程与后端相同。只复用已有SDK/core，不复制凭据，不称全新机器。历史首发0.1.0的41文件/4测试保持原记录，不用于证明0.2.0。手工本地workspace布局示意：
 
 ```text
 moon.work                         members = ["candidate", "consumer"]

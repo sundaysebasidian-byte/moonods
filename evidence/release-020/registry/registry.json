@@ -1,0 +1,259 @@
+{
+  "started_utc": "2026-10-04T05:34:42.699663+00:00",
+  "steps": [
+    {
+      "name": "registry-update",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "update"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "consumer-format",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "fmt",
+        "--check",
+        "src"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "js-check",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "check",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "js-build",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "build",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "js-test",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "test",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "--no-parallelize",
+        "--deny-warn",
+        "src"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "wasm-gc-check",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "check",
+        "--target",
+        "wasm-gc",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "wasm-gc-build",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "build",
+        "--target",
+        "wasm-gc",
+        "-j",
+        "1",
+        "--deny-warn"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "wasm-gc-test",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "test",
+        "--target",
+        "wasm-gc",
+        "-j",
+        "1",
+        "--no-parallelize",
+        "--deny-warn",
+        "src"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "js-first",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "src"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "js-second",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "run",
+        "--target",
+        "js",
+        "-j",
+        "1",
+        "src"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "wasm-first",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "run",
+        "--target",
+        "wasm-gc",
+        "-j",
+        "1",
+        "src"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "wasm-second",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/evidence/release-020/registry/isolated-work/sdk-home/bin/moon",
+        "run",
+        "--target",
+        "wasm-gc",
+        "-j",
+        "1",
+        "src"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "scope": "Formal registry 0.2.0 install; initially empty index/package cache; JS and Wasm GC consumers",
+  "initial_registry_entries": [],
+  "credentials_copied": false,
+  "local_workspace": false,
+  "existing_sdk_core_reused": true,
+  "not_measured": [
+    "fresh machine",
+    "Office apps",
+    "native/llvm/wasm backends"
+  ],
+  "published_package": {
+    "module": "sundaysebasidian-byte/moonods",
+    "version": "0.2.0",
+    "file_count": 46,
+    "all_files_sha256": {
+      "AI_USAGE.md": "73ff458cf0d5c647be0be9c193355775ba8aa7cde6054bf7c761329f03ca9a52",
+      "DEPENDENCIES.lock.json": "c45563142b797dbf62ac730a6cb804ece359cb23cfa99a9c63ed43aa9da060eb",
+      "LICENSE": "7aed9943672c49428e033adb160dfc72ae9d245108ea27c3453ff979110c8091",
+      "README.md": "88f40bea77927098836bd9d65333c1a11a41e71540ed6f456ac9b034dc321dbf",
+      "SOURCES.md": "9d16321d6a45e05b4c9d59a39c57871e464a816faa76ddd572e0c060a4a12def",
+      "THIRD_PARTY_NOTICES.md": "0c0c8a7a0f00980e9ee6e03c2130272b8779e9f0654ca8533afa9adb8d60cccb",
+      "TOOLCHAIN.lock": "ad2204630d3fbf49c6f685d74206cf008fcee3c859eec251e73477625fa4d0d4",
+      "boundaries_wbtest.mbt": "3fbbbb587487af543b08f7f75f4d65654343eeda7a3a3cf0003acc350e6dfe85",
+      "cell.mbt": "7603b09651b46bf49da47a3958d515aa9498fc385e1545482505dbd642f3948e",
+      "cell_wbtest.mbt": "afa9db346cf861007a00087706f97d59b182f401ab2b3b3c9eb51727906aaa85",
+      "compatibility_wbtest.mbt": "8c8c4d42de4d7302a89b38c59ccda9f007e7d2b6799738c299ceff8a0dedfdcc",
+      "docs/ACCEPTANCE_ZH.md": "f52c87dcea7538321a684d0fa05d1aa4fd122ac66bb3d54a94c53072029e11c1",
+      "docs/FORMAT_VERIFICATION_ZH.md": "ac0caf9c8bb8fa88054f08a4a0392b91598453a773ac398164cb4caa290cdbc4",
+      "docs/GITHUB_SYNC_ZH.md": "ea84616ea7bde08e0b87bb5d7a1e3ccfe69a50bcd99f5b6a5cea147aeb9304d2",
+      "docs/LOCAL_CANDIDATE_ZH.md": "3c0e0d33c6ce1aafbe537a04e85f0c74994c5b1ec41a706f40795bf837b140a8",
+      "docs/OFFICE_COMPATIBILITY_ZH.md": "33cee12776093c5d58473405dbbc1c47e87dfc7d1996bd546dc92bf36221ad44",
+      "docs/PROPOSAL_REFERENCE.md": "1583df23b3756ce56bd8f87f2b8b8458c16c1ee607baa698a744fdf67c66d76c",
+      "docs/RELEASE_020_ZH.md": "f81e70939f129213c7d137a55bcc9890396c79e87f9ba46346f2d7bab2e6ddfc",
+      "docs/RELEASE_ZH.md": "be6ea3e7c7cd76bab041b0d5c6b78f09c9b42288849f2613611369ea81477166",
+      "docs/REUSE_REVIEW_ZH.md": "45697c387c46ad5158608582db2b5e7e0bb7b846caaf33f6f9f296a1390cfbcb",
+      "docs/RULES_REVIEW_ZH.md": "ee6127551a27fd9e4254da689848b36619adf4712ef19468c97f76f4f168caec",
+      "examples/compatibility/main.mbt": "ac07ed80dd07d80e2bc40cfdeb9524817248ccafcd0ec1929880219fe207af07",
+      "examples/compatibility/moon.pkg": "692316774b063ee959d0fba67df0587cb44ff309f9df705315dfe5bec12cca4d",
+      "examples/compatibility/pkg.generated.mbti": "e766d50c8be1d1a1a3aca522a090d5a55d8bd0f599a1436d4f887d5acd0a57c4",
+      "examples/generate/main.mbt": "f4cbfe8c348314c5d3a10e10d2792a765c78709078c9d6f80c97ef9b161c2763",
+      "examples/generate/moon.pkg": "692316774b063ee959d0fba67df0587cb44ff309f9df705315dfe5bec12cca4d",
+      "examples/generate/pkg.generated.mbti": "b8ea8e756f3e442505079734dd31e0ebd865d0b44a4da3dd0a435bcbbb80f475",
+      "licenses/flate-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "licenses/moonbit-core-Apache-2.0.txt": "86460c45017ffacb9aa9e18850fa9fdb036339dc8851125465f4a3f3442fc894",
+      "licenses/zipc-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "moon.mod": "c73c51a6a589841424fdecf5dc31758df79f282a7bc579b9b12a14fd496df50f",
+      "moon.pkg": "db4df9cb2a38cc73d956036004cd5effe4593e8177d3015349f94dcb9a5ff7cd",
+      "package.mbt": "3db24b3d3fd785da47e5a4b5b90065cbf4be15e37fabf6e383778e9a1c2ec630",
+      "package_wbtest.mbt": "c52540ce6d3e31031b44754d81a9f4b9bb8425ee18a2dbd93699c4355564e786",
+      "pkg.generated.mbti": "a33dbd5c6a9b21d90a4e987e65918e33a10e7d83b08d84f301ae41c850555f2e",
+      "requirements-verify.txt": "069819b2fac9540113accf84f60ff7ed4371301e53981d69746818635a030b2e",
+      "row_wbtest.mbt": "620729d0d0dbc5f9b83e23e88b5a8e121221cc223b0f855a16d74f0e1514db55",
+      "style.mbt": "abd649d785d498c67c3a8494acc69aa62ef582680e0428ce27ed883975b0b56e",
+      "style_wbtest.mbt": "04705f9d4d118df76a2aaf7d5b42fcb159069cd38f82b05b50a4ed3c3c98e02d",
+      "tests/consumer/api_test.mbt": "809553a0fa82f1a3562d2648ac748f379011308d55387dd58ba0e8b2d9c8b724",
+      "tests/consumer/moon.pkg": "0d914b0ff6f314479b17e014f4454223e24dc2ea246bf06d829d26497346faf0",
+      "tests/consumer/pkg.generated.mbti": "55dfe860142f9161edcffdf0084b9db6ea58faa4c0215de1369b09dd5edcc5b1",
+      "workbook.mbt": "439bc7068bdd77ad39be6af2c1f85387cfa3e8b83337114d895bd1ce16f3face",
+      "workbook_wbtest.mbt": "6b79e1f4eeb5bba44ddd1b6068c13135aa41700e0f3cbaca7d8ed4a53b4456f7",
+      "xml.mbt": "5c5935442dc508b8aade02077561cd9296867c9c1f913234a48889451f7e9430",
+      "xml_wbtest.mbt": "f88bf99df7743a678f5d11d466f753e5a3b72e17313966a03c3f8632146fa8b7"
+    },
+    "all_registry_bytes_match_publish_candidate": true
+  },
+  "backend_tests": {
+    "js": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "wasm-gc": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    }
+  },
+  "js_reader": {
+    "status": "PASS",
+    "typed_cell_assertions": 30,
+    "official_rng_xml_count": 9,
+    "package_checks": "PASS",
+    "inconsistent_cache_preserved": 99,
+    "calculation_performed": false
+  },
+  "wasm_reader": {
+    "status": "PASS",
+    "typed_cell_assertions": 30,
+    "official_rng_xml_count": 9,
+    "package_checks": "PASS",
+    "inconsistent_cache_preserved": 99,
+    "calculation_performed": false
+  },
+  "cross_process_and_backend_bytes": {
+    "status": "PASS",
+    "sha256": {
+      "business.ods": "ef698352d76d9a75c864eaed4018a07643d171ba16096ef288acef33445143a2",
+      "declarations.ods": "4d8d19ae8a02ca1626b88d692816cd3c81e038ba64f59157e7e97615a5919a13",
+      "laboratory.ods": "be98f1fc02cb20c552a6f83d8cec40b3599b36216f05da54b5088140a836bc4f"
+    }
+  },
+  "status": "PASS",
+  "finished_utc": "2026-10-04T05:35:04.246890+00:00"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "sha": "4cd43f395b15164282e2a56c5e66c9aa2b95b750",
+  "CI": 37178702277,
+  "core_per_backend": 31,
+  "consumer_per_backend": 5,
+  "candidate_files": 46,
+  "source_and_package_match_checkout": true
+}

@@ -1,0 +1,21 @@
+{
+  "started_utc": "2026-10-04T05:34:01.326249+00:00",
+  "head": "4cd43f395b15164282e2a56c5e66c9aa2b95b750",
+  "module": "sundaysebasidian-byte/moonods",
+  "version": "0.2.0",
+  "command": [
+    "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+    "publish"
+  ],
+  "MOON_HOME": "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk",
+  "existing_login_reused": true,
+  "credentials_copied_or_manually_read": false,
+  "global_environment_changed": false,
+  "first_invocation": "Failed locally before upload: task home missing credentials file",
+  "corrected_environment_invocations": 1,
+  "stdin": "closed; no automatic prompt consent",
+  "status": "COMMAND SUCCEEDED",
+  "exit_code": 0,
+  "server_200_observed": true,
+  "finished_utc": "2026-10-04T05:34:04.582447+00:00"
+}

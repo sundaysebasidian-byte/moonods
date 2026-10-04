@@ -1,0 +1,4 @@
+Downloading sundaysebasidian-byte/moonods@0.2.0
+Downloading moonbit-community/zipc@0.2.2
+Downloading moonbit-community/flate@0.2.0
+Finished. moon: ran 7 tasks, now up to date

@@ -1,0 +1,11 @@
+Running moon check ...
+Finished. moon: no work to do
+Check passed
+validating packaged zip: /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/_build/publish/sundaysebasidian-byte-moonods-0.2.0.zip
+extracting packaged zip to /Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods/_build/publish/verify/mooncake_publish_checkbwZnBm
+running moon check on extracted package
+Running moon check ...
+Using cached moonbit-community/flate@0.2.0
+Using cached moonbit-community/zipc@0.2.2
+Finished. moon: ran 12 tasks, now up to date
+Check passed

@@ -1,6 +1,6 @@
 # MoonODS 中文验收矩阵
 
-状态：2026-10-04 **0.2.0候选源码同步**。历史0.1.0已公开/发布；GitHub同步历史见[GITHUB_SYNC_ZH](GITHUB_SYNC_ZH.md)；0.2.0发布快照、CI与注册表回执见[发行说明](RELEASE_020_ZH.md)。本文件是AI辅助客观工程记录，不是最终人工申报书或官方终验结论。不保证一次验收或奖金额度。
+状态：2026-10-04 **0.2.0已正式发布并通过空缓存安装验证**。发布快照`4cd43f395b15164282e2a56c5e66c9aa2b95b750`及准确CI与注册表回执见[发行说明](RELEASE_020_ZH.md)。历史0.1.0及当天首次GitHub同步记录保持原范围。本文件是AI辅助客观工程记录，不是最终人工申报书或官方终验结论。不保证一次验收或奖金额度。
 
 ## 终验九条
 
@@ -9,13 +9,13 @@
 | 官方条目（事实摘要） | 当前候选状态 | 材料与缺口 |
 |---|---|---|
 | 1. MoonBit为主要实现语言 | 本地满足 | Cell/Sheet/Workbook/XML/ZIP核心为MoonBit；Node只保存示例Bytes，Python只验证 |
-| 2. GitHub公开、提交清晰 | GitHub main同步0.2.0源码；Mooncakes仍0.1.0 | 真实Git历史保留；当前源码、README及测试同步原仓库，不重写远端历史 |
+| 2. GitHub公开、提交清晰 | 原GitHub公开；Mooncakes0.2.0已发布 | 真实Git历史保留；准确发布SHA单列，后续回执文档提交不改变正式包 |
 | 3. 源码清晰并实现核心功能 | 本地验证通过 | 类型值、缓存、多表、5样式/列宽/合并、固定ODF包；新增整行原子写入、日期缓存默认样式及Header三文字字重 |
-| 4. README目标、安装、用法、示例可复现 | 本地通过；用户理解待做 | 区分0.1.0注册表安装与0.2.0本地workspace；实际候选换目录消费，源码ZIP换目录复现另附记录 |
-| 5. CI覆盖检查、构建、测试 | 工作流已具备，具体SHA终态见Actions | 本地fmt/check/build/test及31+5通过；当前远端结果按提交核对，旧25+4不迁移为当前通过 |
+| 4. README目标、安装、用法、示例可复现 | 本地及正式0.2.0安装通过；用户理解待做 | 0.2.0候选workspace与正式空缓存安装分别实测；后者无moon.work、未复制凭据；源码ZIP完整证据另附 |
+| 5. CI覆盖检查、构建、测试 | 发布SHA的CI 37178702277成功 | 实际证据与源码/候选46文件一致；JS/Wasm GC各31+5通过；旧25+4不迁移为当前通过 |
 | 6. 至少一个可运行示例 | 本地通过 | 销售、实验多表、公式声明、edge及日期/单位例；独立消费三完整场景 |
 | 7. 完整测试覆盖核心路径 | 有界范围通过；非穷尽 | JS/Wasm GC各31核心/API、各5独立消费、官方RNG/odfpy/ZIP/负控制；Excel与LibreOffice整体PARTIAL；规模/RSS/其他后端未测 |
-| 8. 发布mooncakes.io | 0.1.0历史首发通过；0.2.0正式回执单列 | 新代码与发布版不同，禁止拿旧注册表41文件/4测试报告冒充新版本发行 |
+| 8. 发布mooncakes.io | 0.2.0正式发布及空缓存消费PASS | 服务器200、正式元数据、checksum与46文件一致；双后端各5消费测试/30值/9XML；旧0.1.0报告仍只证明旧版 |
 | 9. OSI许可及引用/移植合规 | 材料已核 | 原创MIT；core/zipc/flate Apache-2.0；原OASIS资料不重新授权MIT；fixture合成；AI来源如实声明 |
 
 ## 真实测试矩阵
@@ -25,6 +25,7 @@
 | JS fmt/check/build `--deny-warn` | PASS | 精确moonc0.10.14/moon0.1.20260920，既有SDK；`-j 1`；Node/Python/独立验证依赖现已严格核锁 |
 | 核心27 + 同模块公共API4 | 31 PASS / 0 FAIL | 保留旧25；新增最终32MiB封装（含头部）精确边界/超限、整行类型值/边界、后段合并冲突整批回滚、净替换预算、外部API列边界及日期公式默认样式 |
 | 独立模块0.2.0候选消费 | 5 PASS / 0 FAIL | 真`moon package`、解压新目录；销售与实验真实用set_row；30类型值、9 XML；不从注册表安装0.2.0 |
+| 正式注册表0.2.0空缓存消费 | JS/Wasm GC各5 PASS / 0 FAIL | 新目录空索引/包缓存、无moon.work，真正下载0.2.0；46文件与发布候选相同，各30类型值/9XML，跨进程/后端ODS相同；只复用已有SDK/core |
 | 官方ODF1.3 RNG | PASS | 固定摘要官方原schema，主4ODS/12XML；日期单位3XML；独立消费9XML；非法document/manifest控制拒绝 |
 | ZIP、CRC及严格头部验证 | PASS | 路径/MIME/顺序/CRC；本地与中央头逐字段、EOCD/连续条目/尾部一致性；15个坏包控制被拒绝 |
 | 原本地头CRC缺口 | 原FAIL，验证器已修复 | baseline/header-probe.json记录旧验证器错误接受本地CRC不一致的自制包；不是writer曾写错CRC |
@@ -42,7 +43,7 @@
 | LibreOffice稳定版/GUI/打印 | NOT TESTED | 已测开发版headless，不等于所有LibreOffice版本或桌面版全通过 |
 | Numbers/WPS/其他后端/性能及RSS | NOT TESTED | 不虚构实测；数据和字节预算不是峰值内存或速度证明 |
 
-完整命令、实际退出码和stdout/stderr：`evidence/release-020/final/acceptance.json`；应用证据：`evidence/overnight-2026-10-03/libreoffice-formatting/libreoffice.json`。较早baseline、implementation、date-fix、LibreOffice-first和ods-probe均为有时间及源码快照的阶段记录；不把重复运行累计成独立测试数。源码ZIP换目录复现随交付提供，复用可信SDK/core、依赖缓存、现有Python/schema，不称全新机器或完全离线无缓存初始化。
+完整命令、实际退出码和stdout/stderr：`evidence/release-020/final/acceptance.json`及`evidence/release-020/registry/registry.json`；发布回执：`evidence/release-020/publication/`；应用证据：`evidence/overnight-2026-10-03/libreoffice-formatting/libreoffice.json`。较早baseline、implementation、date-fix、LibreOffice-first和ods-probe均为有时间及源码快照的阶段记录；不把重复运行累计成独立测试数。源码ZIP换目录复现随交付提供，复用可信SDK/core、依赖缓存、现有Python/schema，不称全新机器或完全离线无缓存初始化。
 
 ## 人工规则与待办
 
@@ -50,6 +51,6 @@
 
 章程10/24与官网10/31旧快照冲突保留；内部10/24前准备，最终适用时刻未确认。章程原则上一项目、表单三次提交与用户核群公告每人单月最多三项目分别保留。150+350均有审核条件，不保证自动到账或1500净收入。个人身份/电话/银行/学籍/诚信由用户处理。
 
-本轮GitHub同步不代表Mooncakes新版本发行或活动验收通过；未代填表、创建申请或代签。AI辅助事实、依赖来源与许可见AI_USAGE、SOURCES及THIRD_PARTY_NOTICES。
+0.2.0发行已分别核实正式发布与安装，仍不代表活动官方验收通过；未代填表、创建申请或代签。AI辅助事实、依赖来源与许可见AI_USAGE、SOURCES及THIRD_PARTY_NOTICES。
 
 10/3跨文字Header缺口原6 FAIL与修复50格式属性PASS、7检验器负控制及证据边界见[格式记录](FORMAT_VERIFICATION_ZH.md)。旧报告保持原字节与日期，不把历史Office或远端CI迁移为当前全部通过。

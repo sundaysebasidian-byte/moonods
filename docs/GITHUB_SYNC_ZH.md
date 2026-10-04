@@ -1,4 +1,6 @@
-# MoonODS 2026-10-04 GitHub源码同步
+# MoonODS 2026-10-04首次GitHub源码同步（发布前历史记录）
+
+本文件保留当天首次同步时的事实。之后0.2.0已正式发布并通过空缓存双后端消费者验证；当前状态、准确发布SHA与回执见[0.2.0发行记录](RELEASE_020_ZH.md)。下文“仍0.1.0/没有发布”只描述首次同步阶段。
 
 原公开仓库：[sundaysebasidian-byte/moonods](https://github.com/sundaysebasidian-byte/moonods)，分支`main`。本次同步0.2.0候选源码、README、独立消费测试和真实应用证据；不重写历史、不force push。Mooncakes仍为已发布的`0.1.0`，本次没有发布0.2.0包。
 
