@@ -1,0 +1,3 @@
+Using cached moonbit-community/flate@0.2.0
+Using cached moonbit-community/zipc@0.2.2
+Finished. moon: ran 15 tasks, now up to date

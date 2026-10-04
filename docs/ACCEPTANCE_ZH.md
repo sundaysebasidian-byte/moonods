@@ -1,6 +1,6 @@
 # MoonODS 中文验收矩阵
 
-状态：2026-10-04 **0.2.0候选源码同步**。历史0.1.0已公开/发布；当前GitHub源码同步见[GITHUB_SYNC_ZH](GITHUB_SYNC_ZH.md)，Mooncakes仍0.1.0。本文件是AI辅助客观工程记录，不是最终人工申报书或官方终验结论。不保证一次验收或奖金额度。
+状态：2026-10-04 **0.2.0候选源码同步**。历史0.1.0已公开/发布；GitHub同步历史见[GITHUB_SYNC_ZH](GITHUB_SYNC_ZH.md)；0.2.0发布快照、CI与注册表回执见[发行说明](RELEASE_020_ZH.md)。本文件是AI辅助客观工程记录，不是最终人工申报书或官方终验结论。不保证一次验收或奖金额度。
 
 ## 终验九条
 
@@ -14,8 +14,8 @@
 | 4. README目标、安装、用法、示例可复现 | 本地通过；用户理解待做 | 区分0.1.0注册表安装与0.2.0本地workspace；实际候选换目录消费，源码ZIP换目录复现另附记录 |
 | 5. CI覆盖检查、构建、测试 | 工作流已具备，具体SHA终态见Actions | 本地fmt/check/build/test及31+5通过；当前远端结果按提交核对，旧25+4不迁移为当前通过 |
 | 6. 至少一个可运行示例 | 本地通过 | 销售、实验多表、公式声明、edge及日期/单位例；独立消费三完整场景 |
-| 7. 完整测试覆盖核心路径 | 有界范围通过；非穷尽 | 31核心/API、5独立消费、官方RNG/odfpy/ZIP/负控制；Excel与LibreOffice整体PARTIAL；规模/RSS/其他后端未测 |
-| 8. 发布mooncakes.io | 0.1.0历史首发通过；0.2.0未发布 | 新代码与发布版不同，禁止拿旧注册表41文件/4测试报告冒充新版本发行 |
+| 7. 完整测试覆盖核心路径 | 有界范围通过；非穷尽 | JS/Wasm GC各31核心/API、各5独立消费、官方RNG/odfpy/ZIP/负控制；Excel与LibreOffice整体PARTIAL；规模/RSS/其他后端未测 |
+| 8. 发布mooncakes.io | 0.1.0历史首发通过；0.2.0正式回执单列 | 新代码与发布版不同，禁止拿旧注册表41文件/4测试报告冒充新版本发行 |
 | 9. OSI许可及引用/移植合规 | 材料已核 | 原创MIT；core/zipc/flate Apache-2.0；原OASIS资料不重新授权MIT；fixture合成；AI来源如实声明 |
 
 ## 真实测试矩阵
@@ -42,7 +42,7 @@
 | LibreOffice稳定版/GUI/打印 | NOT TESTED | 已测开发版headless，不等于所有LibreOffice版本或桌面版全通过 |
 | Numbers/WPS/其他后端/性能及RSS | NOT TESTED | 不虚构实测；数据和字节预算不是峰值内存或速度证明 |
 
-完整命令、实际退出码和stdout/stderr：`evidence/overnight-2026-10-03/implementation/acceptance.json`；应用证据：`evidence/overnight-2026-10-03/libreoffice-formatting/libreoffice.json`。较早baseline、implementation、date-fix、LibreOffice-first和ods-probe均为有时间及源码快照的阶段记录；不把重复运行累计成独立测试数。源码ZIP换目录复现随交付提供，复用可信SDK/core、依赖缓存、现有Python/schema，不称全新机器或完全离线无缓存初始化。
+完整命令、实际退出码和stdout/stderr：`evidence/release-020/final/acceptance.json`；应用证据：`evidence/overnight-2026-10-03/libreoffice-formatting/libreoffice.json`。较早baseline、implementation、date-fix、LibreOffice-first和ods-probe均为有时间及源码快照的阶段记录；不把重复运行累计成独立测试数。源码ZIP换目录复现随交付提供，复用可信SDK/core、依赖缓存、现有Python/schema，不称全新机器或完全离线无缓存初始化。
 
 ## 人工规则与待办
 

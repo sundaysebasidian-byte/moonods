@@ -1,0 +1,40 @@
+[1mdiff --git a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-qsvg2_jk/consumer/src/main.mbt b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-qsvg2_jk/_build/wasm-gc/release/format/moonods-audit/independent-consumer/main.mbt[m
+[1mindex 20fc790..a09927a 100644[m
+[1m--- a/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-qsvg2_jk/consumer/src/main.mbt[m
+[1m+++ b/private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-qsvg2_jk/_build/wasm-gc/release/format/moonods-audit/independent-consumer/main.mbt[m
+[36m@@ -139,11 +139,15 @@[m [mfn main raise {[m
+   save("business", @base64.encode(sales_report(example_sales()).to_ods()[:]))[m
+   save([m
+     "laboratory",[m
+[31m-    @base64.encode(laboratory_report(example_samples(), "合成批次 LAB-02").to_ods()[:]),[m
+[32m+[m[32m    @base64.encode([m
+[32m+[m[32m      laboratory_report(example_samples(), "合成批次 LAB-02").to_ods()[:],[m
+[32m+[m[32m    ),[m
+   )[m
+   save([m
+     "declarations",[m
+[31m-    @base64.encode(declaration_report([1.0, 2.0], example_declarations()).to_ods()[:]),[m
+[32m+[m[32m    @base64.encode([m
+[32m+[m[32m      declaration_report([1.0, 2.0], example_declarations()).to_ods()[:],[m
+[32m+[m[32m    ),[m
+   )[m
+   println("Independent module generated three ODS files from supplied inputs")[m
+ }[m
+[36m@@ -152,14 +156,8 @@[m [mfn main raise {[m
+ #cfg(target="wasm-gc")[m
+ fn main raise {[m
+   let business = sales_report(example_sales()).to_ods()[m
+[31m-  let laboratory = laboratory_report([m
+[31m-    example_samples(),[m
+[31m-    "合成批次 LAB-02",[m
+[31m-  ).to_ods()[m
+[31m-  let declarations = declaration_report([m
+[31m-    [1.0, 2.0],[m
+[31m-    example_declarations(),[m
+[31m-  ).to_ods()[m
+[32m+[m[32m  let laboratory = laboratory_report(example_samples(), "合成批次 LAB-02").to_ods()[m
+[32m+[m[32m  let declarations = declaration_report([1.0, 2.0], example_declarations()).to_ods()[m
+   println("MOONODS_ODS:business:\{@base64.encode(business[:])}")[m
+   println("MOONODS_ODS:laboratory:\{@base64.encode(laboratory[:])}")[m
+   println("MOONODS_ODS:declarations:\{@base64.encode(declarations[:])}")[m
+failed to execute `git --no-pager diff --color=always --no-index /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-qsvg2_jk/consumer/src/main.mbt /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-reuse-qsvg2_jk/_build/wasm-gc/release/format/moonods-audit/independent-consumer/main.mbt`

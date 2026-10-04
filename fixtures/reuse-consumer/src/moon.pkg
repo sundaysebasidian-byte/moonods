@@ -1,5 +1,6 @@
 import {
   "sundaysebasidian-byte/moonods" @ods,
+  "moonbitlang/core/encoding/base64",
 }
 
 pkgtype(kind: "executable")

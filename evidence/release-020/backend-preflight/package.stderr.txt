@@ -1,0 +1,10 @@
+Running moon check ...
+Warning: you may need to run `moon update` to update the registry
+Error: Failed to calculate build plan
+
+Caused by:
+    0: Failed to resolve the module dependency graph
+    1: Failed to resolve registry dependency `moonbit-community/zipc` for module `sundaysebasidian-byte/moonods`: module was not found in the registry
+
+moon check failed
+Error: `moon package` failed

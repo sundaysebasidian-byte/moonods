@@ -34,7 +34,7 @@ jobs:
           python -m pip install -r requirements-verify.txt
           python scripts/verify_deps.py
           python scripts/fetch_schemas.py
-      - name: Serial check build test and independent verification
+      - name: Serial JS and Wasm GC tests and independent verification
         run: python scripts/acceptance.py --output evidence/ci
       - name: Keep evidence even on failure
         if: always()
@@ -43,4 +43,6 @@ jobs:
           name: moonods-js-evidence
           path: |
             evidence/ci
+            !evidence/ci/**/isolated-work/**
+            !evidence/ci/**/__pycache__/**
             examples/generated/*.ods

@@ -23,8 +23,8 @@ def main():
         return result.stdout + result.stderr
     report = {'started_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
               'platform': platform.platform(), 'python': platform.python_version(), 'steps': steps,
-              'scope': 'JS backend core + examples + independent package/schema/reader checks',
-              'not_run_by_this_script': ['LibreOffice', 'Excel', 'Numbers', 'WPS', 'remote CI', 'native/wasm backends', 'peak RSS and performance']}
+              'scope': 'JS and Wasm GC core/API and independent consumers; JS examples plus independent package/schema/reader checks',
+              'not_run_by_this_script': ['LibreOffice', 'Excel', 'Numbers', 'WPS', 'remote CI', 'native/llvm/wasm backends', 'peak RSS and performance']}
     source_files = list(ROOT.glob('*.mbt')) + list((ROOT / 'examples').rglob('*.mbt')) + list((ROOT / 'tests').rglob('*.mbt')) + list((ROOT / 'fixtures').rglob('*.mbt')) + list((ROOT / 'scripts').glob('*.py'))
     source_files = [f for f in source_files if '_build' not in f.parts]
     report['source_sha256'] = {str(f.relative_to(ROOT)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(source_files)}
@@ -51,6 +51,10 @@ def main():
         m = re.search(r'Total tests: (\d+), passed: (\d+), failed: (\d+)', tests)
         if not m or int(m[1]) < 31 or m[1] != m[2] or m[3] != '0': raise RuntimeError('Missing or incomplete test summary')
         report['unit_tests'] = {'total': int(m[1]), 'passed': int(m[2]), 'failed': int(m[3])}
+        wasm_tests = run('wasm-core-test', [moon, 'test', '--target', 'wasm-gc', '-j', '1', '--no-parallelize', '--deny-warn', '.', 'tests/consumer'])
+        wm = re.search(r'Total tests: (\d+), passed: (\d+), failed: (\d+)', wasm_tests)
+        if not wm or wm[1] != m[1] or wm[1] != wm[2] or wm[3] != '0': raise RuntimeError('Missing or incomplete Wasm GC core/API summary')
+        report['backend_tests'] = {'js': report['unit_tests'], 'wasm_gc': {'total':int(wm[1]),'passed':int(wm[2]),'failed':int(wm[3])}}
         hashes = lambda: {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in (ROOT / 'examples/generated').glob('*.ods')}
         run('examples-first', [moon, 'run', '--target', 'js', '-j', '1', 'examples/generate'])
         first = hashes()

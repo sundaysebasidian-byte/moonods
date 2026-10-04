@@ -1,0 +1,10 @@
+Using cached moonbit-community/flate@0.2.0
+Using cached moonbit-community/zipc@0.2.2
+Error: [4156]
+   ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-020-wasm-consumer-r2mf54a3/consumer/src/main.mbt:5:1 ]
+   │
+ 5 │ ╭─▶ extern "js" fn save(name : String, data : Bytes) =
+ 6 │ ├─▶   #| (name, data) => { const fs = require('node:fs'); fs.mkdirSync('generated', {recursive:true}); fs.writeFileSync('generated/'+name+'.ods', data); }
+   │ │                                                                                                                                                            
+   │ ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── extern "js" is unsupported in wasm-gc backend.
+───╯

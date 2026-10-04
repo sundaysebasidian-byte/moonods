@@ -2,12 +2,14 @@
 
 MoonODS核心MoonBit代码、测试、示例、README和验证脚本主要由Codex AI辅助设计与生成，并根据实际编译、独立读取器和应用反馈修正。不能声称源码由人工逐行手写，也没有人工独立贡献或审核认证。MoonBit工具链、依赖和OASIS规范是第三方成果；许可与来源见SOURCES及THIRD_PARTY_NOTICES。
 
-当前0.2.0候选源码的本地验收为31核心/API及5独立模块消费PASS；包括官方RNG、zipfile/odfpy、跨进程ODS字节一致、资源和错误边界。真实既有LibreOfficeDev26.8.0.0.alpha0无界面Calc导入8个固定无宏文件并原生回存：33值、2合并、50保存格式属性PASS，7个检验器内存负控制PASS。后者不是Office拒绝7坏文件。
+0.2.0发行快照的本地验收为JS与Wasm GC各31核心/API及各5独立模块消费PASS；包括官方RNG、zipfile/odfpy、跨进程ODS字节一致、资源和错误边界。真实既有LibreOfficeDev26.8.0.0.alpha0无界面Calc导入8个固定无宏文件并原生回存：33值、2合并、50保存格式属性PASS，7个检验器内存负控制PASS。后者不是Office拒绝7坏文件。
 
-历史Excel16.113.3读取旧4ODS的20组常规检查通过，整体PARTIAL；极早日期及绝对物理毫米未解决。当前Header亚洲/复杂字重修复改变了ODS字节，旧Excel报告关联为STALE INPUTS，当前文件未重新测Excel。稳定LibreOffice、GUI字形、打印、Numbers/WPS、其他后端、峰值RSS及性能未测。通过、失败和未测结果分别保留，不降低失败标准。
+历史Excel16.113.3读取旧4ODS的20组常规检查通过，整体PARTIAL；极早日期及绝对物理毫米未解决。当前Header亚洲/复杂字重修复改变了ODS字节，旧Excel报告关联为STALE INPUTS，当前文件未重新测Excel。稳定LibreOffice、GUI字形、打印、Numbers/WPS、native/llvm/非GC wasm、峰值RSS及性能未测。通过、失败和未测结果分别保留，不降低失败标准。
 
-GitHub源码同步与包发布不同：Mooncakes发行仍为0.1.0，其25+4与注册表证据只支持历史版本。新源码远端CI必须以相应SHA运行核实，见docs/GITHUB_SYNC_ZH.md。真实提交按工程阶段保留，不空提交或机械拆分。
+GitHub源码、打包候选与正式注册表发布分别核实：0.1.0的25+4只支持历史版本；0.2.0准确源码、CI和注册表回执见docs/RELEASE_020_ZH.md。真实提交按工程阶段保留，不空提交或机械拆分。
 
 章程§5.1原文“申报书务必人工撰写”，十月表单“不要使用 AI 编写”。docs/PROPOSAL_REFERENCE.md仅为标明AI辅助的技术事实参考，不能直接提交或机械改写冒充人工申报。申请人应自行理解、核实和撰写最终文字；此仓库没有签署诚信声明、代填个人材料或创建申请。规则引用是有日期的历史快照，不能冒充最终官方批准。
 
 理解代码时应能解释：mimetype第一项/STORED/no-extra、空值与空字符串、合并covered cells、公式文本与调用方缓存、整行失败原子性、确定性顺序、ODF日期与阅读器日期系统、基础显示样式与底层类型值的差异。
+
+0.2.0发布准备中的双后端夹具适配、标准输出宿主解码、注册表验收脚本同样AI辅助。首次Wasm消费者因JS适配器未经目标选择而失败，随后因占位入口未调用场景被deny-warn拒绝；均保留，不能把夹具问题冒称生产库缺陷。修复适配器并运行相同五项测试和实际ODS输出核验，没有删测试或降低告警标准。

@@ -7,6 +7,8 @@ from odf import teletype
 from fetch_schemas import SCHEMAS
 from verify_deps import verify
 from verify_external import check_package, cell_value
+from verify_consumer_outputs import verify_generated
+from verify_wasm_output import decode_output
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -38,7 +40,7 @@ def main():
               'requested_moon_path': requested_moon_path, 'resolved_moon_path': str(args.moon),
               'scope': 'Independent local module consumes extracted moon package candidate via moon.work',
               'mooncakes_published_or_remote_consumption': False,
-              'unmeasured': ['office applications', 'fresh machine', 'network package installation', 'market demand']}
+              'unmeasured': ['office applications', 'fresh machine', 'network package installation', 'market demand', 'native/llvm/wasm backends']}
     def run(name, argv, cwd):
         r = subprocess.run([str(a) for a in argv], cwd=cwd, env=os.environ.copy(), capture_output=True, text=True, timeout=120)
         (out / (name + '.stdout.txt')).write_text(r.stdout)
@@ -142,6 +144,21 @@ def main():
                                             'inconsistent_cache_preserved': 99, 'calculation_performed': False}
             report['cross_process_determinism'] = {'status': 'PASS', 'sha256': first}
             for p in generated.glob('*.ods'): shutil.copyfile(p, out / p.name)
+            run('consumer-wasm-check', [args.moon, 'check', '--target', 'wasm-gc', '-j', '1', '--deny-warn'], consumer)
+            run('consumer-wasm-build', [args.moon, 'build', '--target', 'wasm-gc', '-j', '1', '--deny-warn'], consumer)
+            wasm_tests = run('consumer-wasm-test', [args.moon, 'test', '--target', 'wasm-gc', '-j', '1', '--no-parallelize', '--deny-warn', 'src'], consumer)
+            match = re.search(r'Total tests: (\d+), passed: (\d+), failed: (\d+)', wasm_tests)
+            assert match and match[1] == match[2] and match[3] == '0' and int(match[1]) >= 5
+            wasm_dir = work / 'wasm-generated'
+            wasm_first = decode_output(run('consumer-wasm-first', [args.moon, 'run', '--target', 'wasm-gc', '-j', '1', 'src'], consumer), wasm_dir)
+            wasm_second = decode_output(run('consumer-wasm-second', [args.moon, 'run', '--target', 'wasm-gc', '-j', '1', 'src'], consumer), wasm_dir)
+            assert wasm_first == wasm_second == first, 'Fixed consumer ODS bytes differ across processes or JS/Wasm GC'
+            report['wasm_gc'] = {'status':'PASS', 'tests':{'total':int(match[1]),'passed':int(match[2]),'failed':int(match[3])},
+                'independent_reader':verify_generated(wasm_dir, ROOT / '.schemas'),
+                'cross_process_and_js_byte_match':True, 'sha256':wasm_first,
+                'host_adapter':'Wasm GC emits bounded Base64 stdout; verifier decodes bytes, then odfpy/RNG independently validate ODS'}
+            (out / 'wasm-gc').mkdir(exist_ok=True)
+            for p in wasm_dir.glob('*.ods'): shutil.copyfile(p, out / 'wasm-gc' / p.name)
         report['status'] = 'PASS'
     except Exception as error:
         report['status'] = 'FAIL'; report['error'] = str(error)

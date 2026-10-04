@@ -2,8 +2,9 @@
 // Only this consumer's file adapter uses Node; the writer returns Bytes.
 
 ///|
-extern "js" fn save(name : String, data : Bytes) =
-  #| (name, data) => { const fs = require('node:fs'); fs.mkdirSync('generated', {recursive:true}); fs.writeFileSync('generated/'+name+'.ods', data); }
+#cfg(target="js")
+extern "js" fn save(name : String, data : String) =
+  #| (name, data) => { const fs = require('node:fs'); fs.mkdirSync('generated', {recursive:true}); fs.writeFileSync('generated/'+name+'.ods', Buffer.from(data, 'base64')); }
 
 ///|
 struct Sale {
@@ -133,15 +134,31 @@ fn example_declarations() -> Array[(String, @ods.Value)] raise @ods.OdsError {
 }
 
 ///|
+#cfg(target="js")
 fn main raise {
-  save("business", sales_report(example_sales()).to_ods())
+  save("business", @base64.encode(sales_report(example_sales()).to_ods()[:]))
   save(
     "laboratory",
-    laboratory_report(example_samples(), "合成批次 LAB-02").to_ods(),
+    @base64.encode(
+      laboratory_report(example_samples(), "合成批次 LAB-02").to_ods()[:],
+    ),
   )
   save(
     "declarations",
-    declaration_report([1.0, 2.0], example_declarations()).to_ods(),
+    @base64.encode(
+      declaration_report([1.0, 2.0], example_declarations()).to_ods()[:],
+    ),
   )
   println("Independent module generated three ODS files from supplied inputs")
+}
+
+///|
+#cfg(target="wasm-gc")
+fn main raise {
+  let business = sales_report(example_sales()).to_ods()
+  let laboratory = laboratory_report(example_samples(), "合成批次 LAB-02").to_ods()
+  let declarations = declaration_report([1.0, 2.0], example_declarations()).to_ods()
+  println("MOONODS_ODS:business:\{@base64.encode(business[:])}")
+  println("MOONODS_ODS:laboratory:\{@base64.encode(laboratory[:])}")
+  println("MOONODS_ODS:declarations:\{@base64.encode(declarations[:])}")
 }

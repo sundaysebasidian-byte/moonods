@@ -1,0 +1,44 @@
+Using cached moonbit-community/flate@0.2.0
+Using cached moonbit-community/zipc@0.2.2
+Error: [0001]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-020-wasm-consumer-fixed-zzq3b6po/consumer/src/main.mbt:17:4 ]
+    │
+ 17 │ fn sales_report(items : Array[Sale]) -> @ods.Workbook raise @ods.OdsError {
+    │    ──────┬─────  
+    │          ╰─────── Error Warning (unused_value): Unused function 'sales_report'
+────╯
+Error: [0001]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-020-wasm-consumer-fixed-zzq3b6po/consumer/src/main.mbt:61:4 ]
+    │
+ 61 │ fn laboratory_report(
+    │    ────────┬────────  
+    │            ╰────────── Error Warning (unused_value): Unused function 'laboratory_report'
+────╯
+Error: [0001]
+    ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-020-wasm-consumer-fixed-zzq3b6po/consumer/src/main.mbt:88:4 ]
+    │
+ 88 │ fn declaration_report(
+    │    ─────────┬────────  
+    │             ╰────────── Error Warning (unused_value): Unused function 'declaration_report'
+────╯
+Error: [0001]
+     ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-020-wasm-consumer-fixed-zzq3b6po/consumer/src/main.mbt:105:4 ]
+     │
+ 105 │ fn example_sales() -> Array[Sale] {
+     │    ──────┬──────  
+     │          ╰──────── Error Warning (unused_value): Unused function 'example_sales'
+─────╯
+Error: [0001]
+     ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-020-wasm-consumer-fixed-zzq3b6po/consumer/src/main.mbt:113:4 ]
+     │
+ 113 │ fn example_samples() -> Array[Sample] {
+     │    ───────┬───────  
+     │           ╰───────── Error Warning (unused_value): Unused function 'example_samples'
+─────╯
+Error: [0001]
+     ╭─[ /private/var/folders/b6/zgbrkw397gdcr8x_n8fghwx40000gn/T/moonods-020-wasm-consumer-fixed-zzq3b6po/consumer/src/main.mbt:126:4 ]
+     │
+ 126 │ fn example_declarations() -> Array[(String, @ods.Value)] raise @ods.OdsError {
+     │    ──────────┬─────────  
+     │              ╰─────────── Error Warning (unused_value): Unused function 'example_declarations'
+─────╯

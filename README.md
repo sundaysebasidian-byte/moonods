@@ -1,8 +1,8 @@
 # MoonODS
 
-MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。已公开 [GitHub](https://github.com/sundaysebasidian-byte/moonods) 并首发 Mooncakes `0.1.0`，MIT。真实 CI、空注册表消费和限制见 [发行记录](docs/RELEASE_ZH.md)。
+MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。已公开 [GitHub](https://github.com/sundaysebasidian-byte/moonods)，原创MIT。0.1.0为历史首发；此源码版本为0.2.0。真实 CI、空注册表消费和限制见 [发行记录](docs/RELEASE_ZH.md)。
 
-**此源码为 0.2.0 候选，尚未发布到 Mooncakes。** GitHub `main` 同步当前源码、说明与验证证据；准确提交和 CI 状态见 [GitHub 同步记录](docs/GITHUB_SYNC_ZH.md)。 新增事务性整行写入 `Sheet::set_row`、日期公式缓存默认 DateISO，以及更严格的独立 ZIP/运行环境检查。Mooncakes 仍为 0.1.0；历史远端 CI 与注册表通过不能证明本候选已经发布或通过远端检查。当前候选还补齐Header亚洲/复杂文字字重；31+5 测试和真实 LibreOfficeDev 读取见[本轮记录](docs/LOCAL_CANDIDATE_ZH.md)及[格式实测](docs/FORMAT_VERIFICATION_ZH.md)。
+**本源码版本为0.2.0。** 包含整行原子写入`set_row`、日期公式缓存DateISO默认和Header三文字字重。JS及Wasm GC各31核心/API、各5独立消费者；三场景的ODS字节在两个后端及重复生成进程中一致。版本安装使用`moon add sundaysebasidian-byte/moonods@0.2.0`；准确发布快照、远端CI与正式注册表消费结果分别记录，见[0.2.0发行说明](docs/RELEASE_020_ZH.md)。
 
 适合销售汇总、教学实验和调用方提供公式缓存的离线报表。它生成 ODS，不读取或转换已有文件。生态里已有 [markitdown-mb](https://github.com/ZSeanYves/markitdown) 的 ODS→Markdown 读取，以及 [mbtexcel](https://github.com/moonbitlang/office.mbt) 的 XLSX 读写；本项目聚焦有界、类型化、确定性的 ODF 1.3 writer。当前检索不等于证明生态里绝无同类项目，正式申报前需要再核查。
 
@@ -18,7 +18,7 @@ MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook �
 
 公式文本按调用方给出的内容保存；只检查前缀、长度和 XML 字符，不解释函数。缓存由调用方负责，办公软件可能重算，库不会修正错误缓存。请只向办公软件交付可信公式；本库不承诺拦截公式中的外部引用。数字使用 IEEE-754 `Double`，不适合要求精确十进制金额运算的计算层。
 
-MVP 验证范围为 JS 后端。核心没有 FFI。现有 Mac Excel 16.113.3 已实际打开四个自制 ODS，20 组常规断言通过，整体兼容状态 **PARTIAL**：公元 0001 年显示异常，绝对毫米列宽校准未完成；10/3样式修复已改变四个ODS字节，旧Excel记录仅证明旧文件，本候选未重开Excel。已装 LibreOfficeDev 26.8.0.0.alpha0 的真实无界面 Calc 导入/原生 ODS 回存核验：10/3新文件8份、33类型值、2合并、50保存格式属性断言通过，整体仍为 **PARTIAL**，没有 GUI、打印物理列宽或稳定版本实测。Numbers、WPS、其他后端未测；schema 与独立读取器通过不等于全部办公软件兼容。详见[实测边界](docs/OFFICE_COMPATIBILITY_ZH.md)和[中文验收矩阵](docs/ACCEPTANCE_ZH.md)。
+已验证JS与Wasm GC核心/API及独立消费者；文件写入示例仍为JS。核心没有 FFI。现有 Mac Excel 16.113.3 已实际打开四个自制 ODS，20 组常规断言通过，整体兼容状态 **PARTIAL**：公元 0001 年显示异常，绝对毫米列宽校准未完成；10/3样式修复已改变四个ODS字节，旧Excel记录仅证明旧文件，本候选未重开Excel。已装 LibreOfficeDev 26.8.0.0.alpha0 的真实无界面 Calc 导入/原生 ODS 回存核验：10/3新文件8份、33类型值、2合并、50保存格式属性断言通过，整体仍为 **PARTIAL**，没有 GUI、打印物理列宽或稳定版本实测。Numbers、WPS、native/llvm/非GC wasm后端未测；schema 与独立读取器通过不等于全部办公软件兼容。详见[实测边界](docs/OFFICE_COMPATIBILITY_ZH.md)和[中文验收矩阵](docs/ACCEPTANCE_ZH.md)。
 
 ## 安装与运行
 
@@ -35,14 +35,16 @@ moon run --target js -j 1 examples/generate
 
 新检出需要解析 `moon.mod` 的固定依赖：`moon update`。源码包附带原封不动的 zipc/flate 源码归档，可用 `python3 scripts/restore_deps.py` 恢复到本项目 `.mooncakes`，再用 `scripts/verify_deps.py` 校验；这两个脚本只写本项目，不配置全局工具链。Moon 首次依赖解析仍可能需要 registry 索引/缓存；离线时应使用已准备的 SDK 缓存，不能把有网环境成功误称完全离线初始化成功。
 
-Mooncakes 发行版的下游依赖声明为 `sundaysebasidian-byte/moonods@0.1.0`。在自己的模块运行：
+版本0.2.0的下游安装与运行：
 
 ```sh
-moon add sundaysebasidian-byte/moonods@0.1.0
+moon add sundaysebasidian-byte/moonods@0.2.0
 moon check --target js -j 1
+# 核心也可由Wasm GC消费者导入；文件落盘由宿主提供
+moon check --target wasm-gc -j 1
 ```
 
-上述注册表命令只安装既有 0.1.0，不包含 `set_row` 或本轮日期缓存默认样式修复。要使用本地 0.2.0，使用候选源码 ZIP 与 `moon.work`；消费模块的 `moon.mod` 写 `sundaysebasidian-byte/moonods@0.2.0`，workspace 中放候选源码及独立消费模块。**不要尝试从 Mooncakes 安装 0.2.0，本轮未发布。** 自动复现用后述 `acceptance.py`，包含实际 `moon package` 后换目录消费。
+版本查询使用`moon view sundaysebasidian-byte/moonods@0.2.0 --json`。GitHub源码、打包候选与注册表安装是分别验证的阶段；准确回执见发行说明。历史0.1.0可继续按版本固定安装，但不包含`set_row`与后续日期/字体修复。源码本地workspace消费布局如下。
 
 源码、开发验证脚本和完整证据请从 [GitHub](https://github.com/sundaysebasidian-byte/moonods) 获取；Mooncakes 包只包含库、示例、接口、许可和说明。注册表消费结果单独记录，不用本地 workspace 成功代替。
 
@@ -78,7 +80,7 @@ fn make_report() -> Bytes raise @ods.OdsError {
 
 Workbook/Sheet/Cell 为不透明类型，不能访问内部数组/Map绕过验证。返回的 `Bytes` 由调用方写入文件。坐标从 0 开始；`Sheet::get` 返回稀疏显式单元格的 `Cell?`，未设置格返回 None，显式空值使用 `Cell::new(Empty)`。`Cell::value` / `expression` 可取值与公式，`Workbook::content_xml` 供诊断，`to_ods` 返回包。可恢复错误为 `@ods.Invalid(message)`，详见实际编译的 [公共 API 测试包](tests/consumer/api_test.mbt)（同一模块）与[独立消费模块](fixtures/reuse-consumer/src/main.mbt)（不同模块，本地候选消费）。
 
-0.2.0 候选支持一次写入连续的类型化行：
+0.2.0 支持一次写入连续的类型化行：
 
 ```mbt
 sheet.set_row(3, 0, [
@@ -134,7 +136,7 @@ python scripts/acceptance.py --moon /absolute/path/to/existing/sdk/bin/moon
 python scripts/verify_reuse.py --moon /absolute/path/to/existing/sdk/bin/moon
 ```
 
-脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包；也运行日期/单位诊断例及独立7类型值/3 XML检查。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[当前同步本地验收](evidence/github-sync-2026-10-04/local/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr也保留。新增 ZIP 本地/中央头、EOCD/尾部一致性和15个包负控制；运行环境漂移及用新候选冒充旧注册表发行均应被拒绝，CLI 负控制保留预期退出1。本候选31核心/API与5独立消费；不把重复运行累计成不同测试。
+脚本串行运行 check/build/test、两个独立生成进程的字节比较，再用 Python zipfile、odfpy、OASIS RNG 检查包；也运行日期/单位诊断例及独立7类型值/3 XML检查。schema 原文件从官方取得并核 SHA256，保留上游版权，未纳入 MIT 源码许可。[当前同步本地验收](evidence/release-020/final/acceptance.json) 记录实际版本、命令、退出码、未测项，stdout/stderr也保留。新增 ZIP 本地/中央头、EOCD/尾部一致性和15个包负控制；运行环境漂移及用新候选冒充旧注册表发行均应被拒绝，CLI 负控制保留预期退出1。JS及Wasm GC各31核心/API与各5独立消费；不把重复运行累计成不同测试。
 
 Excel及LibreOffice是单独的应用验证，不由该跨平台脚本或远端CI执行。Excel原记录在[Excel报告](evidence/office-2026-10-01-fixed/excel.json)，当前文件已因Header修复改变字节，验收脚本如实标记旧Excel报告STALE INPUTS。已装 LibreOffice 必须显式传入精确工具路径，并使用临时 profile，示意：
 
@@ -160,3 +162,5 @@ zipc 的 Archive 按路径排序，会把 META-INF 放在 mimetype 前，因此�
 当前源码有31核心/API与5独立消费测试，实际LibreOfficeDev格式复核见本轮记录。历史0.1.0的25+4、注册表和CI结果分别保留，不能作为0.2.0包发行证明。工程检查不是官方活动验收；最终申报须遵守人工撰写规则。
 
 以上25项/发行段落描述历史0.1.0阶段。2026-10-02本地0.2.0候选新增31+5及真实LibreOfficeDev导入证据；其源码与已发布0.1.0不同，尚未推送、发布或申报。历史提交、失败日志及Library旧版本保留，详见本轮记录。
+
+Wasm GC消费者示例通过标准输出交付Base64编码的ODS Bytes，由测试宿主解码落盘，再以独立odfpy/官方RNG核值；它不是库读取ODS或提供Wasm文件系统。生产库仍返回Bytes，未新增FFI。三消费者输出的跨后端一致性只覆盖所列合成输入，不承诺任意后端或全部浮点输入的序列化等价。

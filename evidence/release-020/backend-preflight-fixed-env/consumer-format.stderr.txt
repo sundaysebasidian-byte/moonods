@@ -1,0 +1,2 @@
+Failed with 0 warnings, 0 errors.
+Error: failed when formatting project

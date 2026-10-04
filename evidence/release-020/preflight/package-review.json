@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "date_utc": "2026-10-04T05:01:16.531964+00:00",
+  "baseline_ci_sha": "08cf0a1efd12b2d1f3f32b6f2090577041ecd864",
+  "production_mbt_bytes_unchanged": true,
+  "core_tests_per_backend": 31,
+  "consumer_tests_per_backend": 5,
+  "cross_backend_three_ODS_bytes_equal": true,
+  "candidate_files": 46,
+  "candidate_zip_sha256": "718a4b001190fe4bbf52ad9fb8fcc3f06c437a54c60080e0c478f5ad6af75b35",
+  "all_candidate_files_match_checkout": true,
+  "privacy_findings": [],
+  "scope": "Package files only, plus exact source/evidence review; original research, credentials, personal responses and Library identity excluded",
+  "release_attempted": false
+}

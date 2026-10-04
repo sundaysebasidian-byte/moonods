@@ -3,8 +3,11 @@
 from lxml import etree
 from odf import teletype
 from fetch_schemas import SCHEMAS
-from verify_reuse import digest
+from hashlib import sha256
 from verify_external import check_package, cell_value
+
+def digest(path):
+    return sha256(path.read_bytes()).hexdigest()
 
 def verify_generated(generated, schema_root):
     sources = {k: schema_root / (k + '.rng') for k in SCHEMAS}

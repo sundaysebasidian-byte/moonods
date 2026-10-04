@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/.moonhome/bin/moon",
+    "test",
+    "--target",
+    "wasm-gc",
+    "-j",
+    "1",
+    "--no-parallelize",
+    "--deny-warn",
+    "src"
+  ],
+  "exit_code": 1,
+  "status": "FAIL",
+  "scope": "Local packaged candidate, same five consumer tests; JS file adapter selected only for JS",
+  "tests": null
+}

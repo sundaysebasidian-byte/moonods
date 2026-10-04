@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/.moonhome/bin/moon",
+    "test",
+    "--target",
+    "wasm-gc",
+    "-j",
+    "1",
+    "--no-parallelize",
+    "--deny-warn",
+    "src"
+  ],
+  "exit_code": 1,
+  "status": "FAIL",
+  "scope": "Unpublished 0.2.0 local packaged consumer test on wasm-gc; JS file adapter not run",
+  "tests": null
+}

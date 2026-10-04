@@ -1,0 +1,42 @@
+{
+  "started_utc": "2026-10-04T04:55:00.625046+00:00",
+  "steps": [
+    {
+      "name": "package",
+      "command": [
+        "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+        "package",
+        "--frozen",
+        "--list"
+      ],
+      "cwd": "/Users/sebasidian/Documents/Codex/2026-09-30/task-19/moonods",
+      "exit_code": 255,
+      "status": "FAIL"
+    }
+  ],
+  "requested_moon_path": "../.moonhome/bin/moon",
+  "resolved_moon_path": "/Users/sebasidian/Documents/Codex/2026-09-10/ni-q/work/moonbit-sdk/bin/moon",
+  "scope": "Independent local module consumes extracted moon package candidate via moon.work",
+  "mooncakes_published_or_remote_consumption": false,
+  "unmeasured": [
+    "office applications",
+    "fresh machine",
+    "network package installation",
+    "market demand",
+    "native/llvm/wasm backends"
+  ],
+  "verified_dependencies": {
+    "zipc": {
+      "version": "0.2.2",
+      "sha256": "e552ecca64446aa9be8ced2dfae21f413e77ced2d21dfd0934772f32f30c43de"
+    },
+    "flate": {
+      "version": "0.2.0",
+      "sha256": "935372d9a49a5d4bbb40a2fd057bd36b587f683d605c5de204adc143a2215e66"
+    }
+  },
+  "candidate_version": "0.2.0",
+  "status": "FAIL",
+  "error": "package failed; retained logs",
+  "finished_utc": "2026-10-04T04:55:00.693429+00:00"
+}

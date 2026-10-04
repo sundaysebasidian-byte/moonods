@@ -6,5 +6,6 @@ flate = moonbit-community/flate@0.2.0
 verification: CPython 3.13.14, odfpy 1.4.1, lxml 6.0.2, defusedxml 0.7.1
 
 verified JS runtime: Node.js v24.18.0
-Target: js (only tested backend)
+Targets verified: js and wasm-gc core/API and independent consumers; file-writing examples use JS
+Not tested: native, llvm, wasm (non-GC)
 Dependency archive/source hashes: DEPENDENCIES.lock.json
