@@ -1,20 +1,92 @@
 # MoonODS
 
-第二轮本地优化已增加数值精度变化提示、下溢拒绝、ODS 负零保留和逐项元数据损失说明，见[第二轮改动、证据与剩余门槛](docs/TYPED_READER_ROUND2_20261015.md)。跨格式 CLI 对无法保留的负零单独报告，未宣称全格式无损。
+## 状态一览（2026-10-18 整改后；先读这里）
 
-当前审阅分支新增未发布的有界类型化 ODS 读取、编辑写回和逐格诊断，见[实作范围、当前测试与剩余验收](docs/TYPED_READER_REVIEW_20261015.md)。外部样本已由真实 MoonBit 公共 API 消费；另已实测两进程公共 API 的 ODS→XLSX CLI 桥接；mbtexcel 原生同模块集成仍受依赖版本冲突阻塞。正式 0.2.0 仍是下述 writer 版本，历史准备记录保留。
+本仓库同时含有**已发布的 0.2.0 writer** 和**尚未发布的候选改动（reader/编辑写回/诊断）**。下表把二者分开；未在表中标为“已验证”的内容不得当作已验证。
+
+| 能力 | 0.2.0 正式包（Mooncakes，2026-10-04） | 本分支候选（未发布，`moon.mod` 仍写 0.2.0，无新版本号） |
+|---|---|---|
+| 类型化 `Workbook→Sheet→Cell` 写出 `.ods` | 已发布、已用注册表安装核对 | 同 |
+| `read_ods` 有界读取外部 `.ods` | **没有**（已 `moon add …@0.2.0` 后查看安装内容，无 `read_ods`/`ImportResult`） | 已实现 |
+| 读取后编辑并 `to_ods` 写回 | 没有 | 已实现（数据型导入，不保留原样式/元数据） |
+| 逐项损失诊断 `ImportDiagnostic`（sheet/row/col/code/message） | 没有 | 已实现（见下方真实输出） |
+| 命令行入口 | 没有 | `examples/ods_tool`（环境变量驱动，仅 JS 目标） |
+| 公式重算 / 求值 | 不支持 | 不支持；每个公式给出 `FORMULA_CACHE_NOT_RECALCULATED` |
+| 保留原文档格式 | 不适用 | **不支持**；`read_ods` 总是数据型导入，默认拒绝，必须显式 `allow_formatting_loss=true` |
+| 图表/图片/宏/加密/ZIP64/DTD/货币/时间戳 | 不支持 | 读取时明确拒绝，不静默丢弃 |
+| ODS→XLSX | 不支持 | 本仓库**没有**；曾有两进程桥接实测，但桥接代码不在本仓库，也未在本轮重跑 |
+
+候选的验证结果（本地、远端 CI、注册表分开记录）：
+
+| 层面 | 结果 | 记录 |
+|---|---|---|
+| 本地，锁定工具链 `moon 0.1.20260920 (914d7da)` / `moonc v0.10.14+7d59c7ec9` | **候选无法编译**：`reader*.mbt`、`xml.mbt` 等使用该 SDK 核心库没有的 `Int32`（错误 4032）。`moon check/test` 失败，不是测试失败而是编译失败 | 本轮 `moon check` 实测 |
+| 本地，一次性草稿副本（仅把 `Int32` 改为 `Int`，补丁见移交报告，**核心文件未在本仓库修改**） | JS 166/166、Wasm GC 166/166 通过；`examples/ods_tool` 构建并运行 | 本轮实测日志 |
+| 候选原作者记录的环境 | `moon 0.1.20261012` / `moonc v0.10.15`；与上面的锁定版本不同。该环境结果本轮**未重现** | [第一轮记录](docs/TYPED_READER_REVIEW_20261015.md)、[第二轮](docs/TYPED_READER_ROUND2_20261015.md) |
+| 远端 CI | **未运行**（未推送） | — |
+| 注册表（候选） | 不适用：候选未发布 | — |
+| 注册表（0.2.0） | 先前发行记录；本轮仅查看已安装 0.2.0 内容确认无 reader | [发行记录](docs/RELEASE_020_ZH.md) |
+
+**增量价值（如实表述）**：生态里已有 ODS→Markdown 读取（markitdown-mb）和 XLSX 读写（mbtexcel），本项目不是第一个能读 ODS 的库。候选的差异点是：同一套类型化模型既能读又能写，限定在明确的资源预算内，对所有会丢失的内容逐项给出机器可读的诊断，并对恶意输入（ZIP 伪造大小、DTD、重复条目、深层 XML 等）有可复现的拒绝行为。这是否构成足够的增量，由评审判断；本文不作保证。
+
+### 使用外部 ODS（`examples/ods_tool`）
+
+在下载/检出后的仓库根目录，使用与锁定版本匹配且可编译候选的工具链（见上表第一行的阻塞）：
+
+```sh
+export ODS_INPUT=tests/reader-fixtures/external/libreoffice-dev-types.ods
+moon build examples/ods_tool --target js
+# 构建产物路径依 SDK 版本而异，也可直接 moon run examples/ods_tool --target js
+node _build/js/debug/build/sundaysebasidian-byte/moonods/examples/ods_tool/ods_tool.js
+```
+
+| 环境变量 | 作用 |
+|---|---|
+| `ODS_INPUT` | 必填，要读取的 `.ods` |
+| `ODS_ACCEPT_LOSS=1` | 接受数据型导入（丢弃格式/元数据）；不设置则一律拒绝，退出码 1 |
+| `ODS_CSV=路径` | 把第 0 个工作表的值写成 CSV（仅值，日期为 `YYYY-MM-DD`） |
+| `ODS_SET=表,行,列,数字` | 编辑一个单元格为数字（均从 0 开始） |
+| `ODS_OUTPUT=路径` | 写回 `.ods`，并立即重新读取自己的输出校验 |
+
+用外部 LibreOfficeDev 产出的 `tests/reader-fixtures/external/libreoffice-dev-types.ods`（不是 MoonODS 生成；不是稳定版 LibreOffice 兼容结论）在草稿副本上的真实输出摘要：
+
+```text
+$ ODS_INPUT=… node ods_tool.js                       # 默认
+ERROR: data-only import requires allow_formatting_loss=true; source formatting and metadata will not be retained   (exit 1)
+$ ODS_ACCEPT_LOSS=1 ODS_INPUT=… ODS_SET=0,1,0,8.5 ODS_OUTPUT=edited.ods node ods_tool.js
+sheet[0] Types  3 rows x 7 cols   …  (0,6) number:3  formula=of:=1+2 (cached value, not recalculated)
+sheet[1] Merge  2 rows x 3 cols
+diagnostics: 20
+  DATA_ONLY_IMPORT … / DOCUMENT_FORMATTING_DROPPED … / FORMATTING_DROPPED sheet=Types row=0 col=1 …
+  FORMULA_CACHE_NOT_RECALCULATED sheet=Types row=0 col=6: Stored cache retained; edits do not recalculate this formula.
+  PACKAGE_PART_DROPPED … styles.xml / meta.xml / settings.xml / Thumbnails/thumbnail.png …
+wrote edited.ods (6546 bytes); re-read OK, sheets=2                                       (exit 0)
+```
+
+对 12 个合成恶意样本（`tests/reader-fixtures/controls/`，不要用办公软件打开），在接受损失的模式下的实际结果：
+
+| 样本 | 结果 |
+|---|---|
+| deep-xml / inflate-ratio / repeat-overflow | 拒绝：XML 深度/节点预算、文本上限、重复/跨度预算 |
+| dtd-entity | 拒绝：`unsupported XML name` |
+| duplicate-content / forged-inflate-size | 拒绝：`duplicate ZIP entry` / `forged ZIP uncompressed size` |
+| formula-without-cache / invalid-date / nonfinite-number | 拒绝，并给出 sheet/row/col |
+| unknown-currency / wrong-table-namespace | 拒绝：不支持的属性/命名空间 |
+| typed-prefix-alias | **接受**（合法的命名空间前缀别名），1 条诊断 |
+
+完整逐样本输出见移交报告所附日志。这是单次本地运行，不是远端 CI，也不代表任意输入。
 
 MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。已公开 [GitHub](https://github.com/sundaysebasidian-byte/moonods)，原创MIT。**0.2.0已正式发布到[Mooncakes](https://mooncakes.io/docs/sundaysebasidian-byte/moonods)**，并通过空缓存正式包消费验证；0.1.0为历史首发。当前发行证据见[0.2.0记录](docs/RELEASE_020_ZH.md)，历史见[首发记录](docs/RELEASE_ZH.md)。
 
 **当前发行版本为0.2.0。** 包含整行原子写入`set_row`、日期公式缓存DateISO默认和Header三文字字重。JS及Wasm GC各31核心/API、各5独立消费者；三场景的ODS字节在两个后端及重复生成进程中一致。版本安装使用`moon add sundaysebasidian-byte/moonods@0.2.0`。发布快照为`4cd43f395b15164282e2a56c5e66c9aa2b95b750`；正式安装的46文件全部与CI候选相同，详见[发行说明](docs/RELEASE_020_ZH.md)。后续发布证据文档提交不改变已发布包字节。
 
-适合销售汇总、教学实验和调用方提供公式缓存的离线报表。它生成 ODS，不读取或转换已有文件。生态里已有 [markitdown-mb](https://github.com/ZSeanYves/markitdown) 的 ODS→Markdown 读取，以及 [mbtexcel](https://github.com/moonbitlang/office.mbt) 的 XLSX 读写；本项目聚焦有界、类型化、确定性的 ODF 1.3 writer。当前检索不等于证明生态里绝无同类项目，正式申报前需要再核查。
+适合销售汇总、教学实验和调用方提供公式缓存的离线报表。**0.2.0 正式包只生成 ODS，不读取或转换已有文件**；读取/编辑见上方候选部分。生态里已有 [markitdown-mb](https://github.com/ZSeanYves/markitdown) 的 ODS→Markdown 读取，以及 [mbtexcel](https://github.com/moonbitlang/office.mbt) 的 XLSX 读写；本项目聚焦有界、类型化、确定性的 ODF 1.3 writer。当前检索不等于证明生态里绝无同类项目，正式申报前需要再核查。
 
 ## 支持和边界
 
 | 支持 | 明确不支持 |
 |---|---|
-| 中文、XML 转义、空格/制表/换行、空字符串及空值 | ODS 读取、ODS↔其他格式转换 |
+| 中文、XML 转义、空格/制表/换行、空字符串及空值 | 0.2.0：ODS 读取（候选分支已实现数据型读取，见上）；任何版本：ODS↔其他格式转换、保留原文档格式 |
 | 有限 `Double`、布尔、Gregorian 日期（年月日） | 货币类型、时区/时间戳、任意精度十进制 |
 | `of:=` 公式文本及 string/number/bool/date 缓存 | 公式语法验证、求值、重算或依赖图 |
 | 多表、五种基础样式、整数毫米列宽、矩形合并 | 图表、图片、任意样式、冻结窗格、条件格式 |
@@ -165,6 +237,6 @@ zipc 的 Archive 按路径排序，会把 META-INF 放在 mimetype 前，因此�
 
 当前源码有31核心/API与5独立消费测试，实际LibreOfficeDev格式复核见本轮记录。历史0.1.0的25+4、注册表和CI结果分别保留，不能作为0.2.0包发行证明。工程检查不是官方活动验收；最终申报须遵守人工撰写规则。
 
-以上25项/发行段落描述历史0.1.0阶段。0.2.0已于2026-10-04正式发布，发布及注册表核验见[0.2.0发行记录](docs/RELEASE_020_ZH.md)；31+5与LibreOfficeDev记录仅证明对应源码和应用profile。本轮2026-10-14初审整改尚未实现外部ODS读取/编辑写回或跨格式消费，见[整改范围与阻塞](docs/REVIEW_RESPONSE_20261014_ZH.md)。历史提交及失败日志保留，未代办人工申报。
+以上25项/发行段落描述历史0.1.0阶段。0.2.0已于2026-10-04正式发布，发布及注册表核验见[0.2.0发行记录](docs/RELEASE_020_ZH.md)；31+5与LibreOfficeDev记录仅证明对应源码和应用profile。2026-10-14 的整改记录[整改范围与阻塞](docs/REVIEW_RESPONSE_20261014_ZH.md)为历史记录：当时尚未实现外部ODS读取；之后的候选改动见本文顶部状态表。历史提交及失败日志保留，未代办人工申报。
 
 Wasm GC消费者示例通过标准输出交付Base64编码的ODS Bytes，由测试宿主解码落盘，再以独立odfpy/官方RNG核值；它不是库读取ODS或提供Wasm文件系统。生产库仍返回Bytes，未新增FFI。三消费者输出的跨后端一致性只覆盖所列合成输入，不承诺任意后端或全部浮点输入的序列化等价。

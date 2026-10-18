@@ -1,0 +1,188 @@
+diff --git a/reader.mbt b/reader.mbt
+index e162a3b..d8eeee0 100644
+--- a/reader.mbt
++++ b/reader.mbt
+@@ -11,8 +11,8 @@ let read_text = "urn:oasis:names:tc:opendocument:xmlns:text:1.0#"
+ /// Coordinates are zero-based. -1 means workbook/sheet scope.
+ pub(all) struct ImportDiagnostic {
+   sheet : String
+-  row : Int32
+-  col : Int32
++  row : Int
++  col : Int
+   code : String
+   message : String
+ } derive(Eq, Debug)
+@@ -37,7 +37,7 @@ pub fn ImportResult::diagnostics(
+ }
+ 
+ ///|
+-pub fn Workbook::sheet(self : Workbook, index : Int32) -> Sheet? {
++pub fn Workbook::sheet(self : Workbook, index : Int) -> Sheet? {
+   if index < 0 || index >= self.sheets.length() {
+     None
+   } else {
+@@ -46,21 +46,21 @@ pub fn Workbook::sheet(self : Workbook, index : Int32) -> Sheet? {
+ }
+ 
+ ///|
+-pub fn Sheet::dimensions(self : Sheet) -> (Int32, Int32) {
++pub fn Sheet::dimensions(self : Sheet) -> (Int, Int) {
+   (self.rows, self.cols)
+ }
+ 
+ ///|
+ pub fn Sheet::merge_span(
+   self : Sheet,
+-  row : Int32,
+-  col : Int32,
+-) -> (Int32, Int32)? {
++  row : Int,
++  col : Int,
++) -> (Int, Int)? {
+   self.spans.get((row, col))
+ }
+ 
+ ///|
+-pub fn Sheet::is_covered(self : Sheet, row : Int32, col : Int32) -> Bool {
++pub fn Sheet::is_covered(self : Sheet, row : Int, col : Int) -> Bool {
+   self.covered.contains((row, col))
+ }
+ 
+@@ -103,7 +103,7 @@ fn ReadElement::allowed(
+ }
+ 
+ ///|
+-fn read_positive(raw : String, max : Int32) -> Int32 raise OdsError {
++fn read_positive(raw : String, max : Int) -> Int raise OdsError {
+   if raw == "" {
+     raise Invalid("empty repeat/span count")
+   }
+@@ -129,8 +129,8 @@ fn ReadElement::count(
+   self : ReadElement,
+   ns : String,
+   key : String,
+-  max : Int32,
+-) -> Int32 raise OdsError {
++  max : Int,
++) -> Int raise OdsError {
+   match self.attribute(ns, key) {
+     Some(s) => read_positive(s, max)
+     None => 1
+@@ -431,8 +431,8 @@ fn ReadElement::style_notice(
+   self : ReadElement,
+   notices : Array[ImportDiagnostic],
+   sheet : String,
+-  row : Int32,
+-  col : Int32,
++  row : Int,
++  col : Int,
+ ) -> Unit raise OdsError {
+   if self.attribute(read_table, "style-name") is Some(_) ||
+     self.attribute(read_table, "default-cell-style-name") is Some(_) {
+diff --git a/reader_xml.mbt b/reader_xml.mbt
+index cbea0e2..c2decd3 100644
+--- a/reader_xml.mbt
++++ b/reader_xml.mbt
+@@ -18,8 +18,8 @@ priv struct ReadElement {
+ ///|
+ priv struct ReadXml {
+   chars : Array[Char]
+-  mut at : Int32
+-  mut nodes : Int32
++  mut at : Int
++  mut nodes : Int
+ }
+ 
+ ///|
+@@ -218,7 +218,7 @@ fn expanded_name(
+ fn ReadXml::element(
+   self : ReadXml,
+   parent : Map[String, String],
+-  depth : Int32,
++  depth : Int,
+ ) -> ReadElement raise OdsError {
+   if depth > 32 || self.nodes >= 65536 {
+     raise Invalid("XML depth/node budget exceeded")
+diff --git a/reader_zip.mbt b/reader_zip.mbt
+index 4f1934f..e694428 100644
+--- a/reader_zip.mbt
++++ b/reader_zip.mbt
+@@ -1,6 +1,6 @@
+ ///|
+ // ZIP32 only. All arithmetic operands are bounded before they are added.
+-fn ods_zip_u16(data : Bytes, pos : Int32) -> Int32 raise OdsError {
++fn ods_zip_u16(data : Bytes, pos : Int) -> Int raise OdsError {
+   if pos < 0 || pos > data.length() - 2 {
+     raise Invalid("truncated ZIP")
+   }
+@@ -8,12 +8,12 @@ fn ods_zip_u16(data : Bytes, pos : Int32) -> Int32 raise OdsError {
+ }
+ 
+ ///|
+-fn ods_zip_u32(data : Bytes, pos : Int32) -> Int32 raise OdsError {
++fn ods_zip_u32(data : Bytes, pos : Int) -> Int raise OdsError {
+   ods_zip_u16(data, pos) | (ods_zip_u16(data, pos + 2) << 16)
+ }
+ 
+ ///|
+-fn ods_zip_size(data : Bytes, pos : Int32) -> Int32 raise OdsError {
++fn ods_zip_size(data : Bytes, pos : Int) -> Int raise OdsError {
+   let n = ods_zip_u32(data, pos)
+   if n < 0 || n > 33554432 {
+     raise Invalid("unsupported ZIP size or ZIP64")
+@@ -24,8 +24,8 @@ fn ods_zip_size(data : Bytes, pos : Int32) -> Int32 raise OdsError {
+ ///|
+ fn ods_zip_extra(
+   data : Bytes,
+-  start : Int32,
+-  length : Int32,
++  start : Int,
++  length : Int,
+ ) -> Unit raise OdsError {
+   let end = start + length
+   if end > data.length() {
+@@ -56,7 +56,7 @@ fn ods_zip_utf8(data : Bytes) -> String raise OdsError {
+ }
+ 
+ ///|
+-fn ods_zip_inflate(data : Bytes, budget : Int32) -> Bytes raise OdsError {
++fn ods_zip_inflate(data : Bytes, budget : Int) -> Bytes raise OdsError {
+   let decoder = @flate.Inflater::new()
+   let scratch = FixedArray::make(8192, b'\x00')
+   let out = @buffer.Buffer()
+@@ -125,7 +125,7 @@ fn read_ods_content_noticing(
+     raise Invalid("invalid ZIP directory or ZIP64")
+   }
+   let names : Array[String] = []
+-  let spans : Array[(Int32, Int32)] = []
++  let spans : Array[(Int, Int)] = []
+   let mut covered = 0
+   let mut p = cd_start
+   let mut total = 0
+diff --git a/reader_zip_wbtest.mbt b/reader_zip_wbtest.mbt
+index cf90506..1ff03ae 100644
+--- a/reader_zip_wbtest.mbt
++++ b/reader_zip_wbtest.mbt
+@@ -14,7 +14,7 @@ fn zip_rejects(data : Bytes) -> Bool {
+ }
+ 
+ ///|
+-fn zip_patch(data : Bytes, at : Int32, value : Int32, width : Int32) -> Bytes {
++fn zip_patch(data : Bytes, at : Int, value : Int, width : Int) -> Bytes {
+   let out = @buffer.Buffer()
+   out.write_bytes(data[:at])
+   for i in 0..<width {
+diff --git a/xml.mbt b/xml.mbt
+index eeaf52e..f6d1ffc 100644
+--- a/xml.mbt
++++ b/xml.mbt
+@@ -60,7 +60,7 @@ fn text_paragraph(s : String) -> String {
+ }
+ 
+ ///|
+-fn pad(n : Int32, size : Int32) -> String {
++fn pad(n : Int, size : Int) -> String {
+   let s = n.to_string()
+   let b = StringBuilder()
+   for _ in 0..<(size - s.length()) {
