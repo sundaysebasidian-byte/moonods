@@ -36,8 +36,8 @@
 ```sh
 export ODS_INPUT=tests/reader-fixtures/external/libreoffice-dev-types.ods
 moon build examples/ods_tool --target js
-# 构建产物路径依 SDK 版本而异，也可直接 moon run examples/ods_tool --target js
-node _build/js/debug/build/sundaysebasidian-byte/moonods/examples/ods_tool/ods_tool.js
+# 官方 SDK 0.10.15 下的构建产物路径（已实测）
+node _build/js/debug/build/examples/ods_tool/ods_tool.js
 ```
 
 | 环境变量 | 作用 |
