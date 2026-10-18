@@ -1,5 +1,7 @@
 # MoonODS 中文验收矩阵
 
+> **候选当前状态（2026-10-18，未发布）**：下面两张表描述的是 **0.2.0 发行版**（SDK moonc 0.10.14 / moon 0.1.20260920，31+5 测试，使用 zipc）。当前未发布的 reader 候选使用官方 SDK `moonc v0.10.15+943464bfa` / `moon 0.1.20261012`、flate 0.9.0、无 zipc；`scripts/acceptance.py` 22 步全部 PASS，JS 65/65、Wasm GC 65/65（核心 61 + 同模块消费 4）。该次实测未在 Excel/WPS/Numbers/LibreOffice 中打开任何文件，`separate_office_evidence` 仍标记 `STALE INPUTS`（旧 Excel 记录对应旧 ODS 字节）。远端 CI 未运行。以下表格保留为 0.2.0 历史记录，不是候选结论。
+
 状态：2026-10-04 **0.2.0已正式发布并通过空缓存安装验证**。发布快照`4cd43f395b15164282e2a56c5e66c9aa2b95b750`及准确CI与注册表回执见[发行说明](RELEASE_020_ZH.md)。历史0.1.0及当天首次GitHub同步记录保持原范围。本文件是AI辅助客观工程记录，不是最终人工申报书或官方终验结论。不保证一次验收或奖金额度。
 
 ## 终验九条

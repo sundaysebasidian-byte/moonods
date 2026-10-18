@@ -1,3 +1,5 @@
+> **Historical record (2026-10-15).** Statements here about a zipc/flate 0.2.0 version conflict with mbtexcel, "mbtexcel integration not done" or 166/166 workspace counts describe that earlier state. They were resolved in the 2026-10-18 integration candidate (flate 0.9.0, no zipc; acceptance JS 65/65, Wasm GC 65/65, same-module mbtexcel 0.3.0 PASS). See README.md for the current state.
+
 # Bounded typed ODS workflow: first-round candidate
 
 This is the first-round record. Current follow-up changes and results are in [round two](TYPED_READER_ROUND2_20261015.md).

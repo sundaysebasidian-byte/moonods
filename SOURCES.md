@@ -13,9 +13,10 @@
 
 ## 复用组件
 
-- MoonBit core：当前可信 SDK 0.10.14 附带的 Buffer/StringBuilder/UTF-8/collections；Apache-2.0。源码许可原件在 licenses。
-- [moonbit-community/zipc](https://github.com/moonbit-community/zipc) 0.2.2：Apache-2.0。实际读 zip.mbt CRC API及 Archive 路径排序；复用 File::stored_from_bytes().decompressed_crc32()。归档 SHA256 `e552ecca64446aa9be8ced2dfae21f413e77ced2d21dfd0934772f32f30c43de`。
-- [moonbit-community/flate](https://github.com/moonbit-community/flate) 0.2.0：Apache-2.0，为 zipc 传递依赖；归档 SHA256 `935372d9a49a5d4bbb40a2fd057bd36b587f683d605c5de204adc143a2215e66`。
+- MoonBit core：当前锁定 SDK（`moonc v0.10.15+943464bfa`）附带的 Buffer/StringBuilder/UTF-8/collections；Apache-2.0。已发布 0.2.0 当时用 SDK 0.10.14。源码许可原件在 licenses。
+- [moonbit-community/flate](https://github.com/moonbit-community/flate) **0.9.0**（当前候选的直接运行依赖）：Apache-2.0。写出用其 checksum 包算 CRC32，读取用其增量 inflate API。归档 `vendor/flate-0.9.0.zip` SHA256 `30d94e69f6fb502284bd84446888bda7cf2c8b831124e3ecb69844d172e772f7`，逐文件摘要见 DEPENDENCIES.lock.json。
+- [moonbit-community/zipc](https://github.com/moonbit-community/zipc) 0.2.2 与 flate 0.2.0（**仅历史**：已发布 0.2.0 使用；当前候选已移除 zipc）：Apache-2.0。曾复用 File::stored_from_bytes().decompressed_crc32()。归档 `vendor/zipc-0.2.2.zip` SHA256 `e552ecca64446aa9be8ced2dfae21f413e77ced2d21dfd0934772f32f30c43de`、`vendor/flate-0.2.0.zip` SHA256 `935372d9a49a5d4bbb40a2fd057bd36b587f683d605c5de204adc143a2215e66` 保留，不参与候选构建。
+- [moonbitlang/mbtexcel](https://mooncakes.io/docs/moonbitlang/mbtexcel) 0.3.0：**仅测试夹具** `fixtures/mbtexcel-consumer` 使用（XLSX 写出），不是 MoonODS 运行依赖，也不在 DEPENDENCIES.lock.json 内；由 moon 注册表解析，其许可见上游包。
 - 测试使用现有 odfpy 1.4.1、lxml 6.0.2、defusedxml 0.7.1；不纳入 MoonBit运行时，不在源码包中复制 Python 依赖程序。
 
 依赖归档来自既有本任务 Mooncakes 缓存；逐文件 SHA256 与安装源码核对，归档与原 LICENSE 附在 vendor/licenses。沒有修改归档上游源码。

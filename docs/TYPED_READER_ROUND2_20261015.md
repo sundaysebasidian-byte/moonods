@@ -1,3 +1,5 @@
+> **Historical record (2026-10-15).** Statements here about a zipc/flate 0.2.0 version conflict with mbtexcel, "mbtexcel integration not done" or 166/166 workspace counts describe that earlier state. They were resolved in the 2026-10-18 integration candidate (flate 0.9.0, no zipc; acceptance JS 65/65, Wasm GC 65/65, same-module mbtexcel 0.3.0 PASS). See README.md for the current state.
+
 # ODS 第二轮优化：精度、负零与明确损失说明
 
 本轮基于本地候选 c675449e9bde26cf245441326371323f02d71bb5，保留原有有界公共 API。没有推送、发布或重新申报；这不是任意 ODS 无损往返承诺。

@@ -8,6 +8,7 @@ reader execution remains NOT_RUN. Do not load hostile controls in Office apps.
 External formula cache was recalculated by Calc (99 -> 3), not by MoonODS.
 
 2026-10-18 update: the NOT_RUN status above is superseded for the examples/ods_tool
-path. All 12 controls and the external sample were executed through the public API
-on a scratch copy where Int32 was replaced by Int (the locked SDK moonc v0.10.14
-cannot compile the unmodified candidate). Outputs: evidence/review-20261018/.
+path. All 12 controls and the external sample are executed through the public API by
+scripts/verify_ods_tool.py (stage 'ods-tool' of scripts/acceptance.py) on the official
+SDK moonc v0.10.15+943464bfa / moon 0.1.20261012, unmodified sources. (An earlier
+run on a scratch copy with Int32->Int under SDK 0.10.14 is historical only.)

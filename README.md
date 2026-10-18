@@ -14,24 +14,24 @@
 | 公式重算 / 求值 | 不支持 | 不支持；每个公式给出 `FORMULA_CACHE_NOT_RECALCULATED` |
 | 保留原文档格式 | 不适用 | **不支持**；`read_ods` 总是数据型导入，默认拒绝，必须显式 `allow_formatting_loss=true` |
 | 图表/图片/宏/加密/ZIP64/DTD/货币/时间戳 | 不支持 | 读取时明确拒绝，不静默丢弃 |
-| ODS→XLSX | 不支持 | 本仓库**没有**；曾有两进程桥接实测，但桥接代码不在本仓库，也未在本轮重跑 |
+| ODS→XLSX | 不支持 | **库本身没有**转换功能。仓库内有测试夹具 `fixtures/mbtexcel-consumer`：在同一模块里用 `moonbitlang/mbtexcel 0.3.0` 的公共 API 把 `read_ods` 的结果写成 XLSX，已进入 `scripts/acceptance.py` 的 `mbtexcel` 阶段。公式默认拒绝，显式 `cache_only` 时每个公式输出 `FORMULA_DROPPED`（公式文本丢失，只留缓存值）；`-0` 经 mbtexcel 写出为 `+0`，逐格输出 `NUMBER_SIGNED_ZERO_CHANGED`；早于 1900 年的日期拒绝。这是数据型导入的结果，不保留格式。未用 Excel/WPS/Numbers 或 LibreOffice 打开该 XLSX（app-open NOT RUN） |
 
-候选的验证结果（本地、远端 CI、注册表分开记录）：
+候选的验证结果（本地、远端 CI、注册表分开记录；全部为 2026-10-18 在 macOS arm64 实跑）：
 
 | 层面 | 结果 | 记录 |
 |---|---|---|
-| 本地，锁定工具链 `moon 0.1.20260920 (914d7da)` / `moonc v0.10.14+7d59c7ec9` | **候选无法编译**：`reader*.mbt`、`xml.mbt` 等使用该 SDK 核心库没有的 `Int32`（错误 4032）。`moon check/test` 失败，不是测试失败而是编译失败 | 本轮 `moon check` 实测 |
-| 本地，一次性草稿副本（仅把 `Int32` 改为 `Int`，补丁见移交报告，**核心文件未在本仓库修改**） | JS 166/166、Wasm GC 166/166 通过；`examples/ods_tool` 构建并运行 | 本轮实测日志 |
-| 候选原作者记录的环境 | `moon 0.1.20261012` / `moonc v0.10.15`；与上面的锁定版本不同。该环境结果本轮**未重现** | [第一轮记录](docs/TYPED_READER_REVIEW_20261015.md)、[第二轮](docs/TYPED_READER_ROUND2_20261015.md) |
+| 本地，官方 SDK `moonc v0.10.15+943464bfa` / `moon 0.1.20261012 (748b63c)`（现已锁定，见 [TOOLCHAIN.lock](TOOLCHAIN.lock)），Node v24.18.0，Python 3.13.14 | **`scripts/acceptance.py` 22 个步骤全部 PASS**：`moon fmt --check`、`check/build/test --deny-warn`；JS **65/65**、Wasm GC **65/65**（其中核心包 61 + 同模块独立消费 4）；跨进程确定性、官方 RNG/odfpy 独立校验、旧消费者、守卫（正常与 `-O`）、类型化读改写、`examples/ods_tool`、同模块 mbtexcel 0.3.0。未测试：native、llvm、非 GC wasm |
+| 依赖 | 运行时依赖 `moonbit-community/flate 0.9.0`（压缩/解压与 CRC32），**不再依赖 zipc**；zipc 0.2.2 与 flate 0.2.0 仅是已发布 0.2.0 的依赖，归档仍保留在 `vendor/` 作历史，不参与候选构建。mbtexcel 0.3.0 要求 flate 0.9.0，因此这一变化让两者能在同一模块共存 |
+| 历史记录（不是当前结论） | 在旧锁定 SDK `moonc v0.10.14` 上，早期候选曾因 `Int32` 未定义无法编译，也曾因 workspace 把 flate 0.2.0 当自有模块而 `--deny-warn` 失败；这两项在 2026-10-18 的集成候选中均已解决（`Int32` 在官方 0.10.15 SDK 中存在，因此未采用“Int32→Int”建议补丁）。此前草稿副本的 166/166 来自临时的 Int 改写和含依赖的旧 workspace，不能证明当前候选，当前真实计数见上一行 |
 | 远端 CI | **未运行**（未推送） | — |
 | 注册表（候选） | 不适用：候选未发布 | — |
-| 注册表（0.2.0） | 先前发行记录；本轮仅查看已安装 0.2.0 内容确认无 reader | [发行记录](docs/RELEASE_020_ZH.md) |
+| 注册表（0.2.0） | 先前发行记录；0.2.0 正式包不含 reader，也仍使用 zipc/旧 flate | [发行记录](docs/RELEASE_020_ZH.md) |
 
 **增量价值（如实表述）**：生态里已有 ODS→Markdown 读取（markitdown-mb）和 XLSX 读写（mbtexcel），本项目不是第一个能读 ODS 的库。候选的差异点是：同一套类型化模型既能读又能写，限定在明确的资源预算内，对所有会丢失的内容逐项给出机器可读的诊断，并对恶意输入（ZIP 伪造大小、DTD、重复条目、深层 XML 等）有可复现的拒绝行为。这是否构成足够的增量，由评审判断；本文不作保证。
 
 ### 使用外部 ODS（`examples/ods_tool`）
 
-在下载/检出后的仓库根目录，使用与锁定版本匹配且可编译候选的工具链（见上表第一行的阻塞）：
+在检出后的仓库根目录，使用 [TOOLCHAIN.lock](TOOLCHAIN.lock) 锁定的工具链（`scripts/acceptance.py` 的 `ods-tool` 阶段会自动构建并运行下列用法，含外部样本与 12 个恶意样本）：
 
 ```sh
 export ODS_INPUT=tests/reader-fixtures/external/libreoffice-dev-types.ods
@@ -48,7 +48,7 @@ node _build/js/debug/build/sundaysebasidian-byte/moonods/examples/ods_tool/ods_t
 | `ODS_SET=表,行,列,数字` | 编辑一个单元格为数字（均从 0 开始） |
 | `ODS_OUTPUT=路径` | 写回 `.ods`，并立即重新读取自己的输出校验 |
 
-用外部 LibreOfficeDev 产出的 `tests/reader-fixtures/external/libreoffice-dev-types.ods`（不是 MoonODS 生成；不是稳定版 LibreOffice 兼容结论）在草稿副本上的真实输出摘要：
+用外部 LibreOfficeDev 产出的 `tests/reader-fixtures/external/libreoffice-dev-types.ods`（不是 MoonODS 生成；不是稳定版 LibreOffice 兼容结论）在官方锁定 SDK 上的真实输出摘要：
 
 ```text
 $ ODS_INPUT=… node ods_tool.js                       # 默认
@@ -74,7 +74,7 @@ wrote edited.ods (6546 bytes); re-read OK, sheets=2                             
 | unknown-currency / wrong-table-namespace | 拒绝：不支持的属性/命名空间 |
 | typed-prefix-alias | **接受**（合法的命名空间前缀别名），1 条诊断 |
 
-完整逐样本输出见移交报告所附日志。这是单次本地运行，不是远端 CI，也不代表任意输入。
+逐样本输出由 `scripts/verify_ods_tool.py` 保存（含退出码）。缺少 `ODS_INPUT` 或编辑不存在的工作表时退出码为 1；输入文件不存在时示例会因 Node 异常以退出码 1 终止（未做友好提示）。这是本地运行，不是远端 CI，也不代表任意输入。
 
 MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。已公开 [GitHub](https://github.com/sundaysebasidian-byte/moonods)，原创MIT。**0.2.0已正式发布到[Mooncakes](https://mooncakes.io/docs/sundaysebasidian-byte/moonods)**，并通过空缓存正式包消费验证；0.1.0为历史首发。当前发行证据见[0.2.0记录](docs/RELEASE_020_ZH.md)，历史见[首发记录](docs/RELEASE_ZH.md)。
 
@@ -98,7 +98,7 @@ MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook �
 
 ## 安装与运行
 
-需已有 MoonBit 工具链：`moonc v0.10.14+7d59c7ec9`、`moon 0.1.20260920 (914d7da)`，以及本次实测 Node `24.18.0`。版本与源码依赖摘要见 [TOOLCHAIN.lock](TOOLCHAIN.lock) 和 [DEPENDENCIES.lock.json](DEPENDENCIES.lock.json)。验收命令遇到版本漂移会失败，不会自动安装新工具。
+需已有 MoonBit 工具链：`moonc v0.10.15+943464bfa`、`moon 0.1.20261012 (748b63c)`，以及本次实测 Node `24.18.0`、Python 3.13.14（独立验证脚本）。已发布的 0.2.0 当时使用 `moonc v0.10.14`/`moon 0.1.20260920`，那是历史发行环境。版本与源码依赖摘要见 [TOOLCHAIN.lock](TOOLCHAIN.lock) 和 [DEPENDENCIES.lock.json](DEPENDENCIES.lock.json)。验收命令遇到版本漂移会失败，不会自动安装新工具。
 
 在此目录运行（先把可信现有 SDK 的 bin 加入本次 shell 的 PATH，并设置该 SDK 的 MOON_HOME）：
 
@@ -109,7 +109,7 @@ moon test --target js -j 1 --deny-warn
 moon run --target js -j 1 examples/generate
 ```
 
-新检出需要解析 `moon.mod` 的固定依赖：`moon update`。源码包附带原封不动的 zipc/flate 源码归档，可用 `python3 scripts/restore_deps.py` 恢复到本项目 `.mooncakes`，再用 `scripts/verify_deps.py` 校验；这两个脚本只写本项目，不配置全局工具链。Moon 首次依赖解析仍可能需要 registry 索引/缓存；离线时应使用已准备的 SDK 缓存，不能把有网环境成功误称完全离线初始化成功。
+新检出需要解析 `moon.mod` 的固定依赖：`moon update`。源码包附带原封不动的 flate 0.9.0 源码归档（`vendor/flate-0.9.0.zip`；旧 zipc/flate 0.2.0 归档仅作历史保留），可用 `python3 scripts/restore_deps.py` 恢复到本项目 `.mooncakes`，再用 `scripts/verify_deps.py` 校验；这两个脚本只写本项目，不配置全局工具链。Moon 首次依赖解析仍可能需要 registry 索引/缓存；离线时应使用已准备的 SDK 缓存，不能把有网环境成功误称完全离线初始化成功。
 
 版本0.2.0的下游安装与运行：
 
@@ -231,7 +231,7 @@ python scripts/verify_libreoffice.py \
 
 规范依据：[ODF 1.3 Packages](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part2-packages/OpenDocument-v1.3-os-part2-packages.html) §3.2–3.3；[XML Schema](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html) §9.1、§19.389、§19.646。mimetype 第一项、STORED、无 extra，manifest 精确列出固定 content/styles 路径，不列自身或 mimetype；固定 1980-01-01 时间戳、无随机属性、网格与列宽按顺序输出。确定性基于相同数据、样式、工作表插入顺序和锁定工具链。
 
-zipc 的 Archive 按路径排序，会把 META-INF 放在 mimetype 前，因此本库编写小型固定路径 ZIP32 STORED 封装，复用 zipc 的 CRC32 实现；没有通用 ZIP writer/reader 或用户资产路径入口。依赖源码与摘要真实核对，归档保持上游 Apache-2.0 许可，项目原创代码为 MIT。详见 [来源](SOURCES.md)、[第三方声明](THIRD_PARTY_NOTICES.md)、[AI_USAGE](AI_USAGE.md)。
+写出时本库自己编写小型固定路径 ZIP32 STORED 封装（mimetype 必须第一项且 STORED），CRC32 使用 flate 0.9.0 的 checksum 包；读取时用 flate 0.9.0 的增量 inflate API，带解压预算、尾部字节与 CRC 检查。已发布 0.2.0 当时是复用 zipc 0.2.2 的 CRC32，候选已去掉 zipc。没有通用 ZIP writer 或用户资产路径入口。依赖源码与摘要真实核对，归档保持上游 Apache-2.0 许可，项目原创代码为 MIT。详见 [来源](SOURCES.md)、[第三方声明](THIRD_PARTY_NOTICES.md)、[AI_USAGE](AI_USAGE.md)。
 
 [申报参考](docs/PROPOSAL_REFERENCE.md) 是 AI 辅助技术事实，不能冒充人工最终申报书。用户需理解并人工撰写；公开仓库与0.1.0首发有独立工程记录；最终申报、个人材料与诚信声明由申请人自行处理。
 
