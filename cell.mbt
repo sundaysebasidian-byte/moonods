@@ -13,7 +13,7 @@ pub(all) enum Value {
   Text(String)
   Number(Double)
   Boolean(Bool)
-  Date(Int, Int, Int)
+  Date(Int32, Int32, Int32)
 } derive(Eq, Debug)
 
 ///|
@@ -37,9 +37,9 @@ pub fn Cell::new(value : Value) -> Cell raise OdsError {
 /// guarantee rendering. For historical display, callers may explicitly use
 /// Text("0001-01-01"), which has no date arithmetic semantics.
 pub fn Cell::excel_1900_date(
-  year : Int,
-  month : Int,
-  day : Int,
+  year : Int32,
+  month : Int32,
+  day : Int32,
 ) -> Cell raise OdsError {
   let cell = Cell::new(Date(year, month, day))
   if year < 1900 {

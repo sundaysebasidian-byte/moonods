@@ -11,8 +11,8 @@ fn styles_xml() -> String {
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?><office:document-styles\{namespaces} office:version=\"1.3\"><office:styles>\{preset_styles()}</office:styles></office:document-styles>"
 }
 
-// ODF needs mimetype first; zipc Archive sorts paths (META-INF sorts first).
-// This small ZIP32 STORED envelope uses zipc's tested File CRC implementation.
+// ODF needs mimetype first. Use the shared DEFLATE library's CRC directly,
+// without pulling in another ZIP implementation and its incompatible version.
 // Fixed ASCII paths only, no assets or path input; no timestamps/extras/comments.
 
 ///|
@@ -26,7 +26,7 @@ fn stored_package(files : Array[(String, Bytes)]) -> Bytes raise OdsError {
     if size > 33554432 || offset + size > 33554432 {
       raise Invalid("package exceeds 32 MiB")
     }
-    let crc = @zip.File::stored_from_bytes(data).decompressed_crc32()
+    let crc = @checksum.crc32(data[:]).reinterpret_as_int()
     body.write_int_le(0x04034b50)
     for n in [20, 0, 0, 0, 33] {
       body.write_uint16_le(n.to_uint16())

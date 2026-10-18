@@ -13,6 +13,5 @@ description = "Typed OpenDocument spreadsheet writer with deterministic packages
 repository = "https://github.com/sundaysebasidian-byte/moonods"
 
 import {
-  "moonbit-community/zipc@0.2.2",
-  "moonbit-community/flate@0.2.0",
+  "moonbit-community/flate@0.9.0",
 }

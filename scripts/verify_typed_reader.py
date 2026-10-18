@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run isolated public API consumer, then independently inspect real ODS output.
-Uses local source + bundled dependencies, never registry/push/publication.
-This is ODS roundtrip validation, not mbtexcel/XLSX interoperability.
+Uses local source and pinned Mooncakes dependencies, never push/publication.
+This verifies the ODS roundtrip; verify_mbtexcel.py covers same-module XLSX use.
 """
 import argparse, hashlib, json, os, shutil, subprocess, tempfile, zipfile
 from pathlib import Path
@@ -10,17 +10,16 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--soffice',help='Optional existing LibreOffice executable; no installation')
+    parser.add_argument('--output',type=Path,default=ROOT/'evidence/typed-reader-20261015')
     args=parser.parse_args()
-    evidence = ROOT / 'evidence' / 'typed-reader-20261015'
+    evidence = args.output.resolve()
     evidence.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='moonods-reader-') as tmp:
         work = Path(tmp)
         candidate = work / 'candidate'
         shutil.copytree(ROOT,candidate,ignore=shutil.ignore_patterns('.git','.mooncakes','_build','moon.work','evidence','__pycache__'))
         shutil.copytree(ROOT/'fixtures/typed-reader-consumer',work/'consumer')
-        for name in ['zipc-0.2.2','flate-0.2.0']:
-            with zipfile.ZipFile(ROOT/'vendor'/f'{name}.zip') as z: z.extractall(work/name.split('-')[0])
-        (work/'moon.work').write_text('members = ["candidate", "consumer", "zipc", "flate"]\n')
+        (work/'moon.work').write_text('members = ["candidate", "consumer"]\n')
         source = ROOT/'tests/reader-fixtures/external/libreoffice-dev-types.ods'
         output = evidence/'edited-libreoffice.ods'
         env = dict(os.environ,ODS_INPUT=str(source),ODS_OUTPUT=str(output))
@@ -58,7 +57,7 @@ def main():
             if app.returncode!=0 or not saved.is_file(): raise RuntimeError('LibreOffice save failed')
             observed=semantics(saved)
             if semantic(observed)!=semantic(after): raise RuntimeError('application changed typed data')
-            report['application_resave']={'result':'PASS','version':version,'scope':'headless native ODS save, independent typed comparison; not GUI','sha256':hashlib.sha256(saved.read_bytes()).hexdigest(),'output':str(saved.relative_to(ROOT))}
+            report['application_resave']={'result':'PASS','version':version,'scope':'headless native ODS save, independent typed comparison; not GUI','sha256':hashlib.sha256(saved.read_bytes()).hexdigest(),'output':str(saved.relative_to(evidence))}
             report['stable_libreoffice']='NOT_RUN' if 'Dev' in version or 'alpha' in version else version
             (evidence/'application-resave.json').write_text(json.dumps(report['application_resave'],indent=2)+'\n')
             (evidence/'dev-resave-semantics.json').write_text(json.dumps(observed,indent=2,ensure_ascii=False)+'\n')

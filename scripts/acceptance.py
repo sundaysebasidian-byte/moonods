@@ -33,9 +33,9 @@ def main():
         moon = Path(args.moon).resolve()
         compiler = moon.parent / 'moonc'
         compiler_version = run('moonc-version', [compiler, '-v'])
-        if not compiler_version.startswith('v0.10.14+7d59c7ec9 '): raise RuntimeError('Compiler differs from TOOLCHAIN.lock')
+        if not compiler_version.startswith('v0.10.15+943464bfa '): raise RuntimeError('Compiler differs from TOOLCHAIN.lock')
         tool_version = run('moon-version', [moon, 'version'])
-        if not tool_version.startswith('moon 0.1.20260920 (914d7da '): raise RuntimeError('Moon build tool differs from TOOLCHAIN.lock')
+        if not tool_version.startswith('moon 0.1.20261012 (748b63c '): raise RuntimeError('Moon build tool differs from TOOLCHAIN.lock')
         node_version = run('node-version', ['node', '--version']).strip()
         verifier_versions = {k: version(k) for k in ['odfpy', 'lxml', 'defusedxml']}
         report['runtime_versions'] = {'node': node_version, 'python': platform.python_version(), **verifier_versions}
@@ -94,6 +94,12 @@ def main():
         run('guards', [sys.executable, ROOT / 'scripts/verify_guards.py', '--moon', moon,
                        '--candidate-report', out / 'reuse/reuse.json', '--output', out / 'guards'])
         report['fail_closed_guards'] = json.loads((out / 'guards/guards.json').read_text())
+        run('reader-verifier-guards', [sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_reader_verifier_guards.py'])
+        run('reader-verifier-guards-optimized', [sys.executable, '-O', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_reader_verifier_guards.py'])
+        run('typed-reader', [sys.executable, ROOT / 'scripts/verify_reader_review.py', '--output', out / 'typed-reader'])
+        report['typed_reader'] = json.loads((out / 'typed-reader/review-validation.json').read_text())
+        run('mbtexcel', [sys.executable, ROOT / 'scripts/verify_mbtexcel.py', '--output', out / 'mbtexcel'])
+        report['same_module_mbtexcel'] = json.loads((out / 'mbtexcel/integration.json').read_text())
         report['status'] = 'PASS'
     except Exception as e:
         report['status'] = 'FAIL'; report['error'] = str(e)

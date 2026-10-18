@@ -57,17 +57,16 @@ fn ods_zip_utf8(data : Bytes) -> String raise OdsError {
 
 ///|
 fn ods_zip_inflate(data : Bytes, budget : Int32) -> Bytes raise OdsError {
-  let decoder = @flate.Inflater::new()
+  let decoder = @flate.Inflater()
   let scratch = FixedArray::make(8192, b'\x00')
   let out = @buffer.Buffer()
   let mut consumed = 0
   for ;; {
-    let (status, used, produced) = decoder.step(
-      data[consumed:],
-      scratch.mut_view(),
-    ) catch {
+    let status = decoder.step(data[consumed:], scratch.mut_view(), end=true) catch {
       _ => raise Invalid("invalid DEFLATE stream")
     }
+    let used = decoder.last_consumed()
+    let produced = decoder.last_produced()
     if produced > budget - out.length() {
       raise Invalid("ODS exceeds 4 MiB inflated budget")
     }
@@ -244,7 +243,7 @@ fn read_ods_content_noticing(
     if decoded.length() != unpacked {
       raise Invalid("forged ZIP uncompressed size")
     }
-    if @zip.File::stored_from_bytes(decoded).decompressed_crc32() != crc {
+    if @checksum.crc32(decoded[:]).reinterpret_as_int() != crc {
       raise Invalid("ZIP CRC mismatch")
     }
     total = total + decoded.length()
@@ -271,4 +270,3 @@ fn read_ods_content_noticing(
     None => raise Invalid("ODS content.xml missing")
   }
 }
-
