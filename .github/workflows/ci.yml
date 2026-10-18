@@ -29,6 +29,7 @@ jobs:
           echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
       - name: Resolve pinned packages and verifier
         run: |
+          python scripts/restore_deps.py
           moon update
           moon check --target js -j 1 --deny-warn
           python -m pip install -r requirements-verify.txt
