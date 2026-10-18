@@ -98,6 +98,8 @@ def main():
         run('reader-verifier-guards-optimized', [sys.executable, '-O', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_reader_verifier_guards.py'])
         run('typed-reader', [sys.executable, ROOT / 'scripts/verify_reader_review.py', '--output', out / 'typed-reader'])
         report['typed_reader'] = json.loads((out / 'typed-reader/review-validation.json').read_text())
+        run('ods-tool', [sys.executable, ROOT / 'scripts/verify_ods_tool.py', '--moon', moon, '--output', out / 'ods-tool'])
+        report['ods_tool'] = json.loads((out / 'ods-tool/ods-tool.json').read_text())
         run('mbtexcel', [sys.executable, ROOT / 'scripts/verify_mbtexcel.py', '--output', out / 'mbtexcel'])
         report['same_module_mbtexcel'] = json.loads((out / 'mbtexcel/integration.json').read_text())
         report['status'] = 'PASS'

@@ -30,7 +30,7 @@ extern "js" fn write_text(path : String, data : String) -> Unit =
   #| (p, d) => require('node:fs').writeFileSync(p, d)
 
 ///|
-extern "js" fn exit_with(code : Int) -> Unit =
+extern "js" fn exit_with(code : Int32) -> Unit =
   #| (c) => process.exit(c)
 
 ///|
@@ -50,7 +50,7 @@ fn show(v : @ods.Value) -> String {
 }
 
 ///|
-fn pad2(n : Int) -> String {
+fn pad2(n : Int32) -> String {
   if n < 10 {
     "0\{n}"
   } else {
