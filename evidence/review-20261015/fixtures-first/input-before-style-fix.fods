@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:t="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:x="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:of="urn:oasis:names:tc:opendocument:xmlns:of:1.2" office:version="1.3" office:mimetype="application/vnd.oasis.opendocument.spreadsheet">
+ <office:body><office:spreadsheet>
+  <t:table t:name="Types">
+   <t:table-row>
+    <t:table-cell office:value-type="float" office:value="-0.0"><x:p>0</x:p></t:table-cell>
+    <t:table-cell office:value-type="boolean" office:boolean-value="true"><x:p>TRUE</x:p></t:table-cell>
+    <t:table-cell office:value-type="date" office:date-value="2024-02-29"><x:p>2024-02-29</x:p></t:table-cell>
+    <t:table-cell office:value-type="string"><x:p><x:s/>leading<x:s/><x:tab/>中<x:line-break/>文<x:s/></x:p></t:table-cell>
+    <t:table-cell office:value-type="string"><x:p/></t:table-cell>
+    <t:table-cell/>
+    <t:table-cell t:formula="of:=1+2" office:value-type="float" office:value="99"><x:p>99</x:p></t:table-cell>
+   </t:table-row>
+   <t:table-row t:number-rows-repeated="2"><t:table-cell t:number-columns-repeated="2" office:value-type="float" office:value="7.5"><x:p>7.5</x:p></t:table-cell><t:table-cell office:value-type="string"><x:p>两</x:p></t:table-cell></t:table-row>
+  </t:table>
+  <t:table t:name="Merge">
+   <t:table-row><t:table-cell t:number-columns-spanned="2" t:number-rows-spanned="2" office:value-type="string"><x:p>Title</x:p></t:table-cell><t:covered-table-cell/></t:table-row>
+   <t:table-row><t:covered-table-cell/><t:covered-table-cell/><t:table-cell office:value-type="float" office:value="42"><x:p>42</x:p></t:table-cell></t:table-row>
+  </t:table>
+ </office:spreadsheet></office:body>
+</office:document>

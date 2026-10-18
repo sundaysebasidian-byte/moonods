@@ -1,0 +1,160 @@
+{
+  "verdict": "PASS bounded current candidate after fixes; not full release acceptance",
+  "source_sha256": {
+    "reader.mbt": "9a64cc40d6f6265112ca75ddf8ae941a1acefddc8665414a0415212ebd21c578",
+    "reader_xml.mbt": "9759e89248048cb0a3909355e7910d538e03eaec91971da4a0d97188bf737105",
+    "reader_zip.mbt": "50f7c43371aab0e7d0b5ddd244fe6af4c597a528b195bec315fd3a564beaca37"
+  },
+  "tests": {
+    "js": "Total tests: 54, passed: 54, failed: 0.",
+    "wasm-gc": "Total tests: 54, passed: 54, failed: 0.",
+    "baseline": 48,
+    "independent_extra_tests": 6
+  },
+  "fixed_defects": [
+    "Truncated merged-row input accepted and reserialized inconsistently",
+    "Entity references accepted in XML declaration",
+    "MoonBit underscore numeric literals accepted as ODF doubles",
+    "Bridge reordered sheets when non-first source sheet was named Sheet1"
+  ],
+  "public_consumer": {
+    "result": "PASS",
+    "scope": "isolated MoonBit public consumer + independent Python ODS typed semantic comparison",
+    "source_sha256": "8188fba3e0d00a4ffc7f65ce7e5e2c9d0080be79a79bdcce37d052b24b130948",
+    "output_sha256": "a5fa49d805a7163d9a3c02bc42e9bbb65249780cd25a324cc8ae19fe1918aa1b",
+    "edit": "Types row1 col0: 7.5 -> 8.5",
+    "preserved": "other typed data, empty string distinction, whitespace, repeats, 2x2 merge and covered cells, formula and cache",
+    "mbtexcel": "NOT_RUN",
+    "stable_libreoffice": "NOT_RUN",
+    "application_resave": {
+      "result": "PASS",
+      "version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+      "scope": "headless native ODS save, independent typed comparison; not GUI",
+      "sha256": "6eacfa19301f20002a9d0ad657ddfd149b7f80815238c7e9f331a17a2c30569c",
+      "output": "evidence/typed-reader-20261015/office-output-ej1adrgv/edited-libreoffice.ods"
+    }
+  },
+  "bridge_order_recheck": {
+    "expected": [
+      "Types",
+      "Sheet1"
+    ],
+    "actual": [
+      "Types",
+      "Sheet1"
+    ],
+    "result": "PASS",
+    "report": {
+      "status": "PASS",
+      "engine": "moonbitlang/mbtexcel 0.3.0",
+      "typed_cells_checked": 24,
+      "merges_checked": 1,
+      "xlsx_bytes": 4704,
+      "diagnostics": [
+        {
+          "sheet": "",
+          "row": -1,
+          "col": -1,
+          "code": "DATA_ONLY_IMPORT",
+          "message": "Formatting, metadata, view settings, and numeric display text are not retained. Typed data, merges and formula text/cache are retained within the supported subset."
+        },
+        {
+          "sheet": "Types",
+          "row": -1,
+          "col": -1,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "sheet": "Types",
+          "row": -1,
+          "col": 0,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "sheet": "Types",
+          "row": 0,
+          "col": -1,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "sheet": "Types",
+          "row": 0,
+          "col": 1,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "sheet": "Types",
+          "row": 0,
+          "col": 2,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "sheet": "Types",
+          "row": 0,
+          "col": 6,
+          "code": "FORMULA_CACHE_NOT_RECALCULATED",
+          "message": "Stored cache retained; edits do not recalculate this formula."
+        },
+        {
+          "sheet": "Types",
+          "row": 1,
+          "col": -1,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "sheet": "Types",
+          "row": 2,
+          "col": -1,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "sheet": "Merge",
+          "row": -1,
+          "col": -1,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "sheet": "Merge",
+          "row": -1,
+          "col": 0,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "sheet": "Merge",
+          "row": 0,
+          "col": -1,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "sheet": "Merge",
+          "row": 1,
+          "col": -1,
+          "code": "FORMATTING_DROPPED",
+          "message": "Source formatting is not retained by data-only import."
+        },
+        {
+          "code": "FORMULA_DROPPED",
+          "sheet": "Types",
+          "row": 0,
+          "col": 6
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "LibreOfficeDev alpha only, not stable LibreOffice or GUI",
+    "Bridge is two-process CLI, not same-module dependency composition",
+    "Bridge formulas rejected unless explicit cache-only; formulas then dropped with diagnostics",
+    "No publish, push, Actions or registry release performed"
+  ]
+}

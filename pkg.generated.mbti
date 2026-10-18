@@ -6,6 +6,7 @@ import {
 }
 
 // Values
+pub fn read_ods(Bytes, allow_formatting_loss? : Bool) -> ImportResult raise OdsError
 
 // Errors
 pub suberror OdsError {
@@ -22,9 +23,27 @@ pub fn Cell::new(Value) -> Self raise OdsError
 pub fn Cell::styled(Self, Style) -> Self
 pub fn Cell::value(Self) -> Value
 
+pub(all) struct ImportDiagnostic {
+  sheet : String
+  row : Int
+  col : Int
+  code : String
+  message : String
+} derive(Eq, @debug.Debug)
+pub fn ImportDiagnostic::equal(Self, Self) -> Bool
+pub fn ImportDiagnostic::not_equal(Self, Self) -> Bool
+pub fn ImportDiagnostic::to_repr(Self) -> @debug.Repr
+
+type ImportResult
+pub fn ImportResult::diagnostics(Self) -> Array[ImportDiagnostic]
+pub fn ImportResult::workbook(Self) -> Workbook
+
 type Sheet
+pub fn Sheet::dimensions(Self) -> (Int, Int)
 pub fn Sheet::get(Self, Int, Int) -> Cell?
+pub fn Sheet::is_covered(Self, Int, Int) -> Bool
 pub fn Sheet::merge(Self, Int, Int, Int, Int) -> Unit raise OdsError
+pub fn Sheet::merge_span(Self, Int, Int) -> (Int, Int)?
 pub fn Sheet::name(Self) -> String
 pub fn Sheet::set(Self, Int, Int, Cell) -> Unit raise OdsError
 pub fn Sheet::set_column_width(Self, Int, Int) -> Unit raise OdsError
@@ -53,6 +72,7 @@ type Workbook
 pub fn Workbook::add_sheet(Self, String) -> Sheet raise OdsError
 pub fn Workbook::content_xml(Self) -> String raise OdsError
 pub fn Workbook::new() -> Self
+pub fn Workbook::sheet(Self, Int) -> Sheet?
 pub fn Workbook::sheet_count(Self) -> Int
 pub fn Workbook::to_ods(Self) -> Bytes raise OdsError
 

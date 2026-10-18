@@ -15,3 +15,23 @@ GitHub源码、打包候选与正式注册表发布分别核实：0.1.0的25+4�
 理解代码时应能解释：mimetype第一项/STORED/no-extra、空值与空字符串、合并covered cells、公式文本与调用方缓存、整行失败原子性、确定性顺序、ODF日期与阅读器日期系统、基础显示样式与底层类型值的差异。
 
 0.2.0发布准备中的双后端夹具适配、标准输出宿主解码、注册表验收脚本同样AI辅助。首次Wasm消费者因JS适配器未经目标选择而失败，随后因占位入口未调用场景被deny-warn拒绝；均保留，不能把夹具问题冒称生产库缺陷。修复适配器并运行相同五项测试和实际ODS输出核验，没有删测试或降低告警标准。
+
+
+2026-10-14：Codex接续原仓库的独立review分支。新增/修正STOMP多版本源码草案与针对测试，ODS只核生态、修正发行状态并记录reader/mbtexcel最小方案。包含独立只读源码审查及所发现问题的修正。官方SDK脚本HTTP403、moon/moonc缺失，新增MoonBit源码未编译或执行；不声称完成运行验证、ODS reader或跨格式消费。未push/dispatch/publish/重申；技术底稿不能冒充本人撰写的最终申报。
+
+2026-10-15：Codex接续原review分支并经独立只读审查。STOMP修混合offer并写真实go-stomp/broker测试glue；ODS只准备独立LODev外部样本、固定oracle和负控制，不冒称reader或跨格式实现。SDK官方请求仍403，17项MoonBit测试未执行；保留真实失败、静态与fixture结果各自范围。原恢复包和提交历史保留。
+
+## Unreleased typed-reader candidate (2026-10-15)
+
+AI-assisted implementation added bounded ZIP/XML import, typed editing traversal,
+explicit loss diagnostics, regression tests, a separate public consumer and
+verification scripts. A separate review pass identified malformed XML acceptance,
+error-cache coercion, empty dimension shrinkage and diagnostic-context gaps;
+regressions were added and the implementation fixed. Actual compilation/test
+and application evidence is stored separately from historical release evidence.
+No AI-generated claim substitutes for acceptance by the reviewer or for unrun
+stable-office / full locked-toolchain checks. See docs/TYPED_READER_REVIEW_20261015.md.
+
+## Second optimization round (2026-10-15)
+
+AI-assisted delta work added explicit decimal precision diagnostics, underflow rejection, signed-zero ODS serialization and individual omitted-part notices. New regression cases were first executed against the prior candidate, then independently challenged against the fixed implementation. The CLI bridge separately reports signed-zero loss through mbtexcel; it does not inherit the ODS-only guarantee. See docs/TYPED_READER_ROUND2_20261015.md.

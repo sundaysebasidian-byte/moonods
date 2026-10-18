@@ -60,7 +60,7 @@ fn text_paragraph(s : String) -> String {
 }
 
 ///|
-fn pad(n : Int, size : Int) -> String {
+fn pad(n : Int32, size : Int32) -> String {
   let s = n.to_string()
   let b = StringBuilder()
   for _ in 0..<(size - s.length()) {
@@ -88,7 +88,7 @@ fn Cell::xml(self : Cell, extra : String) -> String {
       s
     }
     Number(n) => {
-      let s = n.to_string()
+      let s = finite_number_text(n)
       b.write_string(" office:value-type=\"float\" office:value=\"\{s}\"")
       s
     }
@@ -111,4 +111,13 @@ fn Cell::xml(self : Cell, extra : String) -> String {
   }
   b.write_string("</table:table-cell>")
   b.to_string()
+}
+
+///|
+fn finite_number_text(n : Double) -> String {
+  if n == 0.0 && 1.0 / n < 0.0 {
+    "-0"
+  } else {
+    n.to_string()
+  }
 }

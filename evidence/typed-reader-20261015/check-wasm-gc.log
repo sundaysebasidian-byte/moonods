@@ -1,0 +1,36 @@
+Warning: [0079]
+    ╭─[ /workspace/scratch/15f6dad7396c/ods-typed-work/.mooncakes/moonbit-community/flate/status.mbt:14:10 ]
+    │
+ 14 │ } derive(Eq, Debug)
+    │          ─┬  
+    │           ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for Status` are implicit promoted as regular method for `Status`. This behavior is deprecated and will be removed in the future. Add a `pub extend Status with Eq::{not_equal, equal}` declaration or manually define regular methods for type `Status` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ /workspace/scratch/15f6dad7396c/ods-typed-work/.mooncakes/moonbit-community/flate/status.mbt:14:14 ]
+    │
+ 14 │ } derive(Eq, Debug)
+    │              ──┬──  
+    │                ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for Status` are implicit promoted as regular method for `Status`. This behavior is deprecated and will be removed in the future. Add a `pub extend Status with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `Status` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ /workspace/scratch/15f6dad7396c/ods-typed-work/.mooncakes/moonbit-community/zipc/zip.mbt:22:1 ]
+    │
+ 22 │ pub impl Show for ZipError with fn output(self, logger) {
+    │ ─────────────┬────────────  
+    │              ╰────────────── Warning (implicit_impl_as_method): The methods to_string, output from `impl Show for ZipError` are implicit promoted as regular method for `ZipError`. This behavior is deprecated and will be removed in the future. Add a `pub extend ZipError with Show::{to_string, output}` declaration or manually define regular methods for type `ZipError` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ /workspace/scratch/15f6dad7396c/ods-typed-work/.mooncakes/moonbit-community/zipc/zip.mbt:67:10 ]
+    │
+ 67 │ } derive(Eq)
+    │          ─┬  
+    │           ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for Compression` are implicit promoted as regular method for `Compression`. This behavior is deprecated and will be removed in the future. Add a `pub extend Compression with Eq::{not_equal, equal}` declaration or manually define regular methods for type `Compression` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ /workspace/scratch/15f6dad7396c/ods-typed-work/.mooncakes/moonbit-community/zipc/zip.mbt:70:1 ]
+    │
+ 70 │ pub impl Show for Compression with fn output(self, logger) {
+    │ ──────────────┬──────────────  
+    │               ╰──────────────── Warning (implicit_impl_as_method): The methods to_string, output from `impl Show for Compression` are implicit promoted as regular method for `Compression`. This behavior is deprecated and will be removed in the future. Add a `pub extend Compression with Show::{to_string, output}` declaration or manually define regular methods for type `Compression` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Finished. moon: ran 5 tasks, now up to date (5 warnings, 0 errors)

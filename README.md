@@ -1,5 +1,9 @@
 # MoonODS
 
+第二轮本地优化已增加数值精度变化提示、下溢拒绝、ODS 负零保留和逐项元数据损失说明，见[第二轮改动、证据与剩余门槛](docs/TYPED_READER_ROUND2_20261015.md)。跨格式 CLI 对无法保留的负零单独报告，未宣称全格式无损。
+
+当前审阅分支新增未发布的有界类型化 ODS 读取、编辑写回和逐格诊断，见[实作范围、当前测试与剩余验收](docs/TYPED_READER_REVIEW_20261015.md)。外部样本已由真实 MoonBit 公共 API 消费；另已实测两进程公共 API 的 ODS→XLSX CLI 桥接；mbtexcel 原生同模块集成仍受依赖版本冲突阻塞。正式 0.2.0 仍是下述 writer 版本，历史准备记录保留。
+
 MoonBit 类型化 OpenDocument 表格生成库。业务代码建立 `Workbook → Sheet → Cell`，得到完整 `.ods` 字节；核心实现是 MoonBit，只有示例的文件写入适配器使用 Node.js。已公开 [GitHub](https://github.com/sundaysebasidian-byte/moonods)，原创MIT。**0.2.0已正式发布到[Mooncakes](https://mooncakes.io/docs/sundaysebasidian-byte/moonods)**，并通过空缓存正式包消费验证；0.1.0为历史首发。当前发行证据见[0.2.0记录](docs/RELEASE_020_ZH.md)，历史见[首发记录](docs/RELEASE_ZH.md)。
 
 **当前发行版本为0.2.0。** 包含整行原子写入`set_row`、日期公式缓存DateISO默认和Header三文字字重。JS及Wasm GC各31核心/API、各5独立消费者；三场景的ODS字节在两个后端及重复生成进程中一致。版本安装使用`moon add sundaysebasidian-byte/moonods@0.2.0`。发布快照为`4cd43f395b15164282e2a56c5e66c9aa2b95b750`；正式安装的46文件全部与CI候选相同，详见[发行说明](docs/RELEASE_020_ZH.md)。后续发布证据文档提交不改变已发布包字节。
@@ -161,6 +165,6 @@ zipc 的 Archive 按路径排序，会把 META-INF 放在 mimetype 前，因此�
 
 当前源码有31核心/API与5独立消费测试，实际LibreOfficeDev格式复核见本轮记录。历史0.1.0的25+4、注册表和CI结果分别保留，不能作为0.2.0包发行证明。工程检查不是官方活动验收；最终申报须遵守人工撰写规则。
 
-以上25项/发行段落描述历史0.1.0阶段。2026-10-02本地0.2.0候选新增31+5及真实LibreOfficeDev导入证据；其源码与已发布0.1.0不同，尚未推送、发布或申报。历史提交、失败日志及Library旧版本保留，详见本轮记录。
+以上25项/发行段落描述历史0.1.0阶段。0.2.0已于2026-10-04正式发布，发布及注册表核验见[0.2.0发行记录](docs/RELEASE_020_ZH.md)；31+5与LibreOfficeDev记录仅证明对应源码和应用profile。本轮2026-10-14初审整改尚未实现外部ODS读取/编辑写回或跨格式消费，见[整改范围与阻塞](docs/REVIEW_RESPONSE_20261014_ZH.md)。历史提交及失败日志保留，未代办人工申报。
 
 Wasm GC消费者示例通过标准输出交付Base64编码的ODS Bytes，由测试宿主解码落盘，再以独立odfpy/官方RNG核值；它不是库读取ODS或提供Wasm文件系统。生产库仍返回Bytes，未新增FFI。三消费者输出的跨后端一致性只覆盖所列合成输入，不承诺任意后端或全部浮点输入的序列化等价。

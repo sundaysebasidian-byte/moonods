@@ -1,0 +1,59 @@
+{
+  "scope": "fixture preparation and external-producer semantic observation only; NOT MoonODS reader/edit/write verification",
+  "controls_determinism": "PASS_TWO_GENERATIONS",
+  "controls_count": 12,
+  "steps": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+        "-env:UserInstallation=file:///tmp/moonods-fixture-profile-c0tpj45i/profile",
+        "--headless",
+        "--nologo",
+        "--nodefault",
+        "--norestore",
+        "--convert-to",
+        "ods:calc8",
+        "--outdir",
+        "/workspace/moon-review/checks/reader-fixtures-20261015-styled/external-1",
+        "/workspace/moon-review/moonods/tests/reader-fixtures/source/types.fods"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+        "-env:UserInstallation=file:///tmp/moonods-fixture-profile-11yex7rm/profile",
+        "--headless",
+        "--nologo",
+        "--nodefault",
+        "--norestore",
+        "--convert-to",
+        "ods:calc8",
+        "--outdir",
+        "/workspace/moon-review/checks/reader-fixtures-20261015-styled/external-2",
+        "/workspace/moon-review/moonods/tests/reader-fixtures/source/types.fods"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "status": "FIXTURES_PREPARED_CORE_NOT_TESTED",
+  "application_version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+  "source_sha256": "8fa7e65b35a0a56bef52759c2528386084c9fc1adaa5c3fbb0c107e1e81a2319",
+  "external_1_sha256": "8188fba3e0d00a4ffc7f65ce7e5e2c9d0080be79a79bdcce37d052b24b130948",
+  "external_2_sha256": "7691564d0863bc83c0781d9ce335bbedfa35fb52f632a776c9fb92ed65f21d6e",
+  "semantic_repeatability": "PASS_TWO_ISOLATED_PROFILES",
+  "external_empty_string_cell": {
+    "value-type": "string",
+    "text": ""
+  },
+  "external_formula_cell": {
+    "formula": "of:=1+2",
+    "value-type": "float",
+    "value": "3",
+    "text": "3"
+  },
+  "outside_writer_grid": [],
+  "stable_libreoffice": "NOT_TESTED",
+  "moonods_reader_edit_write": "NOT_IMPLEMENTED_NOT_RUN",
+  "mbtexcel_consumer": "NOT_IMPLEMENTED_NOT_RUN"
+}

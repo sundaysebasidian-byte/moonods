@@ -1,0 +1,69 @@
+{
+  "verdict": "PASS_BOUNDED_CORE_AND_EXPLICIT_BRIDGE_LOSS_REPORTING",
+  "base_commit": "c675449e9bde26cf245441326371323f02d71bb5",
+  "source_sha256": {
+    "reader.mbt": "020a941c66f9e3405dcef3e3517907db5c6c7d0c0448bb1ec8b507c929650300",
+    "reader_zip.mbt": "5d9e39ae56cef9fd27f2bf31c39c2e7d67a1adb42a74c0b64119886e8875b3f4",
+    "xml.mbt": "e7ac3cff222a433df39c13f6114a5640bd6f7f88f266a5ebf68617c1bc0abd54"
+  },
+  "tests": {
+    "js": "Total tests: 67, passed: 67, failed: 0.",
+    "wasm-gc": "Total tests: 67, passed: 67, failed: 0.",
+    "baseline": 60,
+    "additional": 7
+  },
+  "additional_coverage": [
+    "Exact decimal identities across zeros/signs/exponents",
+    "2^53 integer rounding, long fractions, smallest subnormal and max finite",
+    "Overflow/underflow and1025-unit literal rejection",
+    "96-unit diagnostic preview budget",
+    "Repeated-cell diagnostic coordinates",
+    "Negative-zero formula cache plus merge roundtrip",
+    "Real public ZIP presence-specific omitted-part notices"
+  ],
+  "public_consumer": {
+    "result": "PASS",
+    "scope": "isolated MoonBit public consumer + independent Python ODS typed semantic comparison",
+    "source_sha256": "8188fba3e0d00a4ffc7f65ce7e5e2c9d0080be79a79bdcce37d052b24b130948",
+    "output_sha256": "83f57135f6ed67d6ad93f5a20a157d179c0a547f937facd44e23963ec3b46417",
+    "edit": "Types row1 col0: 7.5 -> 8.5",
+    "preserved": "other typed data, empty string distinction, whitespace, repeats, 2x2 merge and covered cells, formula and cache",
+    "mbtexcel": "NOT_RUN",
+    "stable_libreoffice": "NOT_RUN",
+    "application_resave": {
+      "result": "PASS",
+      "version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+      "scope": "headless native ODS save, independent typed comparison; not GUI",
+      "sha256": "dd39efcaf7a2852c939bfe08f8a4e5b1ae71f985f61415f6491bd3a976029039",
+      "output": "evidence/typed-reader-20261015/office-output-mv9k7vk1/edited-libreoffice.ods"
+    }
+  },
+  "bridge_finding": "Negative-zero silent loss fixed by explicit transport sideband, sign-sensitive readback check and per-cell NUMBER_SIGNED_ZERO_CHANGED. XLSX remains +0; no signed-zero fidelity claim.",
+  "limitations": [
+    "Not stable LibreOffice or GUI",
+    "Two-process bridge only, not same-module composability",
+    "Binary64 numbers, not arbitrary decimal precision",
+    "No remote modifications or publication"
+  ],
+  "bridge_retest": {
+    "transport": {
+      "row": 0,
+      "col": 0,
+      "value": [
+        "number",
+        0,
+        true
+      ]
+    },
+    "loss_diagnostics": [
+      {
+        "code": "NUMBER_SIGNED_ZERO_CHANGED",
+        "sheet": "Types",
+        "row": 0,
+        "col": 0,
+        "message": "Source negative zero was carried through typed JSON metadata and passed to mbtexcel as numeric -0, but XLSX readback returned positive zero."
+      }
+    ],
+    "actual_xlsx_A1": "0"
+  }
+}
