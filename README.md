@@ -240,3 +240,19 @@ python scripts/verify_libreoffice.py \
 以上25项/发行段落描述历史0.1.0阶段。0.2.0已于2026-10-04正式发布，发布及注册表核验见[0.2.0发行记录](docs/RELEASE_020_ZH.md)；31+5与LibreOfficeDev记录仅证明对应源码和应用profile。2026-10-14 的整改记录[整改范围与阻塞](docs/REVIEW_RESPONSE_20261014_ZH.md)为历史记录：当时尚未实现外部ODS读取；之后的候选改动见本文顶部状态表。历史提交及失败日志保留，未代办人工申报。
 
 Wasm GC消费者示例通过标准输出交付Base64编码的ODS Bytes，由测试宿主解码落盘，再以独立odfpy/官方RNG核值；它不是库读取ODS或提供Wasm文件系统。生产库仍返回Bytes，未新增FFI。三消费者输出的跨后端一致性只覆盖所列合成输入，不承诺任意后端或全部浮点输入的序列化等价。
+
+## Header records and CSV (local candidate)
+
+`Sheet::records(header_row=0)` returns snapshots of `{ row, values }`: exact header names map to typed `Value`s, and `row` is the original zero-based row. Missing cells remain `Empty`; explicit `Text("")` remains distinct. Blank data rows are included. Every header must be unique nonblank text, not a formula; merged sheets are rejected. Formula data cells expose their stored caches without recalculation.
+
+`Workbook::add_csv_sheet(name, text)` imports comma CSV with RFC4180 quoting and CRLF/LF records into **text-only** cells. It preserves quotes, embedded line breaks, Unicode and whitespace; does not infer numbers/dates or evaluate leading `=`. Rows must have equal widths. Bare CR, malformed quotes, XML-forbidden characters, >128 columns, >1024 rows, >65536 cells, >32767 UTF-16 units per field, >2097152 text units per sheet or >4194304 input units are rejected before workbook mutation. Empty CSV imports one empty text cell.
+
+`Sheet::to_csv()` emits deterministic quoted CSV with CRLF records. Numbers/booleans/ISO dates become text; `Empty` and `Text("")` both become empty CSV fields. Merges are rejected. Formulas require explicit `use_formula_cache=true`, exporting existing caches and dropping formulas. CSV loses types/styles/metadata, and external spreadsheets may infer types/formulas from text. The existing 16 MiB output budget also applies.
+
+```sh
+python scripts/verify_value.py --output /absolute/new/evidence-directory
+# Optional real native ODS open/save and public-library readback:
+python scripts/verify_value.py --output /absolute/new/office-evidence --soffice /path/to/soffice
+```
+
+The public consumer is `examples/table_csv`; the verifier supplies its input/output paths and checks results with Python CSV and independent ODS semantics. Optional Office verification is specific to the recorded app/version/fixture, not a GUI or all-Office compatibility guarantee.

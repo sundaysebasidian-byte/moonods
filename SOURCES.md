@@ -56,3 +56,6 @@
 ## 2026-10-03字体属性续读
 
 实际读取已有官方ODF1.3 XML原文§20.193（拉丁fo:font-weight）、§20.294/295（亚洲/复杂字重）及当前校验摘要为`40bad03...58e4e6`的RNG三项fontWeight属性定义。网页工具因超过正文大小上限未能提取，未把无关搜索结果当规范。Header据此补齐属性，原生Calc回存属性复核见docs/FORMAT_VERIFICATION_ZH；此处更早“未实测LibreOffice”等句子是10/1阶段事实。只分发来源摘要与链接。
+
+- RFC4180 §2: https://www.rfc-editor.org/rfc/rfc4180.html#section-2 — CSV quoting reference; `csv.mbt` is independently implemented bounded ODS interchange code, not copied RFC ABNF or another CSV library. Accepts common LF records in addition to CRLF; strict equal widths; no delimiter/encoding detection or general CSV-toolkit claim.
+- Existing CSV/ODS-adjacent libraries are compared in the separate value-20261020 delivery research, including actual Mooncakes ODS hits. New CSV support is an ODS bridge with project budgets, not a claim that MoonBit lacks CSV parsers.
