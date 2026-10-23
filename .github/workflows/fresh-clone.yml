@@ -15,8 +15,8 @@ jobs:
     env:
       PINNED_SDK: 0.10.15+943464bfa
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
       - name: Install official MoonBit SDK
@@ -29,6 +29,8 @@ jobs:
           fi
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
       - run: moon version --all
+      # A fresh SDK has no registry index yet; needed for flate.
+      - run: moon update
       - run: moon check
       - run: moon test
       - name: README quick start
