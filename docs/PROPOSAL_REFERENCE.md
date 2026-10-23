@@ -1,6 +1,22 @@
 # MoonODS 技术事实与申报参考（AI 辅助，非人工最终申报书）
 
-此参考主要保留0.1.0历史阶段事实。2026-10-02本地0.2.0候选的新增接口、真实测试与未发布状态见[本轮客观记录](LOCAL_CANDIDATE_ZH.md)和[验收矩阵](ACCEPTANCE_ZH.md)，不能把旧远端/注册表成功移给新版本。本轮没有生成可冒充本人撰写的最终申报内容。
+> **2026-10-18 重新申报用事实（取代下文“不是读取转换器”的旧表述；不是申报书，申报书须人工撰写并按当期官方模板）**
+>
+> 初审意见：只做 writer 太小众，ODS 已有读取库，增量价值不足。以下按状态分栏，申报时请逐项对应，不要混写。
+>
+> | 状态 | 内容 |
+> |---|---|
+> | 已发布（0.2.0，Mooncakes） | 类型化 `Workbook→Sheet→Cell` 生成 `.ods`；不能读取 |
+> | 已实现、未发布（本分支候选） | `read_ods`（有界、默认拒绝、需显式接受数据型导入）、读取后编辑并写回、逐项损失诊断、`examples/ods_tool` |
+> | 已验证（本地，2026-10-18，官方 SDK `moonc v0.10.15+943464bfa` / `moon 0.1.20261012`，macOS arm64） | `scripts/acceptance.py` 22 步全部 PASS：JS 65/65、Wasm GC 65/65；外部 LibreOfficeDev 样本读-改-写-重读（单元格 7.5→8.5）；12 个恶意样本 11 个拒绝、1 个合法别名接受；同模块 mbtexcel 0.3.0 + flate 0.9.0 集成（14 个类型化单元格、2 表）。运行依赖去掉了 zipc |
+> | 未验证 | 远端 CI；稳定版 LibreOffice / Excel / WPS / Numbers 打开候选写回文件或导出的 XLSX（app-open 未运行）；native / llvm / 非 GC wasm；Linux；注册表新发行 |
+> | 已知损失（均有诊断，不是缺陷隐藏） | `read_ods` 为数据型导入：原样式/元数据/缩略图不保留；公式缓存不重算（`FORMULA_CACHE_NOT_RECALCULATED`）；导出 XLSX 时公式丢失（`FORMULA_DROPPED`），`-0` 变 `+0`（`NUMBER_SIGNED_ZERO_CHANGED`） |
+> | 计划（未实现） | 库内的 ODS↔XLSX 转换 API（目前只有测试夹具里的 mbtexcel 用例）；保留原文档样式的编辑；公式重算 |
+> | 明确不支持 | 保留原格式、公式求值、图表/图片/宏/加密/ZIP64、DTD、货币/时间戳 |
+>
+> 与既有库的关系：markitdown-mb 做 ODS→Markdown（只读、有损转文本）；mbtexcel 做 XLSX。本项目的差异是类型化读-改-写加逐项损失诊断与恶意输入拒绝。不声称绝无同类，评审可能仍认为增量有限。
+
+当前正式版本为0.2.0，2026-10-04发行、准确CI及空缓存注册表消费记录见[发行记录](RELEASE_020_ZH.md)和[验收矩阵](ACCEPTANCE_ZH.md)。2026-10-02未发布候选及0.1.0描述属于历史阶段，不代表当前发行状态。2026-10-14 记录的“外部类型化读改写及 mbtexcel 消费未完成”是当时的阻塞（[范围与阻塞](REVIEW_RESPONSE_20261014_ZH.md)，历史），已在 2026-10-18 的集成候选中解决并验证，范围见上方表格。本文只修正技术事实，不是最终申报书。
 
 章程 5.1 原句“申报书务必人工撰写”，当前十月表单要求“不要使用 AI 编写”。本文件只提供供理解、复核的技术事实，不是最终申报书，不可直接提交或机械改写后冒充人工撰写。用户需自行选择内容和撰写一页以内 Markdown，助手不代签。
 
@@ -14,6 +30,6 @@
 范围：Workbook/Sheet/Cell，string/finite number/bool/Gregorian date/empty，公式文本+类型化缓存，多表、基础样式、列宽、合并；确定性 ZIP/manifest/XML；有界资源错误。核心 MoonBit。可靠 ZIP 组件按固定版本和原许可复用。
 不做：ODS 读取、格式转换、公式解释器、宏、外部数据源、图表、密码/签名、完整 ODF 属性集合。无附加资产入口。
 
-实现路径：类型模型先验证，再生成命名空间 XML；ODF 1.3 包严格限定固定路径。独立 Python zipfile/odfpy 与官方 Relax NG 校验；现有 Excel 16.113.3 实读四个 ODS，常规 20 组通过、整体 PARTIAL，限制见 OFFICE_COMPATIBILITY_ZH。LibreOffice、Numbers、WPS 未实测，无新增安装。公开仓库及0.1.0首发已完成，证据见RELEASE_ZH；人工报名由用户处理。当前十月表单明确至少 10 次有效提交；实际历史随源码包附带，不把数量等同于质量或官方认可。
+实现路径：类型模型先验证，再生成命名空间 XML；ODF 1.3 包严格限定固定路径。独立 Python zipfile/odfpy 与官方 Relax NG 校验；现有 Excel 16.113.3 实读四个 ODS，常规 20 组通过、整体 PARTIAL，限制见 OFFICE_COMPATIBILITY_ZH。历史LibreOfficeDev开存及格式复核已完成，范围见ACCEPTANCE_ZH；稳定LibreOffice、Numbers、WPS仍未实测。公开仓库及0.2.0发行已完成，证据见RELEASE_020_ZH；人工报名由用户处理。当前十月表单明确至少 10 次有效提交；实际历史随源码包附带，不把数量等同于质量或官方认可。
 
 理解核对：为什么 mimetype 第一项且无 extra？为什么空值与空字符串不同？covered-table-cell 如何保留合并网格？缓存结果为何可能与公式矛盾？AI 辅助已在 AI_USAGE.md 声明。用户需理解上述点再人工写最终申报。

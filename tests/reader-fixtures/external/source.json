@@ -1,0 +1,11 @@
+{
+  "source": "tests/reader-fixtures/source/types.fods",
+  "source_sha256": "8fa7e65b35a0a56bef52759c2528386084c9fc1adaa5c3fbb0c107e1e81a2319",
+  "fixture": "tests/reader-fixtures/external/libreoffice-dev-types.ods",
+  "sha256": "8188fba3e0d00a4ffc7f65ce7e5e2c9d0080be79a79bdcce37d052b24b130948",
+  "producer": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+  "license": "Synthetic FODS input authored for MoonODS under MIT; application-generated test output; no third-party business data or official LibreOffice fixtures copied",
+  "profile": "Two isolated Dev profiles produced equal observed semantics; ODS byte hashes differ, byte determinism not claimed",
+  "moonods_reader_edit_write": "NOT_IMPLEMENTED_NOT_RUN",
+  "stable_libreoffice": "NOT_TESTED"
+}

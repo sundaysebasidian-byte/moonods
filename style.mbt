@@ -35,8 +35,8 @@ fn preset_styles() -> String {
 /// guaranteed. No app-specific pixel/point compensation is applied.
 pub fn Sheet::set_column_width(
   self : Sheet,
-  col : Int,
-  mm : Int,
+  col : Int32,
+  mm : Int32,
 ) -> Unit raise OdsError {
   position(0, col)
   if mm < 1 || mm > 500 {
@@ -52,7 +52,7 @@ pub fn Sheet::set_column_width(
 
 ///|
 fn Workbook::column_styles(self : Workbook) -> String {
-  let used : Map[Int, Bool] = Map([])
+  let used : Map[Int32, Bool] = Map([])
   for s in self.sheets {
     for _, mm in s.widths {
       used.set(mm, true)
@@ -73,10 +73,10 @@ fn Workbook::column_styles(self : Workbook) -> String {
 /// Merge a zero-based rectangle. Covered values are never silently discarded.
 pub fn Sheet::merge(
   self : Sheet,
-  row : Int,
-  col : Int,
-  rows : Int,
-  cols : Int,
+  row : Int32,
+  col : Int32,
+  rows : Int32,
+  cols : Int32,
 ) -> Unit raise OdsError {
   position(row, col)
   if rows < 1 || rows > 1024 || cols < 1 || cols > 128 || rows * cols == 1 {

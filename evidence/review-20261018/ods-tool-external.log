@@ -1,0 +1,105 @@
+$ (no ODS_INPUT)
+FAILED: Failure(examples/ods_tool/main.mbt:67:5-67:42@sundaysebasidian-byte/moonods FAILED: set ODS_INPUT to an .ods path)
+exit=1
+
+$ strict external
+REFUSED: data-only import requires allow_formatting_loss=true; source formatting and metadata will not be retained
+exit=1
+
+$ ODS_ACCEPT_LOSS=1 + CSV + edit + write
+accepted: tests/reader-fixtures/external/libreoffice-dev-types.ods (accept_loss=true)
+sheet[0] Types  3 rows x 7 cols
+  (0,0) number:0
+  (0,1) bool:true
+  (0,2) date:2024-2-29
+  (0,3) text: leading 	中
+文 
+  (0,4) text:
+  (0,6) number:3  formula=of:=1+2 (cached value, not recalculated)
+  (1,0) number:7.5
+  (1,1) number:7.5
+  (1,2) text:两
+  (2,0) number:7.5
+  (2,1) number:7.5
+  (2,2) text:两
+sheet[1] Merge  2 rows x 3 cols
+  (0,0) text:Title
+  (1,2) number:42
+diagnostics: 20
+  DATA_ONLY_IMPORT sheet= row=-1 col=-1: Formatting, metadata, view settings, and numeric display text are not retained. Numbers use binary64; changed decimal representations are reported. Supported merges and formula text/cache are retained.
+  DOCUMENT_FORMATTING_DROPPED sheet= row=-1 col=-1: Source urn:oasis:names:tc:opendocument:xmlns:office:1.0#font-face-decls is not retained by data-only import.
+  DOCUMENT_FORMATTING_DROPPED sheet= row=-1 col=-1: Source urn:oasis:names:tc:opendocument:xmlns:office:1.0#automatic-styles is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=-1 col=-1: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=-1 col=0: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=0 col=-1: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=0 col=1: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=0 col=2: Source formatting is not retained by data-only import.
+  FORMULA_CACHE_NOT_RECALCULATED sheet=Types row=0 col=6: Stored cache retained; edits do not recalculate this formula.
+  FORMATTING_DROPPED sheet=Types row=1 col=-1: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=2 col=-1: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Merge row=-1 col=-1: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Merge row=-1 col=0: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Merge row=0 col=-1: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Merge row=1 col=-1: Source formatting is not retained by data-only import.
+  PACKAGE_PART_DROPPED sheet= row=-1 col=-1: Source package part styles.xml is not preserved by data-only import.
+  PACKAGE_PART_DROPPED sheet= row=-1 col=-1: Source package part manifest.rdf is not preserved by data-only import.
+  PACKAGE_PART_DROPPED sheet= row=-1 col=-1: Source package part meta.xml is not preserved by data-only import.
+  PACKAGE_PART_DROPPED sheet= row=-1 col=-1: Source package part settings.xml is not preserved by data-only import.
+  PACKAGE_PART_DROPPED sheet= row=-1 col=-1: Source package part Thumbnails/thumbnail.png is not preserved by data-only import.
+wrote CSV (sheet 0, values only): /Users/sebasidian/.openmausbot/task-workspaces/8faf22a6-0962-4f97-ab57-1ae60166b63d/a9a05383-69b3-419d-a5f1-7bd5628da2ee/ods-out/types.csv
+edited sheet[0] (1,0) = number:8.5
+wrote /Users/sebasidian/.openmausbot/task-workspaces/8faf22a6-0962-4f97-ab57-1ae60166b63d/a9a05383-69b3-419d-a5f1-7bd5628da2ee/ods-out/edited.ods (6546 bytes); re-read OK, sheets=2
+exit=0
+
+$ round-trip of edited.ods
+accepted: /Users/sebasidian/.openmausbot/task-workspaces/8faf22a6-0962-4f97-ab57-1ae60166b63d/a9a05383-69b3-419d-a5f1-7bd5628da2ee/ods-out/edited.ods (accept_loss=true)
+sheet[0] Types  3 rows x 7 cols
+  (0,0) number:0
+  (0,1) bool:true
+  (0,2) date:2024-2-29
+  (0,3) text: leading 	中
+文 
+  (0,4) text:
+  (0,6) number:3  formula=of:=1+2 (cached value, not recalculated)
+  (1,0) number:8.5
+  (1,1) number:7.5
+  (1,2) text:两
+  (2,0) number:7.5
+  (2,1) number:7.5
+  (2,2) text:两
+sheet[1] Merge  2 rows x 3 cols
+  (0,0) text:Title
+  (1,2) number:42
+diagnostics: 27
+  DATA_ONLY_IMPORT sheet= row=-1 col=-1: Formatting, metadata, view settings, and numeric display text are not retained. Numbers use binary64; changed decimal representations are reported. Supported merges and formula text/cache are retained.
+  FORMATTING_DROPPED sheet=Types row=0 col=0: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=0 col=1: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=0 col=2: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=0 col=3: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=0 col=4: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=0 col=5: Source formatting is not retained by data-only import.
+  FORMULA_CACHE_NOT_RECALCULATED sheet=Types row=0 col=6: Stored cache retained; edits do not recalculate this formula.
+  FORMATTING_DROPPED sheet=Types row=0 col=6: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=1 col=0: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=1 col=1: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=1 col=2: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=1 col=3: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=1 col=4: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=1 col=5: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=1 col=6: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=2 col=0: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=2 col=1: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=2 col=2: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=2 col=3: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=2 col=4: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=2 col=5: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Types row=2 col=6: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Merge row=0 col=0: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Merge row=0 col=2: Source formatting is not retained by data-only import.
+  FORMATTING_DROPPED sheet=Merge row=1 col=2: Source formatting is not retained by data-only import.
+  PACKAGE_PART_DROPPED sheet= row=-1 col=-1: Source package part styles.xml is not preserved by data-only import.
+exit=0
+0,true,2024-2-29," leading 	中
+文 ",,,3
+7.5,7.5,两,,,,
+7.5,7.5,两,,,,

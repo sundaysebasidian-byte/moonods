@@ -1,0 +1,13 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sundaysebasidian-byte/moonods/examples/ods_tool"
+
+// Values
+
+// Errors
+type UsageError
+
+// Types and methods
+
+// Type aliases
+
+// Traits

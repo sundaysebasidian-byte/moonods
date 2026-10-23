@@ -1,6 +1,8 @@
 import {
   "moonbitlang/core/debug",
   "moonbitlang/core/buffer",
+  "moonbitlang/core/string",
   "moonbitlang/core/encoding/utf8",
-  "moonbit-community/zipc" @zip,
+  "moonbit-community/flate/checksum",
+  "moonbit-community/flate",
 }

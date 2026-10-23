@@ -1,0 +1,34 @@
+{
+  "scope": "post-review oracle assertions on previously produced fixed LibreOfficeDev outputs, not MoonODS",
+  "verifier_sha256": "63405f6f573596c5becc0edb358257568b0efc37f0d1696da3877387c0e50745",
+  "results": [
+    {
+      "file": "external-1/types.ods",
+      "semantic_assertions": [
+        "Boolean",
+        "Date",
+        "whitespace",
+        "repeat2x2",
+        "Empty_vs_empty_string",
+        "merge2x2_three_covered",
+        "formula_text_and_external_cache_3"
+      ],
+      "status": "PASS_FIXED_FIXTURE_ONLY"
+    },
+    {
+      "file": "external-2/types.ods",
+      "semantic_assertions": [
+        "Boolean",
+        "Date",
+        "whitespace",
+        "repeat2x2",
+        "Empty_vs_empty_string",
+        "merge2x2_three_covered",
+        "formula_text_and_external_cache_3"
+      ],
+      "status": "PASS_FIXED_FIXTURE_ONLY"
+    }
+  ],
+  "negative_control_determinism": "PASS_TWO_GENERATIONS",
+  "negative_controls_moonods_execution": "NOT_RUN"
+}
