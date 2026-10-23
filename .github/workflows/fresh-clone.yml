@@ -38,6 +38,8 @@ jobs:
           moon run examples/generate --target js
           ls -l examples/generated/*.ods
           moon run examples/compatibility --target js
+          ODS_INPUT=tests/reader-fixtures/external/libreoffice-dev-types.ods ODS_ACCEPT_LOSS=1 \
+            moon run examples/ods_tool --target js
       - name: Formatting and generated interfaces are up to date
         if: matrix.sdk == 'pinned'
         run: |
