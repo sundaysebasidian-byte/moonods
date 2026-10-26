@@ -5,6 +5,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -68,7 +69,9 @@ def main():
         return result.stdout
     try:
         run('package', ['moon', 'package', '--frozen'], ROOT)
-        archive = ROOT / '_build/publish/sundaysebasidian-byte-moonods-0.2.0.zip'
+        version = re.search(r'^version\s*=\s*"([0-9A-Za-z.+-]+)"\s*$', (ROOT / 'moon.mod').read_text(), re.M)
+        require(version is not None, 'module version missing')
+        archive = ROOT / ('_build/publish/sundaysebasidian-byte-moonods-' + version.group(1) + '.zip')
         shutil.copyfile(archive, out / 'candidate.zip')
         source = ROOT / 'tests/reader-fixtures/external/libreoffice-dev-types.ods'
         output = out / 'edited.xlsx'

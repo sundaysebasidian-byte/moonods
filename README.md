@@ -2,7 +2,9 @@
 
 MoonBit 的数据型 ODS 读写库：类型化 `Workbook → Sheet → Cell`、有界 ZIP/XML 读取、显式损失诊断、CSV 与表头记录。适合需要把数据以 `.ods` 交给办公软件的报表和离线处理。
 
-注册表上的 `0.2.0` 只有写出功能；读取、CSV 和采购修正流程在 `main` 源码中，尚未发布新版本，`moon add sundaysebasidian-byte/moonods@0.2.0` 取不到这些功能。
+本文描述 0.3.0 源码提供的接口。0.2.0 发行包只有写出功能，不能取得这里的读取、CSV 或采购修正流程。版本是否已发布以 Mooncakes 实际记录为准；GitHub 合并或本地打包不代表注册表发布。
+
+0.3.0 正式发布后，新项目可固定安装 `moon add sundaysebasidian-byte/moonods@0.3.0`，并在 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。注册表提供库与示例源码，不安装全局 CLI；下列完整业务工作流需要源码检出及 Node.js，测试脚本和读取夹具不随运行包分发。
 
 ## 从源码运行
 
@@ -77,7 +79,7 @@ moon run examples/reconcile --target js
 - 项目测试覆盖类型、空值、Unicode、CSV、ZIP/XML、错误输入和资源上限；`tests/reader-fixtures` 只含项目合成样本及相应故障变体。
 - `python3 scripts/verify_reconcile_source.py --output /absolute/new-directory` 运行当前源码的 JS 业务与失败保护检查，需要已有 SDK/Node。
 - `python3 scripts/package_source.py --output /absolute/source.zip` 导出当前干净源码，不含 Git 历史。`verify_delivery_consumer.py` 可独立消费此 ZIP；`verify_reconcile.py` 另接收已有 SDK 与 LibreOffice 路径验证业务往返，参数见各脚本 `--help`。源码 ZIP 不是正式注册表包。
-- `.github/workflows/fresh-clone.yml` 检查固定 SDK 与最新版；`ci.yml` 保留固定工具链的完整验收。以当前提交的新 CI 为准，旧私有完整树的结果不等于此公开版通过。
+- `.github/workflows/fresh-clone.yml` 检查固定 SDK 与最新版；`ci.yml` 保留固定工具链的完整验收。以准确发行提交的新 CI 为准，版本准备尚未推送时不能沿用主分支结果替代。
 - 完整独立验证依赖见 `requirements-verify.txt`，入口为 `python3 scripts/acceptance.py`；它严格要求锁定版本并需要访问官方 schema/依赖来源，不自动安装工具。
 - 运行时守卫继续检查版本漂移；仅适用于历史 0.1.0 发行的注册表候选守卫随旧发行夹具移出本源码树，不计入当前验证范围。
 - 历史审计日志、旧打包材料、用户机器路径和 Wasm 复现产物未随此源码树公开。旧审计中记录的 Wasm/Wasm GC 工具链运行失败、native 组件缺失和正式打包工具缺件不因删除日志而改判通过。
