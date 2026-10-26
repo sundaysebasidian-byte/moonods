@@ -75,9 +75,21 @@ moon run examples/reconcile --target js
 ## 测试
 
 - 测试覆盖类型、空值、Unicode、CSV、ZIP/XML、错误输入和资源上限；读取夹具 `tests/reader-fixtures` 都是项目自己生成的合成样本和故障变体。
-- CI：[ci.yml](.github/workflows/ci.yml) 跑完整验收（JS 测试、Wasm GC 核心测试、示例、独立消费者、ODF schema 校验）；[fresh-clone.yml](.github/workflows/fresh-clone.yml) 用固定版和最新版 SDK 模拟新用户克隆后跑快速开始。
+- CI：[ci.yml](.github/workflows/ci.yml) 在 wasm、wasm-gc、native 三个后端上跑库和消费者测试，并在 JS 上跑完整验收（示例、独立消费者、ODF schema 校验）；[fresh-clone.yml](.github/workflows/fresh-clone.yml) 用固定版和最新版 SDK 模拟新用户克隆后跑快速开始。
 - 本地完整验收：`python3 scripts/acceptance.py --output /tmp/moonods-acceptance`，依赖见 `requirements-verify.txt`。
 - `scripts/package_source.py` 导出干净源码 ZIP，`scripts/verify_delivery_consumer.py` 用独立模块消费它；`scripts/verify_reconcile.py` 可配合 LibreOffice 验证业务往返，参数见各脚本 `--help`。
+
+## 性能
+
+`moon bench --release` 实测，每项 5 组取平均；GitHub Actions ubuntu-24.04（Intel Xeon 6973P-C，4 核），moonc v0.10.15。工作表 1000 行 × 5 列（文本、两位小数、日期、布尔、中文备注），带表头样式。
+
+| 操作 | JS | native |
+| --- | --- | --- |
+| 构建工作簿并写出 `.ods` | 19.6 ms | 9.9 ms |
+| 读取 `.ods` 为类型化 Workbook | 110 ms | 62.3 ms |
+| 导出 CSV | 7.1 ms | 1.6 ms |
+
+数字只说明数量级，换机器会变。复现：`moon bench benchmarks --target native --release`；CI 见 [bench.yml](.github/workflows/bench.yml)，本表来自[这次运行](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40287799404)。
 
 ## 边界
 
