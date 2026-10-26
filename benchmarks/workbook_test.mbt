@@ -1,6 +1,6 @@
 ///|
 /// A 1000-row table with a header, text, number, date and boolean columns.
-fn sales_workbook(rows : Int) -> @ods.Workbook raise @ods.OdsError {
+fn sales_workbook(rows : Int32) -> @ods.Workbook raise @ods.OdsError {
   let workbook = @ods.Workbook::new()
   let sheet = workbook.add_sheet("sales")
   sheet.set_row(0, 0, [
@@ -23,37 +23,29 @@ fn sales_workbook(rows : Int) -> @ods.Workbook raise @ods.OdsError {
 }
 
 ///|
-fn must_build(rows : Int) -> @ods.Workbook {
-  try {
-    sales_workbook(rows)
-  } catch {
+fn must_build(rows : Int32) -> @ods.Workbook {
+  sales_workbook(rows) catch {
     _ => abort("benchmark workbook must build")
   }
 }
 
 ///|
 fn must_ods(workbook : @ods.Workbook) -> Bytes {
-  try {
-    workbook.to_ods()
-  } catch {
+  workbook.to_ods() catch {
     _ => abort("benchmark workbook must serialize")
   }
 }
 
 ///|
 fn must_read(bytes : Bytes) -> @ods.Workbook {
-  try {
-    @ods.read_ods(bytes, allow_formatting_loss=true).workbook()
-  } catch {
+  @ods.read_ods(bytes, allow_formatting_loss=true).workbook() catch {
     _ => abort("benchmark package must read back")
   }
 }
 
 ///|
 fn must_csv(sheet : @ods.Sheet) -> String {
-  try {
-    sheet.to_csv()
-  } catch {
+  sheet.to_csv() catch {
     _ => abort("benchmark sheet must export")
   }
 }
