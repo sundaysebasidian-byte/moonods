@@ -2,14 +2,14 @@
 
 MoonBit 的数据型 ODS 读写库：类型化 `Workbook → Sheet → Cell`、有界 ZIP/XML 读取、显式损失诊断、CSV 与表头记录。适合需要把数据以 `.ods` 交给办公软件的报表和离线处理。
 
-此分支是未发布的开发源码。注册表 `0.2.0` 只有写出功能；`moon add sundaysebasidian-byte/moonods@0.2.0` 不能取得这里的读取、CSV 或采购修正流程。本 PR 不发布包。
+注册表上的 `0.2.0` 只有写出功能；读取、CSV 和采购修正流程在 `main` 源码中，尚未发布新版本，`moon add sundaysebasidian-byte/moonods@0.2.0` 取不到这些功能。
 
 ## 从源码运行
 
 需要已有的 MoonBit SDK 和 Node.js。CI 的固定版本见 [TOOLCHAIN.lock](TOOLCHAIN.lock)。
 
 ```sh
-git clone --branch claude/project-thread-sjykb2 https://github.com/sundaysebasidian-byte/moonods.git
+git clone https://github.com/sundaysebasidian-byte/moonods.git
 cd moonods
 moon update
 moon test --target js
@@ -34,7 +34,7 @@ fn make_report() -> Bytes raise @ods.OdsError {
 }
 ```
 
-在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。使用本分支源码时，通过 MoonBit workspace 引用它，不能用注册表旧版代替。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
+在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。使用 `main` 源码时，通过 MoonBit workspace 引用它，不能用注册表旧版代替。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
 
 读取 `@ods.read_ods(bytes, allow_formatting_loss=true)` 得到 Workbook 和带表名、行列、错误码的损失诊断。默认拒绝有损导入；显式接受后保留值、公式文本/缓存及合并，丢弃样式。CSV 按文本导入，导出时丢失公式、类型、样式及 Empty/空字符串区别。公式缓存可能过期，编辑不会自动重算。
 
