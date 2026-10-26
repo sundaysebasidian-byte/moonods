@@ -1,0 +1,4 @@
+import {
+  "sundaysebasidian-byte/moonods" @ods,
+  "moonbitlang/core/bench",
+} for "test"

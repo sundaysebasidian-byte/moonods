@@ -6,6 +6,32 @@ on:
 permissions:
   contents: read
 jobs:
+  backends:
+    name: core tests on ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [wasm, wasm-gc, native]
+    env:
+      MOONBIT_VERSION: 0.10.15+943464bfa
+      RUST_LOG: error
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare exact official SDK on the disposable runner
+        env:
+          MOON_HOME: ${{ runner.temp }}/moonods-sdk
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh -o "$RUNNER_TEMP/moonbit-install.sh"
+          bash "$RUNNER_TEMP/moonbit-install.sh" "$MOONBIT_VERSION"
+          echo "MOON_HOME=$MOON_HOME" >> "$GITHUB_ENV"
+          echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
+      - name: Restore pinned dependencies
+        run: |
+          python3 scripts/restore_deps.py
+          moon update
+      - name: Library and consumer tests
+        run: moon test --target ${{ matrix.target }} -j 1 --no-parallelize --deny-warn . tests/consumer benchmarks
   js:
     runs-on: ubuntu-latest
     env:
