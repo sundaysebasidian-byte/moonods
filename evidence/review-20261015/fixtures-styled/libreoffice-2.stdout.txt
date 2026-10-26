@@ -1,1 +1,0 @@
-convert /workspace/moon-review/moonods/tests/reader-fixtures/source/types.fods as a Calc document -> /workspace/moon-review/checks/reader-fixtures-20261015-styled/external-2/types.ods using filter : calc8

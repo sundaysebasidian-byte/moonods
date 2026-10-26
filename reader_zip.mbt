@@ -41,6 +41,11 @@ fn ods_zip_extra(
     if tag == 1 {
       raise Invalid("ZIP64 is unsupported")
     }
+    // Unicode Path metadata may supply a second interpretation of an otherwise
+    // allowlisted raw filename. Never accept competing path identities.
+    if tag == 0x7075 {
+      raise Invalid("ZIP Unicode path aliases are unsupported")
+    }
     p = p + 4 + size
     if p > end {
       raise Invalid("truncated ZIP extra field")
@@ -163,9 +168,11 @@ fn read_ods_content_noticing(
     let name = ods_zip_utf8(name_bytes)
     let allowed = [
       "mimetype", "content.xml", "styles.xml", "meta.xml", "settings.xml", "manifest.rdf",
-      "META-INF/manifest.xml", "Thumbnails/thumbnail.png", "Configurations2/",
+      "META-INF/manifest.xml", "Thumbnails/thumbnail.png", "Configurations2/", "Configurations2/toolpanel/",
+      "Configurations2/floater/", "Configurations2/statusbar/", "Configurations2/toolbar/",
+      "Configurations2/progressbar/", "Configurations2/popupmenu/", "Configurations2/menubar/",
     ]
-    if !allowed.contains(name) || (name == "Configurations2/" && unpacked != 0) {
+    if !allowed.contains(name) || (name.has_suffix("/") && unpacked != 0) {
       raise Invalid("unsupported ODS package entry")
     }
     if names.contains(name) {

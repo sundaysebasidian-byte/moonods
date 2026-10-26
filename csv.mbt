@@ -145,14 +145,32 @@ fn csv_quote(text : String) -> String {
 }
 
 ///|
+fn csv_formula_like(text : String) -> Bool {
+  // Ignore leading whitespace as importers may trim it before type inference.
+  for c in text {
+    if c == ' ' || c == '\t' || c == '\r' || c == '\n' {
+      continue
+    }
+    return c == '=' || c == '+' || c == '-' || c == '@'
+  }
+  false
+}
+
+///|
 /// Deterministic comma CSV, quoted fields and CRLF records. Dates use ISO dates,
 /// booleans true/false, numbers binary64 text. Empty and Text("") both emit "".
 /// Merges are rejected. Formula caches require an explicit opt-in; formulas,
 /// types, styles and sheet metadata cannot survive a CSV roundtrip.
 /// External spreadsheet applications may infer types/formulas from CSV text.
+/// use_formula_cache exports stored, possibly stale caches without recalculation.
+/// reject_formula_like_text skips only leading ASCII space, TAB, CR and LF, then
+/// rejects Text values starting =, +, - or @. It never changes data or rejects
+/// typed negative numbers, and is a bounded policy rather than an application
+/// sandbox. The default preserves the existing lossless text semantics.
 pub fn Sheet::to_csv(
   self : Sheet,
   use_formula_cache~ : Bool = false,
+  reject_formula_like_text~ : Bool = false,
 ) -> String raise OdsError {
   if !self.spans.is_empty() {
     raise Invalid("CSV export requires an unmerged sheet")
@@ -174,7 +192,12 @@ pub fn Sheet::to_csv(
       }
       let text = match value {
         Empty => ""
-        Text(s) => s
+        Text(s) => {
+          if reject_formula_like_text && csv_formula_like(s) {
+            raise Invalid("CSV formula-like text at row \{row} col \{col}")
+          }
+          s
+        }
         Number(n) => finite_number_text(n)
         Boolean(b) => if b { "true" } else { "false" }
         Date(y, m, d) => "\{pad(y, 4)}-\{pad(m, 2)}-\{pad(d, 2)}"

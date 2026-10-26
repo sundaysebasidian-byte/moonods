@@ -40,6 +40,8 @@ jobs:
           moon run examples/compatibility --target js
           ODS_INPUT=tests/reader-fixtures/external/libreoffice-dev-types.ods ODS_ACCEPT_LOSS=1 \
             moon run examples/ods_tool --target js
+      - name: Current-source procurement workflow
+        run: python3 scripts/verify_reconcile_source.py --output "$RUNNER_TEMP/reconcile-${{ matrix.sdk }}"
       - name: Formatting and generated interfaces are up to date
         if: matrix.sdk == 'pinned'
         run: |

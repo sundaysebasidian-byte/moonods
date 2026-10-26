@@ -33,6 +33,54 @@ fn zip_sample() -> Bytes raise OdsError {
 }
 
 ///|
+test "stable LibreOffice empty UI directories are bounded and never interpreted" {
+  for
+    name in [
+      "Configurations2/", "Configurations2/toolpanel/", "Configurations2/floater/",
+      "Configurations2/statusbar/", "Configurations2/toolbar/", "Configurations2/progressbar/",
+      "Configurations2/popupmenu/", "Configurations2/menubar/",
+    ] {
+    let files = [
+      ("mimetype", @utf8.encode(media_type[:])),
+      ("content.xml", b"<xml/>"),
+      (name, b""),
+    ]
+    let notices : Array[String] = []
+    assert_eq(
+      read_ods_content_noticing(stored_package(files), notices),
+      "<xml/>",
+    )
+    if name != "Configurations2/" {
+      assert_true(notices.contains(name))
+    }
+    assert_true(
+      zip_rejects(
+        stored_package([
+          ("mimetype", @utf8.encode(media_type[:])),
+          ("content.xml", b"<xml/>"),
+          (name, b"unexpected content"),
+        ]),
+      ),
+    )
+  }
+  for
+    name in [
+      "Configurations2/unknown/", "Configurations2/../", "Configurations2/toolbar/code.xml",
+      "Basic/",
+    ] {
+    assert_true(
+      zip_rejects(
+        stored_package([
+          ("mimetype", @utf8.encode(media_type[:])),
+          ("content.xml", b"<xml/>"),
+          (name, b""),
+        ]),
+      ),
+    )
+  }
+}
+
+///|
 test "ZIP reader stored package and mimetype requirements" {
   assert_eq(read_ods_content(zip_sample()), "<xml/>")
   assert_true(zip_rejects(stored_package([("content.xml", b"<xml/>")])))

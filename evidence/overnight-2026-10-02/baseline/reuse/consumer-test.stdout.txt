@@ -1,1 +1,0 @@
-Total tests: 4, passed: 4, failed: 0.

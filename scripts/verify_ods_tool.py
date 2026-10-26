@@ -4,6 +4,7 @@
 Fails closed on exit codes and on expected output markers. Not an Office-application test.
 """
 import argparse
+import csv as csv_module
 import hashlib
 import json
 import os
@@ -11,6 +12,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+from prepare_reader_fixtures import package, PREFIX, SUFFIX
 
 ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL = 'tests/reader-fixtures/external/libreoffice-dev-types.ods'
@@ -67,16 +69,67 @@ def main():
     edited = out / 'edited.ods'
     csv = out / 'types.csv'
     accepted = tool('external-accept-edit', {'ODS_INPUT': EXTERNAL, 'ODS_ACCEPT_LOSS': '1', 'ODS_SET': '0,1,0,8.5',
-                                              'ODS_OUTPUT': str(edited), 'ODS_CSV': str(csv)})
+                                              'ODS_OUTPUT': str(edited), 'ODS_CSV': str(csv), 'ODS_CSV_CACHE': '1'})
     text = accepted.stdout
     require(accepted.returncode == 0, 'accept-loss import/edit/write failed')
     for marker in ('DATA_ONLY_IMPORT', 'DOCUMENT_FORMATTING_DROPPED', 'FORMULA_CACHE_NOT_RECALCULATED',
-                   'PACKAGE_PART_DROPPED', 'edited sheet[0] (1,0) = number:8.5', 're-read OK, sheets=2'):
+                   'PACKAGE_PART_DROPPED', 'CSV_FORMULA_DROPPED sheet=Types row=0 col=6', 'edited sheet[0] (1,0) = number:8.5', 're-read OK, sheets=2'):
         require(marker in text, 'missing expected output marker: ' + marker)
     require(edited.exists() and edited.stat().st_size > 0, 'edited .ods not written')
-    require('\n7.5,7.5,两,' in csv.read_text(encoding='utf-8'), 'CSV unexpected content')
+    with csv.open(encoding='utf-8', newline='') as stream:
+        rows = list(csv_module.reader(stream, strict=True))
+    require(rows[1][:3] == ['8.5', '7.5', '两'], 'CSV must contain edited values')
     bad_cell = tool('external-bad-sheet', {'ODS_INPUT': EXTERNAL, 'ODS_ACCEPT_LOSS': '1', 'ODS_SET': '9,9,9,1'})
     require(bad_cell.returncode == 1 and 'no such sheet 9' in bad_cell.stdout + bad_cell.stderr, 'edit of a missing sheet must fail')
+
+    # Refusals must leave existing outputs byte-for-byte intact.
+    for name, extra in {
+        'bad-fractional-index': {'ODS_SET': '0,1.5,0,1'},
+        'bad-infinite-index': {'ODS_SET': 'Infinity,0,0,1'},
+        'bad-negative-index': {'ODS_SET': '-1,0,0,1'},
+        'bad-sheet-with-exports': {'ODS_SET': '9,0,0,1'},
+        'formula-csv-explicit-rejection': {'ODS_CSV_CACHE': '0'},
+        'invalid-csv-cache-policy': {'ODS_CSV_CACHE': 'typo'},
+    }.items():
+        csv.write_bytes(b'previous CSV')
+        edited.write_bytes(b'previous ODS')
+        failed = tool(name, {'ODS_INPUT': EXTERNAL, 'ODS_ACCEPT_LOSS': '1',
+                            'ODS_CSV': str(csv), 'ODS_OUTPUT': str(edited), **extra})
+        require(failed.returncode == 1, name + ': expected failure')
+        require(csv.read_bytes() == b'previous CSV' and edited.read_bytes() == b'previous ODS',
+                name + ': modified output on validation failure')
+    csv.write_bytes(b'previous CSV')
+    io_failure = tool('staging-failure', {'ODS_INPUT': EXTERNAL, 'ODS_ACCEPT_LOSS': '1',
+                      'ODS_CSV': str(csv), 'ODS_CSV_CACHE': '1',
+                      'ODS_OUTPUT': str(out / 'missing-directory' / 'output.ods')})
+    require(io_failure.returncode == 1 and csv.read_bytes() == b'previous CSV',
+            'staging failure must preserve the first output')
+    require(not list(out.glob('.moonods-*.tmp')), 'staging failure leaked temporary files')
+    alias = tool('output-alias', {'ODS_INPUT': EXTERNAL, 'ODS_ACCEPT_LOSS': '1',
+                                 'ODS_OUTPUT': EXTERNAL})
+    require(alias.returncode == 1 and 'must be distinct' in alias.stdout, 'input overwrite must fail')
+    alias_dir = out / 'alias-directory'
+    alias_dir.symlink_to(out, target_is_directory=True)
+    alias_new = tool('new-output-parent-alias', {'ODS_INPUT': EXTERNAL, 'ODS_ACCEPT_LOSS': '1',
+                    'ODS_CSV': str(out / 'new-output'), 'ODS_OUTPUT': str(alias_dir / 'new-output')})
+    require(alias_new.returncode == 1 and 'must be distinct' in alias_new.stdout and
+            not (out / 'new-output').exists(), 'new output parent symlink alias must fail before writes')
+    alias_dir.unlink()
+    # Restore a valid demonstration after the destructive-output sentinels.
+    accepted = tool('external-final-export', {'ODS_INPUT': EXTERNAL, 'ODS_ACCEPT_LOSS': '1',
+                    'ODS_SET': '0,1,0,8.5', 'ODS_OUTPUT': str(edited), 'ODS_CSV': str(csv)})
+    require(accepted.returncode == 0, 'final example export failed')
+
+    literal = out / 'formula-like-text.ods'
+    literal.write_bytes(package((PREFIX + '<t:table-row><t:table-cell o:value-type="string"><x:p>=1+2</x:p></t:table-cell></t:table-row>' + SUFFIX).encode()))
+    policy_csv = out / 'policy.csv'
+    faithful = tool('literal-default', {'ODS_INPUT': str(literal), 'ODS_ACCEPT_LOSS': '1', 'ODS_CSV': str(policy_csv)})
+    require(faithful.returncode == 0 and policy_csv.read_bytes() == b'"=1+2"\r\n',
+            'default CSV text semantics changed')
+    protected = tool('literal-guard', {'ODS_INPUT': str(literal), 'ODS_ACCEPT_LOSS': '1',
+                     'ODS_CSV': str(policy_csv), 'ODS_CSV_REJECT_FORMULA_TEXT': '1'})
+    require(protected.returncode == 1 and 'CSV formula-like text at row 0 col 0' in protected.stdout and
+            policy_csv.read_bytes() == b'"=1+2"\r\n', 'explicit CSV text guard must reject without changing output')
 
     controls = {}
     for name, expected in CONTROLS.items():

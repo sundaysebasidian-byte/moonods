@@ -1,7 +1,0 @@
-{
-  "result": "PASS",
-  "version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
-  "scope": "headless native ODS save, independent typed comparison; not GUI",
-  "sha256": "c8c4e10cc8d054709ffa439a00315f2358bab355117d769a045e33c5ec73a4c5",
-  "output": "evidence/typed-reader-20261015/office-output-ogrxcpr8/edited-libreoffice.ods"
-}

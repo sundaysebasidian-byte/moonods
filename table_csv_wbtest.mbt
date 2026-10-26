@@ -11,6 +11,84 @@ fn csv_rejected(text : String) -> Bool {
 }
 
 ///|
+test "CSV formula-like text rejection is explicit and leaves data intact" {
+  for
+    text in [
+      "=1+2", "+cmd", "-1", "@SUM(A1)", " \t\r\n=1", "\t+1", "  -2", " @x",
+    ] {
+    let book = Workbook::new()
+    let sheet = book.add_sheet("Safety")
+    sheet.set(0, 0, Cell::new(Text(text)))
+    let before = book.to_ods()
+    assert_eq(sheet.to_csv(), csv_quote(text) + "\r\n")
+    assert_true(
+      try {
+        sheet.to_csv(reject_formula_like_text=true) |> ignore
+        false
+      } catch {
+        Invalid(_) => true
+      },
+    )
+    assert_eq(book.to_ods(), before)
+  }
+  let sheet = Workbook::new().add_sheet("Typed")
+  sheet.set_row(0, 0, [
+    Cell::new(Number(-1.0)),
+    Cell::new(Text("中文😀")),
+    Cell::new(Empty),
+  ])
+  assert_eq(
+    sheet.to_csv(reject_formula_like_text=true),
+    "\"-1\",\"中文😀\",\"\"\r\n",
+  )
+  sheet.set(0, 0, Cell::formula("of:=\"=1\"", Text("=1")))
+  assert_true(
+    try {
+      sheet.to_csv(use_formula_cache=true, reject_formula_like_text=true)
+      |> ignore
+      false
+    } catch {
+      Invalid(_) => true
+    },
+  )
+  assert_eq(
+    sheet.to_csv(use_formula_cache=true),
+    "\"=1\",\"中文😀\",\"\"\r\n",
+  )
+}
+
+///|
+test "late malformed CSV and invalid names preserve an existing workbook" {
+  let book = Workbook::new()
+  let sheet = book.add_csv_sheet("Existing", "name,value\n中文😀,keep")
+  let before = book.to_ods()
+  for
+    source in [
+      "name,value\na,b\n\"unfinished", "name,value\na,b\nc", "name,value\na,b\n\u0000,x",
+    ] {
+    assert_true(
+      try {
+        book.add_csv_sheet("Candidate", source) |> ignore
+        false
+      } catch {
+        Invalid(_) => true
+      },
+    )
+    assert_eq(book.to_ods(), before)
+  }
+  assert_true(
+    try {
+      book.add_csv_sheet("bad/name", "x") |> ignore
+      false
+    } catch {
+      Invalid(_) => true
+    },
+  )
+  assert_eq(book.to_ods(), before)
+  assert_eq(sheet.records()[0].values["name"], Text("中文😀"))
+}
+
+///|
 test "CSV accepts column and UTF16 boundaries while enforcing total text" {
   let row = Array::make(128, "x").join(",")
   assert_eq(Workbook::new().add_csv_sheet("Wide", row).dimensions(), (1, 128))

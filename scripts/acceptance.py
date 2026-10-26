@@ -92,7 +92,7 @@ def main():
         report['independent_module_reuse'] = json.loads((out / 'reuse/reuse.json').read_text())
         if report['independent_module_reuse']['status'] != 'PASS': raise RuntimeError('Independent module reuse failed')
         run('guards', [sys.executable, ROOT / 'scripts/verify_guards.py', '--moon', moon,
-                       '--candidate-report', out / 'reuse/reuse.json', '--output', out / 'guards'])
+                       '--output', out / 'guards'])
         report['fail_closed_guards'] = json.loads((out / 'guards/guards.json').read_text())
         run('reader-verifier-guards', [sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_reader_verifier_guards.py'])
         run('reader-verifier-guards-optimized', [sys.executable, '-O', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_reader_verifier_guards.py'])

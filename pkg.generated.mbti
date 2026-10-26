@@ -49,7 +49,7 @@ pub fn Sheet::records(Self, header_row? : Int) -> Array[TableRecord] raise OdsEr
 pub fn Sheet::set(Self, Int, Int, Cell) -> Unit raise OdsError
 pub fn Sheet::set_column_width(Self, Int, Int) -> Unit raise OdsError
 pub fn Sheet::set_row(Self, Int, Int, Array[Cell]) -> Unit raise OdsError
-pub fn Sheet::to_csv(Self, use_formula_cache? : Bool) -> String raise OdsError
+pub fn Sheet::to_csv(Self, use_formula_cache? : Bool, reject_formula_like_text? : Bool) -> String raise OdsError
 
 pub(all) enum Style {
   Plain

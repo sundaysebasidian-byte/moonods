@@ -52,7 +52,7 @@ def main():
         return p.stdout
 
     try:
-        source_rows = [['Name', 'Note', 'Empty'], ['中文', 'comma,quote"and\nline', ''],
+        source_rows = [['Name', 'Note', 'Empty'], ['中文', 'comma,quote"and\nline 😀\t', ''],
                        ['=1+2', '  spaces  ', '']]
         with (out / 'input.csv').open('w', newline='') as stream:
             csv.writer(stream, lineterminator='\r\n').writerows(source_rows)
@@ -71,7 +71,8 @@ def main():
         expected = {'1,1': {'value-type': 'float', 'value': 7.5},
                     '1,2': {'value-type': 'date', 'date-value': '2024-02-29'},
                     '1,3': {'value-type': 'boolean', 'boolean-value': 'true'},
-                    '1,5': {'value-type': 'string', 'text': ''}}
+                    '1,5': {'value-type': 'string', 'text': ''},
+                    '1,6': {'value-type': 'float', 'value': 15.0, 'formula': 'of:=[.B2]*2'}}
         if any(original['Typed'].get(k) != v for k, v in expected.items()) or '1,4' in original['Typed']:
             raise RuntimeError('ODS independent typed/empty oracle failed')
         report.update(python_csv_oracle='PASS', independent_ods_oracle='PASS',
@@ -86,7 +87,7 @@ def main():
             destination.mkdir()
             profile = out / 'office-profile'
             report['office'] = {'status': 'STARTED', 'version': version,
-                                'scope': 'real headless native ODS open/save, not GUI',
+                                'scope': 'real headless native ODS open/save with typed values, Empty vs Text-empty, Unicode, literal leading-equals text, and formula text/cache; not GUI',
                                 'executable': str(Path(args.soffice).resolve()),
                                 'executable_sha256': hashlib.sha256(Path(args.soffice).resolve().read_bytes()).hexdigest()}
             run('office-resave', [args.soffice, '-env:UserInstallation=' + profile.as_uri(),
@@ -100,14 +101,49 @@ def main():
             if observed != original:
                 report['office']['semantic_comparison'] = 'FAIL'
                 raise RuntimeError('Office changed typed data; see original and office semantics')
-            run('public-office-readback', command, {'ODS_VALUE_READBACK': str(saved)})
+            readback = run('public-office-readback', command, {'ODS_VALUE_READBACK': str(saved)})
+            if 'VALUE_PUBLIC_OFFICE_READBACK_OK' not in readback:
+                raise RuntimeError('missing public library readback success marker')
             report['office'].update(status='PASS', independent_semantic_comparison='PASS',
                                     public_library_readback='PASS',
                                     output_sha256=hashlib.sha256(saved.read_bytes()).hexdigest())
+            # Deliberately stale cache: neither the library nor this default
+            # headless save promises recalculation. Expected math is 17, cache is 15.
+            edited_dir = out / 'cache-edit'
+            edited_dir.mkdir()
+            run('cache-edit-consumer', command,
+                {'ODS_VALUE_OUTPUT': str(edited_dir), 'ODS_VALUE_CACHE_CASE': 'edit'})
+            stale = semantic(edited_dir / 'value.ods')
+            if stale['Typed']['1,1']['value'] != 8.5 or stale['Typed']['1,6']['value'] != 15.0:
+                raise RuntimeError('library changed the formula cache during a value edit')
+            cache_dest = out / 'cache-office'
+            cache_dest.mkdir()
+            run('cache-office-resave', [args.soffice, '-env:UserInstallation=' + (out / 'cache-profile').as_uri(),
+                                      '--headless', '--nologo', '--nodefault', '--norestore',
+                                      '--convert-to', 'ods:calc8', '--outdir', str(cache_dest),
+                                      str(edited_dir / 'value.ods')])
+            recalculated = semantic(cache_dest / 'value.ods')
+            expected_recalculated = json.loads(json.dumps(stale))
+            expected_recalculated['Typed']['1,6']['value'] = 15.0
+            if recalculated != expected_recalculated:
+                raise RuntimeError('unexpected change after native default save of stale cache')
+            marker = run('cache-public-readback', command,
+                         {'ODS_VALUE_READBACK': str(cache_dest / 'value.ods'),
+                          'ODS_VALUE_CACHE_CASE': 'stale'})
+            if 'VALUE_PUBLIC_OFFICE_READBACK_OK' not in marker:
+                raise RuntimeError('missing stale cache public readback marker')
+            report['formula_cache_boundary'] = {'status': 'PASS', 'expression': 'of:=[.B2]*2',
+                'original': {'operand': 7.5, 'cache': 15.0},
+                'library_edit': {'operand': 8.5, 'cache': 15.0, 'recalculated': False},
+                'native_default_save': {'operand': 8.5, 'cache': 15.0, 'recalculated': False},
+                'mathematical_result_if_recalculated': 17.0,
+                'public_readback': 'PASS', 'scope': 'one arithmetic formula; default headless save retained a stale cache, explicit application recalculation was not requested'}
         report['status'] = 'PASS'
         (out / 'original-semantics.json').write_text(json.dumps(original, ensure_ascii=False, indent=2) + '\n')
     except Exception as error:
         report.update(status='FAIL', error=str(error))
+        if isinstance(report['office'], dict):
+            report['office']['status'] = 'FAIL'
         if 'original' in locals():
             (out / 'original-semantics.json').write_text(json.dumps(original, ensure_ascii=False, indent=2) + '\n')
     report['finished_utc'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
