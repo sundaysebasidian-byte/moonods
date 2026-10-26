@@ -248,3 +248,45 @@ test "precision diagnostics and numeric parsing have independent resource caps" 
   assert_eq(notices.length(), 1)
   assert_true(notices[0].message.length() < 256)
 }
+
+///|
+test "large pure empty tail is bounded and disclosed without shifting content" {
+  let result = import_content(
+    reader_xml_fixture(
+      "<t:table-row><t:table-cell o:value-type=\"float\" o:value=\"12345\"/></t:table-row>" +
+      "<t:table-row t:number-rows-repeated=\"1048574\"><t:table-cell t:number-columns-repeated=\"2\"/></t:table-row><t:table-row><t:table-cell/></t:table-row>",
+    ),
+  )
+  assert_eq(
+    result.workbook().sheet(0).unwrap().get(0, 0).unwrap().value(),
+    Number(12345.0),
+  )
+  assert_eq(result.workbook().sheet(0).unwrap().dimensions().0, 1)
+  assert_true(
+    result.diagnostics().iter().any(d => d.code == "EMPTY_TAIL_ROWS_DROPPED"),
+  )
+  read_ods(result.workbook().to_ods(), allow_formatting_loss=true) |> ignore
+}
+
+///|
+test "empty tail policy never discards content or expands huge counts" {
+  for
+    suffix in [
+      "<t:table-row t:number-rows-repeated=\"1048577\"><t:table-cell/></t:table-row>",
+      "<t:table-row t:number-rows-repeated=\"999999999999999999999999999999\"><t:table-cell/></t:table-row>",
+      "<t:table-row t:number-rows-repeated=\"0\"><t:table-cell/></t:table-row>",
+      "<t:table-row t:number-rows-repeated=\"1048576\"><t:table-cell o:value-type=\"float\" o:value=\"1\"/></t:table-row>",
+      "<t:table-row t:number-rows-repeated=\"1048576\"><t:table-cell t:formula=\"of:=1\"/></t:table-row>",
+      "<t:table-row t:number-rows-repeated=\"1048576\"><t:table-cell t:number-rows-spanned=\"2\"/></t:table-row>",
+      "<t:table-row t:number-rows-repeated=\"1048576\"><t:table-cell><o:annotation/></t:table-cell></t:table-row>",
+      "<t:table-row t:number-rows-repeated=\"1048575\"><t:table-cell/></t:table-row><t:table-row><t:table-cell o:value-type=\"float\" o:value=\"1\"/></t:table-row>",
+    ] {
+    let rejected = try {
+      import_content(reader_xml_fixture(suffix)) |> ignore
+      false
+    } catch {
+      Invalid(_) => true
+    }
+    assert_true(rejected)
+  }
+}

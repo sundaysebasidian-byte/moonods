@@ -463,6 +463,43 @@ fn read_workbook_budget(book : Workbook) -> Unit raise OdsError {
 }
 
 ///|
+// Recognize only physically empty suffix rows; no values, formulas, spans,
+// covered cells, annotations or unknown attributes may be discarded.
+fn read_empty_tail_row(node : ReadElement) -> Int32? raise OdsError {
+  if node.name != read_table + "table-row" {
+    return None
+  }
+  for key, _ in node.attrs {
+    if ![
+        read_table + "number-rows-repeated",
+        read_table + "style-name",
+        read_table + "default-cell-style-name",
+      ].contains(key) {
+      return None
+    }
+  }
+  let mut cols = 0
+  for cell in node.elements() {
+    if cell.name != read_table + "table-cell" || !cell.parts.is_empty() {
+      return None
+    }
+    for key, _ in cell.attrs {
+      if ![read_table + "number-columns-repeated", read_table + "style-name"].contains(
+          key,
+        ) {
+        return None
+      }
+    }
+    let n = cell.count(read_table, "number-columns-repeated", 128)
+    if cols > 128 - n {
+      raise Invalid("column repeat exceeds grid")
+    }
+    cols += n
+  }
+  Some(node.count(read_table, "number-rows-repeated", 1048576))
+}
+
+///|
 fn import_table(
   node : ReadElement,
   book : Workbook,
@@ -474,7 +511,31 @@ fn import_table(
   node.style_notice(notices, name, -1, -1)
   let mut row = 0
   let mut declared_cols = 0
-  for child in node.elements() {
+  let children = node.elements()
+  let mut tail_start = children.length()
+  let mut tail_rows = 0
+  while tail_start > 0 {
+    // Invalid suffixes use the normal parser so contextual errors are preserved.
+    let empty = read_empty_tail_row(children[tail_start - 1]) catch {
+      Invalid(_) => None
+    }
+    match empty {
+      None => break
+      Some(n) => {
+        if tail_rows > 1048576 - n {
+          raise Invalid("empty tail exceeds row extent")
+        }
+        tail_rows += n
+        tail_start -= 1
+      }
+    }
+  }
+  // Preserve ordinary in-budget empty rows. Large suffixes are never expanded.
+  let trim_tail = tail_rows > 1024
+  for index, child in children {
+    if trim_tail && index >= tail_start {
+      break
+    }
     if child.name == read_table + "table-column" {
       child.allowed([
         read_table + "style-name",
@@ -620,6 +681,21 @@ fn import_table(
       }
     }
     row += rows
+  }
+  if trim_tail {
+    if row > 1048576 - tail_rows {
+      raise Invalid("empty tail exceeds row extent")
+    }
+    if !sheet.spans.is_empty() {
+      raise Invalid("empty tail with merged cells unsupported")
+    }
+    read_notice(notices, {
+      sheet: name,
+      row,
+      col: -1,
+      code: "EMPTY_TAIL_ROWS_DROPPED",
+      message: "Data-only import omits \{tail_rows} trailing empty rows and their row/cell formatting; source extent is not retained.",
+    })
   }
   if sheet.rows > row && !sheet.spans.is_empty() {
     raise Invalid("merge extends beyond input rows")
