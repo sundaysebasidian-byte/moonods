@@ -1,0 +1,50 @@
+# Mirrors what a reviewer does after `git clone`: install the official SDK,
+# then plain `moon check` / `moon test` and the README quick start.
+name: Fresh clone quick start
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  quickstart:
+    name: moon ${{ matrix.sdk }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sdk: [pinned, latest]
+    env:
+      PINNED_SDK: 0.10.15+943464bfa
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - name: Install official MoonBit SDK
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh -o "$RUNNER_TEMP/install-moonbit.sh"
+          if [ "${{ matrix.sdk }}" = pinned ]; then
+            bash "$RUNNER_TEMP/install-moonbit.sh" "$PINNED_SDK"
+          else
+            bash "$RUNNER_TEMP/install-moonbit.sh"
+          fi
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - run: moon version --all
+      # A fresh SDK has no registry index yet; needed for flate.
+      - run: moon update
+      - run: moon check
+      - run: moon test
+      - name: README quick start
+        run: |
+          moon run examples/generate --target js
+          ls -l examples/generated/*.ods
+          moon run examples/compatibility --target js
+          ODS_INPUT=tests/reader-fixtures/external/libreoffice-dev-types.ods ODS_ACCEPT_LOSS=1 \
+            moon run examples/ods_tool --target js
+      - name: Current-source procurement workflow
+        run: python3 scripts/verify_reconcile_source.py --output "$RUNNER_TEMP/reconcile-${{ matrix.sdk }}"
+      - name: Formatting and generated interfaces are up to date
+        if: matrix.sdk == 'pinned'
+        run: |
+          moon fmt --check
+          moon info
+          git diff --exit-code -- '*.mbti'

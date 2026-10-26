@@ -13,7 +13,7 @@ pub(all) enum Value {
   Text(String)
   Number(Double)
   Boolean(Bool)
-  Date(Int, Int, Int)
+  Date(Int32, Int32, Int32)
 } derive(Eq, Debug)
 
 ///|
@@ -37,9 +37,9 @@ pub fn Cell::new(value : Value) -> Cell raise OdsError {
 /// guarantee rendering. For historical display, callers may explicitly use
 /// Text("0001-01-01"), which has no date arithmetic semantics.
 pub fn Cell::excel_1900_date(
-  year : Int,
-  month : Int,
-  day : Int,
+  year : Int32,
+  month : Int32,
+  day : Int32,
 ) -> Cell raise OdsError {
   let cell = Cell::new(Date(year, month, day))
   if year < 1900 {
@@ -50,6 +50,10 @@ pub fn Cell::excel_1900_date(
 
 ///|
 /// OpenFormula text must begin of:=. This validates storage, not formula syntax.
+/// The cache is supplied by the caller and may be stale. Neither editing other
+/// cells nor serialization recalculates it; application open/save may retain it.
+/// Formula text is stored verbatim, including possible external references.
+/// Only pass trusted expressions and manage cache freshness explicitly.
 /// Date caches default to DateISO so readers keep the date presentation when
 /// evaluating DATE formulas. Callers may still explicitly override the style.
 pub fn Cell::formula(expression : String, cache : Value) -> Cell raise OdsError {
@@ -69,6 +73,8 @@ pub fn Cell::formula(expression : String, cache : Value) -> Cell raise OdsError 
 }
 
 ///|
+/// Returns the stored literal value or caller/imported formula cache. This does
+/// not evaluate the formula or assert that its cache matches current operands.
 pub fn Cell::value(self : Cell) -> Value {
   self.value
 }

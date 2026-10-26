@@ -1,13 +1,13 @@
 ///|
 struct Sheet {
   name : String
-  cells : Map[(Int, Int), Cell]
-  mut rows : Int
-  mut cols : Int
-  mut text_units : Int
-  widths : Map[Int, Int]
-  spans : Map[(Int, Int), (Int, Int)]
-  covered : Map[(Int, Int), Bool]
+  cells : Map[(Int32, Int32), Cell]
+  mut rows : Int32
+  mut cols : Int32
+  mut text_units : Int32
+  widths : Map[Int32, Int32]
+  spans : Map[(Int32, Int32), (Int32, Int32)]
+  covered : Map[(Int32, Int32), Bool]
 }
 
 ///|
@@ -54,12 +54,12 @@ pub fn Sheet::name(self : Sheet) -> String {
 }
 
 ///|
-pub fn Workbook::sheet_count(self : Workbook) -> Int {
+pub fn Workbook::sheet_count(self : Workbook) -> Int32 {
   self.sheets.length()
 }
 
 ///|
-pub fn Sheet::get(self : Sheet, row : Int, col : Int) -> Cell? {
+pub fn Sheet::get(self : Sheet, row : Int32, col : Int32) -> Cell? {
   self.cells.get((row, col))
 }
 
@@ -83,14 +83,14 @@ fn validate_name(s : String) -> Unit raise OdsError {
 }
 
 ///|
-fn position(row : Int, col : Int) -> Unit raise OdsError {
+fn position(row : Int32, col : Int32) -> Unit raise OdsError {
   if row < 0 || col < 0 || row >= 1024 || col >= 128 {
     raise Invalid("cell index exceeds 1024 rows or 128 columns")
   }
 }
 
 ///|
-fn Cell::units(self : Cell) -> Int {
+fn Cell::units(self : Cell) -> Int32 {
   let n = match self.value {
     Text(s) => s.length()
     _ => 0
@@ -106,8 +106,8 @@ fn Cell::units(self : Cell) -> Int {
 /// Zero-based coordinate. Validation precedes mutation.
 pub fn Sheet::set(
   self : Sheet,
-  row : Int,
-  col : Int,
+  row : Int32,
+  col : Int32,
   cell : Cell,
 ) -> Unit raise OdsError {
   self.set_row(row, col, [cell])
@@ -119,8 +119,8 @@ pub fn Sheet::set(
 /// empty array is a no-op at a valid coordinate and does not grow the grid.
 pub fn Sheet::set_row(
   self : Sheet,
-  row : Int,
-  start_col : Int,
+  row : Int32,
+  start_col : Int32,
   cells : Array[Cell],
 ) -> Unit raise OdsError {
   position(row, start_col)

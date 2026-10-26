@@ -12,3 +12,9 @@ examples/compatibility/generated/
 /SOURCE_STATE.json
 /GIT_HISTORY.txt
 /moonods-history.bundle
+
+# Reader fixtures are checkout-only test data, not runtime package assets.
+tests/reader-fixtures/
+
+# Local pinned-source review workspace, not a runtime module asset.
+/moon.work

@@ -1,0 +1,8 @@
+import {
+  "sundaysebasidian-byte/moonods" @ods,
+  "moonbitlang/mbtexcel/xlsx",
+  "moonbitlang/x/time",
+  "moonbitlang/core/encoding/base64",
+}
+
+pkgtype(kind: "executable")

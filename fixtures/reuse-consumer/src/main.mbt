@@ -51,7 +51,7 @@ fn sales_report(items : Array[Sale]) -> @ods.Workbook raise @ods.OdsError {
 
 ///|
 struct Sample {
-  date : (Int, Int, Int)
+  date : (Int32, Int32, Int32)
   reading : Double
   accepted : Bool
   note : String
