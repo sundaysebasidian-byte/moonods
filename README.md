@@ -36,7 +36,7 @@ fn make_report() -> Bytes raise @ods.OdsError {
 }
 ```
 
-在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。使用本分支源码时，通过 MoonBit workspace 引用它，不能用注册表旧版代替。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
+在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。使用 `main` 源码时，通过 MoonBit workspace 引用它，不能用注册表旧版代替。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
 
 读取 `@ods.read_ods(bytes, allow_formatting_loss=true)` 得到 Workbook 和带表名、行列、错误码的损失诊断。默认拒绝有损导入；显式接受后保留值、公式文本/缓存及合并，丢弃样式。CSV 按文本导入，导出时丢失公式、类型、样式及 Empty/空字符串区别。公式缓存可能过期，编辑不会自动重算。
 
