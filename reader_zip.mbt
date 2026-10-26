@@ -171,8 +171,18 @@ fn read_ods_content_noticing(
       "META-INF/manifest.xml", "Thumbnails/thumbnail.png", "Configurations2/", "Configurations2/toolpanel/",
       "Configurations2/floater/", "Configurations2/statusbar/", "Configurations2/toolbar/",
       "Configurations2/progressbar/", "Configurations2/popupmenu/", "Configurations2/menubar/",
+      "Configurations2/images/Bitmaps/", "Configurations2/accelerator/current.xml",
     ]
-    if !allowed.contains(name) || (name.has_suffix("/") && unpacked != 0) {
+    // Only the exact empty legacy UI configuration entries are accepted.
+    // Every accepted entry still passes the common inflate/CRC/structure checks.
+    if !allowed.contains(name) ||
+      (
+        (
+          name.has_suffix("/") ||
+          name == "Configurations2/accelerator/current.xml"
+        ) &&
+        unpacked != 0
+      ) {
       raise Invalid("unsupported ODS package entry")
     }
     if names.contains(name) {

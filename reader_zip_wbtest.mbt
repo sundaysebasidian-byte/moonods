@@ -38,7 +38,8 @@ test "stable LibreOffice empty UI directories are bounded and never interpreted"
     name in [
       "Configurations2/", "Configurations2/toolpanel/", "Configurations2/floater/",
       "Configurations2/statusbar/", "Configurations2/toolbar/", "Configurations2/progressbar/",
-      "Configurations2/popupmenu/", "Configurations2/menubar/",
+      "Configurations2/popupmenu/", "Configurations2/menubar/", "Configurations2/images/Bitmaps/",
+      "Configurations2/accelerator/current.xml",
     ] {
     let files = [
       ("mimetype", @utf8.encode(media_type[:])),
@@ -66,7 +67,8 @@ test "stable LibreOffice empty UI directories are bounded and never interpreted"
   for
     name in [
       "Configurations2/unknown/", "Configurations2/../", "Configurations2/toolbar/code.xml",
-      "Basic/",
+      "Basic/", "Configurations2/images/Bitmaps/payload.png", "Configurations2/accelerator/other.xml",
+      "Configurations2/accelerator/../current.xml", "Configurations2/accelerator/Current.xml",
     ] {
     assert_true(
       zip_rejects(
@@ -1916,5 +1918,49 @@ test "ZIP reader rejects unknown assets macros signatures and nonempty configura
       (path, b"x"),
     ])
     assert_true(zip_rejects(archive))
+  }
+}
+
+///|
+test "empty legacy UI entries together retain duplicate and CRC validation" {
+  let paths = [
+    "Configurations2/images/Bitmaps/", "Configurations2/accelerator/current.xml",
+  ]
+  let archive = stored_package([
+    ("mimetype", @utf8.encode(media_type[:])),
+    ("content.xml", b"<xml/>"),
+    (paths[0], b""),
+    (paths[1], b""),
+  ])
+  let notices : Array[String] = []
+  assert_eq(read_ods_content_noticing(archive, notices), "<xml/>")
+  assert_eq(notices, paths)
+  for path in paths {
+    assert_true(
+      zip_rejects(
+        stored_package([
+          ("mimetype", @utf8.encode(media_type[:])),
+          ("content.xml", b"<xml/>"),
+          (path, b""),
+          (path, b""),
+        ]),
+      ),
+    )
+  }
+  let end = archive.length() - 22
+  let mut entry = ods_zip_size(archive, end + 16)
+  for _ in 0..<4 {
+    let name_length = ods_zip_u16(archive, entry + 28)
+    let name = ods_zip_utf8(
+      archive[entry + 46:entry + 46 + name_length].to_owned(),
+    )
+    if name == paths[1] {
+      assert_true(zip_rejects(zip_patch(archive, entry + 16, 123, 4)))
+    }
+    entry = entry +
+      46 +
+      name_length +
+      ods_zip_u16(archive, entry + 30) +
+      ods_zip_u16(archive, entry + 32)
   }
 }
