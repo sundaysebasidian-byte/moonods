@@ -2,7 +2,9 @@
 
 MoonBit 的数据型 ODS 读写库：类型化 `Workbook → Sheet → Cell`、有界 ZIP/XML 读取、显式损失诊断、CSV 与表头记录。适合需要把数据以 `.ods` 交给办公软件的报表和离线处理。
 
-0.3.0 新增读取、CSV 与表头记录；注册表上的 0.2.0 只有写出功能。0.3.0 发布后可以 `moon add sundaysebasidian-byte/moonods@0.3.0`，在 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。注册表包含库和示例源码，不安装命令行工具；下面的业务工作流示例需要源码检出和 Node.js。
+[0.3.0 已发布](https://mooncakes.io/docs/sundaysebasidian-byte/moonods@0.3.0/)，新增读取、CSV 与表头记录；0.2.0 只有写出功能。安装：`moon add sundaysebasidian-byte/moonods@0.3.0`，在 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。注册表包含库和示例源码，不安装命令行工具；下面的业务工作流示例需要源码检出和 Node.js。
+
+复审入口：[技术证据索引](docs/TECHNICAL_EVIDENCE.zh-CN.md)。
 
 ## 从源码运行
 
@@ -34,7 +36,7 @@ fn make_report() -> Bytes raise @ods.OdsError {
 }
 ```
 
-在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。使用 `main` 源码时，通过 MoonBit workspace 引用它，不能用注册表旧版代替。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
+在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。0.3.0 可直接从注册表安装；只有验证未发布源码时才使用 workspace。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
 
 读取 `@ods.read_ods(bytes, allow_formatting_loss=true)` 得到 Workbook 和带表名、行列、错误码的损失诊断。默认拒绝有损导入；显式接受后保留值、公式文本/缓存及合并，丢弃样式。CSV 按文本导入，导出时丢失公式、类型、样式及 Empty/空字符串区别。公式缓存可能过期，编辑不会自动重算。
 
@@ -81,7 +83,7 @@ moon run examples/reconcile --target js
 
 ## 性能
 
-`moon bench --release` 实测，每项 5 组取平均；GitHub Actions ubuntu-24.04（Intel Xeon 6973P-C，4 核），moonc v0.10.15。工作表 1000 行 × 5 列（文本、两位小数、日期、布尔、中文备注），带表头样式。
+`moon bench --release` 实测，每项 5 组取平均；GitHub Actions ubuntu-24.04（Intel Xeon Platinum 8573C，4 个逻辑 CPU），moonc v0.10.15。工作表 1000 行 × 5 列（文本、两位小数、日期、布尔、中文备注），带表头样式。
 
 | 操作 | JS | native |
 | --- | --- | --- |
@@ -95,6 +97,7 @@ moon run examples/reconcile --target js
 
 - 支持文本、有限 Double、布尔、公历日期、空值、多表、基础样式、列宽和合并。
 - 不提供宏、图表、加密、ZIP64、大文件流式处理和通用公式重算；没有针对 Excel 和打印外观做测试。
+- 读取采用严格 ZIP 条目白名单；[LibreOffice 固定夹具](docs/LIBREOFFICE_REGISTRY_CASE.zh-CN.md)目前因配置条目被拒绝，不能据合成样本推定任意 LibreOffice 文件可读。
 - 每个输出文件独立 rename，多个文件不是整体事务。
 - 库核心是纯 MoonBit；示例里的文件读写使用 JS 宿主。
 
