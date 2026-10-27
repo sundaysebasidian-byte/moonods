@@ -36,13 +36,13 @@ fn make_report() -> Bytes raise @ods.OdsError {
 }
 ```
 
-在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。已发布旧版 0.3.1 不含新增类型与格式 API；发布前验证本分支时使用 workspace。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
+在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。上述 API 已包含在 0.4.0 注册表包；0.3.1 不含新增类型与格式 API。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
 
-读取 `@ods.read_ods(bytes, allow_formatting_loss=true)` 得到 Workbook 和带表名、行列、错误码的损失诊断。默认拒绝有损导入；显式接受后保留值、公式文本/缓存及合并，丢弃样式。CSV 按文本导入，导出时丢失公式、类型、样式及 Empty/空字符串区别。公式缓存可能过期，编辑不会自动重算。
+默认拒绝有损导入。调用 `@ods.read_ods(bytes, allow_formatting_loss=true)` 显式接受后，得到 Workbook 及带表名、行列、错误码的损失诊断；默认保留值、公式文本/缓存及合并，丢弃样式。另设 `preserve_basic_formatting=true` 可保留可识别的五种预设样式及 1..500 的整数毫米列宽；未知格式仍报告损失。扩展类型另需 `allow_extended_types=true`。CSV 按文本导入，导出时丢失公式、类型、样式及 Empty/空字符串区别。公式缓存可能过期，编辑不会自动重算。
 
 ## 读取、修改和导出
 
-以下输入是本项目生成的合成测试样本：
+以下输入由项目合成 FODS 经 LibreOfficeDev 转换而来，来源见 [SOURCES.md](SOURCES.md)：
 
 ```sh
 mkdir -p /tmp/moonods-example-output
@@ -76,14 +76,14 @@ moon run examples/reconcile --target js
 
 ## 测试
 
-- 测试覆盖类型、空值、Unicode、CSV、ZIP/XML、错误输入和资源上限；读取夹具 `tests/reader-fixtures` 都是项目自己生成的合成样本和故障变体。
+- 测试覆盖类型、空值、Unicode、CSV、ZIP/XML、错误输入和资源上限；仓库读取夹具来自项目合成 FODS、LibreOfficeDev 转换结果及故障变体。官方 LibreOffice/core 固定样本另行下载校验，不随仓库或发行包分发，见 [SOURCES.md](SOURCES.md)。
 - CI：[ci.yml](.github/workflows/ci.yml) 在 wasm、wasm-gc、native 三个后端上跑库和消费者测试，并在 JS 上跑完整验收（示例、独立消费者、ODF schema 校验）；[fresh-clone.yml](.github/workflows/fresh-clone.yml) 用固定版和最新版 SDK 模拟新用户克隆后跑快速开始。
 - 本地完整验收：`python3 scripts/acceptance.py --output /tmp/moonods-acceptance`，依赖见 `requirements-verify.txt`。
 - `scripts/package_source.py` 导出干净源码 ZIP，`scripts/verify_delivery_consumer.py` 用独立模块消费它；`scripts/verify_reconcile.py` 可配合 LibreOffice 验证业务往返，参数见各脚本 `--help`。
 
 ## 性能
 
-以下为已公开旧版的固定运行记录；本地候选改变了序列化与写出预检，尚未重新测量，不能沿用这些数字描述候选性能。
+下表保留旧版固定运行的原始数值，不作为 0.4.0 的性能测量。0.4.0 合并提交另有[基准 CI](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40539129794)，两次运行不可混算。
 
 `moon bench --release` 实测，每项 5 组取平均；GitHub Actions ubuntu-24.04（Intel Xeon Platinum 8573C，4 个逻辑 CPU），moonc v0.10.15。工作表 1000 行 × 5 列（文本、两位小数、日期、布尔、中文备注），带表头样式。
 
@@ -97,7 +97,7 @@ moon run examples/reconcile --target js
 
 ## 边界
 
-0.4.0 增加显式货币/比例/时长/时间戳和基础格式读取，见[类型与格式契约](docs/EXTENDED_VALUES_DRAFT.zh-CN.md)及[本轮验收矩阵](docs/DATA_WORKFLOW_SUPPORT.zh-CN.md)。真实 LibreOffice 读改写回存、精确值比较、格式属性检查已有本轮执行证据；时区偏移回存存在明确损失。新增 API 不属于 0.3.1；本分支的 CI 与发布后安装验收分别记录。
+0.4.0 增加显式货币/比例/时长/时间戳和基础格式读取，见[类型与格式契约](docs/EXTENDED_VALUES_DRAFT.zh-CN.md)及[数据流程矩阵](docs/DATA_WORKFLOW_SUPPORT.zh-CN.md)。候选阶段已完成 LibreOffice 25.2.3.2 读改写回存、值与格式属性比较；Office 回存时区偏移会丢失。0.4.0 发布轮另完成四后端 registry 消费及 JS 官方固定样本往返，见[版本 PR #9](https://github.com/sundaysebasidian-byte/moonods/pull/9)；该轮未重跑 Office。
 
 - 支持文本、有限 Double、布尔、公历日期、空值、多表、基础样式、列宽和合并。
 - 不提供宏、图表、加密、ZIP64、大文件流式处理和通用公式重算；没有针对 Excel 和打印外观做测试。

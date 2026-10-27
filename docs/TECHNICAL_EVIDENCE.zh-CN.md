@@ -1,27 +1,27 @@
-# 0.4.0 当前版本入口
-
-新增类型、格式、兼容读取与迁移见[0.4.0 版本说明](release-0.4.0.zh-CN.md)及[数据流程矩阵](DATA_WORKFLOW_SUPPORT.zh-CN.md)。下文保留 **0.3.1 历史发行记录**，不作为 0.4.0 安装回执。
-
 # MoonODS 技术证据索引
 
-核对日期：2026-10-26。当前安装版 **0.3.1**。
+核对日期：2026-10-27。当前安装版 **0.4.0**。
 
 | 项目 | 内容与证据 |
 | --- | --- |
-| 旧基线 | 0.2.0 只有写出。当前版本增加有界 ZIP/XML 读取、显式损失诊断、CSV 与表头记录。 |
-| 本期贡献 | 类型化单元格与空值语义；读取时显式接受格式损失；采购数量修正示例重新计算固定模板并输出 ODS、CSV 与审计记录。[源码示例](../examples/reconcile)。 |
-| 当前安装版 | `moon add sundaysebasidian-byte/moonods@0.3.1`；[官方包](https://mooncakes.io/docs/sundaysebasidian-byte/moonods@0.3.1/)、[0.3.0 发布提交 da08008](https://github.com/sundaysebasidian-byte/moonods/commit/da08008436d0e0db8cb2a932ba16f3ae491b3e13)、[版本 PR #5](https://github.com/sundaysebasidian-byte/moonods/pull/5)。 |
-| 复现 | 独立消费者接口见 [tests/consumer](../tests/consumer)；源码业务示例使用 README 的生成、修正命令。完整源码验收：`python3 scripts/acceptance.py --output /new/empty/evidence`，依赖见 `requirements-verify.txt`。 |
-| CI | 发布合后：[核心](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40286777708)、[fresh clone](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40286777705)。文档修订前 `7ec5a6a`：[核心](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40288653203)、[fresh clone](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40288653117)。 |
+| 旧基线 | 0.2.0 以写出为主；0.3.x 增加有界 ZIP/XML 读取、显式损失诊断、CSV 和表头记录。 |
+| 本期贡献 | 0.4.0 新增四种显式值、基础格式读取与兼容结构处理，并在写出前检查往返预算。采购示例可从修改 CSV 重算固定模板并生成 ODS、CSV、审计记录。 |
+| 当前安装版 | `moon add sundaysebasidian-byte/moonods@0.4.0`；[官方包](https://mooncakes.io/docs/sundaysebasidian-byte/moonods@0.4.0/)、[发布提交 4413e1a](https://github.com/sundaysebasidian-byte/moonods/commit/4413e1a873d1c0513fe94909a53662b51086137e)、[版本 PR #9](https://github.com/sundaysebasidian-byte/moonods/pull/9)。 |
+| 复现 | [README](../README.md) 给出读改写和采购修正命令；[独立消费者](../tests/consumer)、[迁移说明](release-0.4.0.zh-CN.md)、[数据流程矩阵](DATA_WORKFLOW_SUPPORT.zh-CN.md)给出接口与验证范围。 |
+| 精确版本 CI | 最终 head e567857：[核心](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40538650816)、[fresh clone](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40538650789)；合并提交 4413e1a：[核心](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40539129813)、[fresh clone](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40539129880)。 |
 
-历史 0.3.0 发布轮官方 ZIP SHA256：`46b50fdcce2c962f6e85e2c495e85f0955d40764ac872f657da4433a8e15d112`。56 个文件与发布源码、实际 registry 安装一致，独立 JS 消费者的读写、CSV、Unicode 与拒绝路径通过。完整本机记录保留私有；不作为公开 CI 附件。
+## 发布与独立消费
 
-`da08008` 至 `7ec5a6a` 仅修改六个 CI、README、benchmark 文件，未改运行库及根配置，不需据此另发补丁版。现有包内 README 的条件发布措辞已过时，安装版本以官方 manifest 为准。
+0.4.0 的官方 CLI 发布退出码为 0，HTTP 200，registry 构建成功。ZIP SHA256：`f29d494c247a80c64c08d8c44d415825a1e8fd5f03abff79325a4b7d4df75c28`；71 个文件与发布源码和实际安装包一致。[PR #9](https://github.com/sundaysebasidian-byte/moonods/pull/9)包含正式回执。
 
-基准 CPU 为 **Intel Xeon Platinum 8573C，4 个逻辑 CPU**，moonc 0.10.15。[固定 job](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40287799404/job/121455479461)是 README 表格来源；性能数字保持原值。
+干净消费者从 registry 精确安装 0.4.0，无 workspace/path 覆盖，实际运行 JS、Wasm、Wasm GC、native，检查十种 Value、扩展类型显式启用、Header 样式、列宽、CSV 策略和 ODS 往返。JS 另对未修改的官方 LibreOffice/core 样本核对 B2–B5 类型和值，再导出读回。
 
-采购示例与现有 reader 夹具是合成输入，不是外部客户采用。没有 Excel 外观、通用公式重算、大文件流式、宏或加密支持证据。来源、依赖许可及辅助工具披露见 [SOURCES](../SOURCES.md)、[THIRD_PARTY_NOTICES](../THIRD_PARTY_NOTICES.md)、[AI_USAGE](../AI_USAGE.md)。竞赛表单及个人说明由用户完成。
+项目合成 FODS 经 LibreOfficeDev 转换的兼容样本，与官方固定样本分开记录。候选阶段的 LibreOffice 25.2.3.2 闭环没有在此次发布轮重跑；Office 回存时间戳偏移会损失。来源与摘要见[来源说明](../SOURCES.md)、[兼容说明](READER_COMPAT.zh-CN.md)。
 
-外部文件实测：[LibreOffice 固定夹具](LIBREOFFICE_REGISTRY_CASE.zh-CN.md)保留 0.3.0 的拒绝历史；0.3.1 对原文件的类型、值及往返通过，见该页边界。
+## 使用范围
 
-0.3.1 修复仅涉及空 UI 条目和大段纯空白尾行的有界省略；79 项 JS 回归及未修改 LibreOffice 文件往返已在候选源码通过。新的 registry 安装验收与合并回执见本次版本 PR；不沿用 0.3.0 checksum 为 0.3.1 背书。
+默认拒绝有损读取；显式接受格式损失后默认按数据读取。基础格式保留、扩展类型和 CSV 扩展文本分别由独立选项启用。金额为 binary64，不是精确十进制金融计算；采购示例只重算已知模板公式。没有通用公式引擎、宏、加密、大文件流式或 Excel/打印外观保证。
+
+README 的旧基准表仍对应 [40287799404](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40287799404/job/121455479461)，Intel Xeon Platinum 8573C、4 个逻辑 CPU、moonc 0.10.15；不改原数值，也不当作 0.4.0 测量。0.4.0 的[基准运行](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40539129794)另列。
+
+完整旧索引保留于[历史归档](development-history/TECHNICAL_EVIDENCE-through-2026-10-27.md)，其中旧安装版和待执行措辞只描述当时状态。许可与辅助工具见 [THIRD_PARTY_NOTICES](../THIRD_PARTY_NOTICES.md)、[AI_USAGE](../AI_USAGE.md)。

@@ -10,6 +10,6 @@ MoonODS 自行实现类型模型、预算校验、ODS ZIP 封装和有界 XML/CS
 
 读取夹具由本项目合成 FODS 经 LibreOfficeDev 转换，生成来源见 tests/reader-fixtures；故障变体由相应脚本生成。无真实个人业务记录或第三方私人表格。
 
-新公开树仅包含源码、运行配置、必要测试、许可和使用文档；历史审计资料与旧复现产物保持单独私有保存。公开源码并非正式 Mooncakes 发包。
+新公开树仅包含源码、运行配置、必要测试、许可和使用文档；历史审计资料与旧复现产物保持单独私有保存。0.4.0 已正式发布，源码与 registry 回执见[版本 PR #9](https://github.com/sundaysebasidian-byte/moonods/pull/9)。
 
 本地读取兼容回归的 `tests/reader-fixtures/source/rich-text.fods` 是本项目原创 MIT 合成文件；LibreOffice 转换结果仅作为实验产物。官方 `LibreOffice/core` 固定样本单独下载并校验，不随源码或包重分发；来源、许可边界和摘要见 [读取兼容说明](docs/READER_COMPAT.zh-CN.md)。
