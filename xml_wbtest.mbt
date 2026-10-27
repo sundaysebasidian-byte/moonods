@@ -6,7 +6,7 @@ test "XML escapes every attribute and preserves whitespace" {
   )
   assert_eq(
     text_paragraph(" a  b\t\n"),
-    "<text:p><text:s/>a<text:s/><text:s/>b<text:tab/><text:line-break/></text:p>",
+    "<text:p><text:s/>a<text:s text:c=\"2\"/>b<text:tab/><text:line-break/></text:p>",
   )
   assert_true(
     Cell::new(Text("")).xml("").contains("office:value-type=\"string\""),

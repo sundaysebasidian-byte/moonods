@@ -6,7 +6,7 @@ from lxml import etree
 from odf import teletype
 from fetch_schemas import SCHEMAS
 from verify_deps import verify
-from verify_external import check_package, cell_value
+from verify_external import check_package, cell_value, expected_cell
 from verify_consumer_outputs import verify_generated
 from verify_wasm_output import decode_output
 
@@ -105,7 +105,7 @@ def main():
             count = 0
             def expect(cell, value):
                 nonlocal count
-                assert cell_value(cell) == value, (cell_value(cell), value)
+                assert cell_value(cell) == expected_cell(value), (cell_value(cell), value)
                 count += 1
             b = check_package(generated / 'business.ods', schemas)
             assert list(b) == ['业务汇总']

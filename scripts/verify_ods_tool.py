@@ -59,6 +59,8 @@ def main():
     build = run('build', [args.moon, 'build', '--target', 'js', '-j', '1', '--deny-warn', 'examples/ods_tool'])
     require(build.returncode == 0, 'ods_tool build failed')
     js = ROOT / '_build/js/debug/build/examples/ods_tool/ods_tool.js'
+    if not js.exists():
+        js = ROOT / '_build/js/debug/build/sundaysebasidian-byte/moonods/examples/ods_tool/ods_tool.js'
     require(js.exists(), 'ods_tool JS artifact missing')
     tool = lambda name, extra_env: run(name, ['node', js], extra_env)
 

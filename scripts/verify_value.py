@@ -9,24 +9,13 @@ import os
 import subprocess
 from pathlib import Path
 from prepare_reader_fixtures import semantics
+from ods_value_oracle import typed_observation, expected_number, normalize_expected
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def semantic(path):
-    result = {}
-    fields = ['value-type', 'value', 'boolean-value', 'date-value', 'formula',
-              'number-columns-spanned', 'number-rows-spanned', 'covered']
-    for sheet, cells in semantics(path)['sheets'].items():
-        result[sheet] = {}
-        for key, cell in cells.items():
-            item = {k: cell[k] for k in fields if k in cell}
-            if cell.get('value-type') == 'string':
-                item['text'] = cell['text']
-            if item.get('value-type') == 'float':
-                item['value'] = float(item['value'])
-            result[sheet][key] = item
-    return result
+    return typed_observation(semantics(path))
 
 
 def main():
@@ -73,6 +62,7 @@ def main():
                     '1,3': {'value-type': 'boolean', 'boolean-value': 'true'},
                     '1,5': {'value-type': 'string', 'text': ''},
                     '1,6': {'value-type': 'float', 'value': 15.0, 'formula': 'of:=[.B2]*2'}}
+        expected = normalize_expected(expected)
         if any(original['Typed'].get(k) != v for k, v in expected.items()) or '1,4' in original['Typed']:
             raise RuntimeError('ODS independent typed/empty oracle failed')
         report.update(python_csv_oracle='PASS', independent_ods_oracle='PASS',
@@ -114,7 +104,7 @@ def main():
             run('cache-edit-consumer', command,
                 {'ODS_VALUE_OUTPUT': str(edited_dir), 'ODS_VALUE_CACHE_CASE': 'edit'})
             stale = semantic(edited_dir / 'value.ods')
-            if stale['Typed']['1,1']['value'] != 8.5 or stale['Typed']['1,6']['value'] != 15.0:
+            if stale['Typed']['1,1']['value'] != expected_number(8.5) or stale['Typed']['1,6']['value'] != expected_number(15.0):
                 raise RuntimeError('library changed the formula cache during a value edit')
             cache_dest = out / 'cache-office'
             cache_dest.mkdir()
@@ -124,7 +114,7 @@ def main():
                                       str(edited_dir / 'value.ods')])
             recalculated = semantic(cache_dest / 'value.ods')
             expected_recalculated = json.loads(json.dumps(stale))
-            expected_recalculated['Typed']['1,6']['value'] = 15.0
+            expected_recalculated['Typed']['1,6']['value'] = expected_number(15.0)
             if recalculated != expected_recalculated:
                 raise RuntimeError('unexpected change after native default save of stale cache')
             marker = run('cache-public-readback', command,

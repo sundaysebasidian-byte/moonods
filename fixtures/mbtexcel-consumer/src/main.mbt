@@ -49,6 +49,7 @@ fn convert(book : @ods.Workbook, cache_only~ : Bool = false) -> Bytes raise {
             Empty => None
             Text(text) => Some(@xlsx.CellValue::String(text))
             Number(number) => Some(@xlsx.CellValue::Numeric(number))
+            Percentage(_) | Currency(_,_) | Duration(_) | DateTime(_) => raise Unsupported("extended ODS values require an explicit XLSX type/unit policy; no coercion provided")
             Boolean(value) => Some(@xlsx.CellValue::Bool(value))
             Date(year, month, day) =>
               Some(

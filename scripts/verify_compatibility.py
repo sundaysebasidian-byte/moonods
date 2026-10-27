@@ -4,7 +4,7 @@ import argparse, hashlib, json, zipfile
 from pathlib import Path
 from lxml import etree
 from fetch_schemas import SCHEMAS
-from verify_external import check_package, cell_value
+from verify_external import check_package, cell_value, expected_cell
 
 def main():
     ap = argparse.ArgumentParser()
@@ -23,7 +23,7 @@ def main():
                 (4, 0, ('date', '1900-01-01')), (5, 0, ('date', '1899-12-31')),
                 (5, 1, ('string', '1899-12-31'))]
     for row, col, value in expected:
-        assert cell_value(g[row][col]) == value
+        assert cell_value(g[row][col]) == expected_cell(value)
     for row in [1, 2, 3, 4, 5]:
         assert g[row][0].getAttribute('stylename') == 'DateISO'
     assert g[4][0].getAttribute('formula') == 'of:=DATE(1900;1;1)'

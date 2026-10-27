@@ -8,6 +8,7 @@ from odf.opendocument import load
 from odf.table import Table
 from odf import teletype
 from fetch_schemas import SCHEMAS
+from ods_value_oracle import decimal_identity, expected_number, boolean_identity
 
 MIME = b'application/vnd.oasis.opendocument.spreadsheet'
 PATHS = ['mimetype', 'content.xml', 'styles.xml', 'META-INF/manifest.xml']
@@ -69,18 +70,39 @@ def check_package(p, schemas):
         rows = []
         for r in t.childNodes:
             if getattr(r, 'qname', None) != (NS_TABLE, 'table-row'): continue
-            rows.append([c for c in r.childNodes if getattr(c, 'qname', None) in [(NS_TABLE, 'table-cell'), (NS_TABLE, 'covered-table-cell')]])
+            cells = []
+            for c in r.childNodes:
+                if getattr(c, 'qname', None) not in [(NS_TABLE, 'table-cell'), (NS_TABLE, 'covered-table-cell')]:
+                    continue
+                repeated = int(c.getAttribute('numbercolumnsrepeated') or '1')
+                assert 1 <= repeated <= 128 and len(cells) + repeated <= 128
+                cells.extend([c] * repeated)
+            repeated = int(r.getAttribute('numberrowsrepeated') or '1')
+            assert 1 <= repeated <= 1024 and len(rows) + repeated <= 1024
+            assert (len(rows) + repeated) * len(cells) <= 65536
+            rows.extend([cells] * repeated)
         result[t.getAttribute('name')] = rows
     return result
 
 def cell_value(c):
     kind = c.getAttribute('valuetype')
     if kind is None: return None
-    if kind == 'string': return ('string', c.getAttribute('stringvalue'))
-    if kind == 'float': return ('number', float(c.getAttribute('value')))
-    if kind == 'boolean': return ('boolean', c.getAttribute('booleanvalue') == 'true')
+    if kind == 'string':
+        literal = c.getAttribute('stringvalue')
+        if literal is None:
+            paragraphs = [p for p in c.childNodes if getattr(p, 'qname', None) == ('urn:oasis:names:tc:opendocument:xmlns:text:1.0', 'p')]
+            literal = '\n'.join(teletype.extractText(p) for p in paragraphs)
+        return ('string', literal)
+    if kind == 'float': return ('number', decimal_identity(c.getAttribute('value')))
+    if kind == 'boolean': return ('boolean', boolean_identity(c.getAttribute('booleanvalue')) == 'true')
     if kind == 'date': return ('date', c.getAttribute('datevalue'))
     raise AssertionError(kind)
+
+
+def expected_cell(value):
+    if value is not None and value[0] == 'number':
+        return ('number', expected_number(value[1]))
+    return value
 
 
 def main():
@@ -102,7 +124,7 @@ def main():
     count = 0
     def expect(c, expected):
         nonlocal count
-        assert cell_value(c) == expected, (cell_value(c), expected)
+        assert cell_value(c) == expected_cell(expected), (cell_value(c), expected)
         count += 1
     for name in ['sales', 'experiment', 'formulas', 'edge']:
         p = args.input / f'{name}.ods'

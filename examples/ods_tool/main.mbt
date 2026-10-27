@@ -83,11 +83,20 @@ extern "js" fn path_error(
 
 ///|
 extern "js" fn exit_with(code : Int32) -> Unit =
-  #| (c) => process.exit(c)
+  #| (c) => { process.exitCode = c; }
 
 ///|
 suberror UsageError {
   Usage(String)
+}
+
+///|
+fn option_bool(name : String) -> Bool raise UsageError {
+  match env(name) {
+    "" | "0" => false
+    "1" => true
+    _ => raise Usage("\{name} must be 0 or 1")
+  }
 }
 
 ///|
@@ -96,6 +105,10 @@ fn show(v : @ods.Value) -> String {
     Empty => "(empty)"
     Text(s) => "text:\{s}"
     Number(d) => "number:\{d}"
+    Percentage(d) => "percentage-fraction:\{d}"
+    Currency(d, code) => "currency:\{code}:\{d}"
+    Duration(s) => "duration:\{s}"
+    DateTime(s) => "datetime:\{s}"
     Boolean(b) => "bool:\{b}"
     Date(y, m, d) => "date:\{y}-\{pad2(m)}-\{pad2(d)}"
   }
@@ -117,13 +130,28 @@ fn run() -> Unit raise {
     raise Usage("set ODS_INPUT to an .ods path")
   }
   let loss = env("ODS_ACCEPT_LOSS") == "1"
-  let imported = @ods.read_ods(read_file(input), allow_formatting_loss=loss)
+  let extended = option_bool("ODS_EXTENDED_TYPES")
+  let preserve = option_bool("ODS_PRESERVE_BASIC")
+  let extended_csv = option_bool("ODS_EXTENDED_CSV_TEXT")
+  let imported = @ods.read_ods(
+    read_file(input),
+    allow_formatting_loss=loss,
+    allow_extended_types=extended,
+    preserve_basic_formatting=preserve,
+  )
   let book = imported.workbook()
   println("accepted: \{input} (accept_loss=\{loss})")
   for i = 0; i < book.sheet_count(); i = i + 1 {
     let sheet = book.sheet(i).unwrap()
     let (rows, cols) = sheet.dimensions()
     println("sheet[\{i}] \{sheet.name()}  \{rows} rows x \{cols} cols")
+    if preserve {
+      for c in 0..<cols {
+        if sheet.column_width(c) is Some(mm) {
+          println("width sheet[\{i}] col=\{c}: \{mm}mm")
+        }
+      }
+    }
     for r = 0; r < rows; r = r + 1 {
       for c = 0; c < cols; c = c + 1 {
         match sheet.get(r, c) {
@@ -177,9 +205,30 @@ fn run() -> Unit raise {
     let n = nums[3]
     match book.sheet(s) {
       None => raise Usage("no such sheet \{s}")
-      Some(sh) => sh.set(r, c, @ods.Cell::new(Number(n)))
+      Some(sh) => {
+        let previous = sh.get(r, c)
+        let value = match previous {
+          Some(cell) =>
+            match cell.value() {
+              Currency(_, code) => @ods.Currency(n, code)
+              Percentage(_) => @ods.Percentage(n)
+              Duration(_) | DateTime(_) =>
+                raise Usage("ODS_SET cannot coerce a temporal value to Number")
+              _ => @ods.Number(n)
+            }
+          None => @ods.Number(n)
+        }
+        let updated = @ods.Cell::new(value)
+        let updated = if preserve && previous is Some(cell) {
+          updated.styled(cell.style())
+        } else {
+          updated
+        }
+        sh.set(r, c, updated)
+      }
     }
-    println("edited sheet[\{s}] (\{r},\{c}) = number:\{n}")
+    let edited = book.sheet(s).unwrap().get(r, c).unwrap().value()
+    println("edited sheet[\{s}] (\{r},\{c}) = \{show(edited)}")
     println(
       "FORMULA_CACHE_WARNING: edits never recalculate formulas; application open/save may retain stale caches",
     )
@@ -197,13 +246,19 @@ fn run() -> Unit raise {
     .to_csv(
       use_formula_cache=use_cache,
       reject_formula_like_text=env("ODS_CSV_REJECT_FORMULA_TEXT") == "1",
+      extended_types_as_text=extended_csv,
     )
   } else {
     ""
   }
   let bytes = if out != "" {
     let bytes = book.to_ods()
-    let again = @ods.read_ods(bytes, allow_formatting_loss=true).workbook()
+    let again = @ods.read_ods(
+      bytes,
+      allow_formatting_loss=true,
+      allow_extended_types=extended,
+      preserve_basic_formatting=preserve,
+    ).workbook()
     println("re-read OK, sheets=\{again.sheet_count()}")
     bytes
   } else {

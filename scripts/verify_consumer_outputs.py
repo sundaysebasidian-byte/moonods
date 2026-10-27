@@ -4,7 +4,7 @@ from lxml import etree
 from odf import teletype
 from fetch_schemas import SCHEMAS
 from hashlib import sha256
-from verify_external import check_package, cell_value
+from verify_external import check_package, cell_value, expected_cell
 
 def digest(path):
     return sha256(path.read_bytes()).hexdigest()
@@ -16,7 +16,7 @@ def verify_generated(generated, schema_root):
     count = 0
     def expect(cell, value):
         nonlocal count
-        assert cell_value(cell) == value, (cell_value(cell), value)
+        assert cell_value(cell) == expected_cell(value), (cell_value(cell), value)
         count += 1
     b = check_package(generated / 'business.ods', schemas)
     assert list(b) == ['业务汇总']

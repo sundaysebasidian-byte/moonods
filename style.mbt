@@ -6,7 +6,7 @@ pub(all) enum Style {
   Highlight
   Decimal2
   DateISO
-}
+} derive(Eq, Debug)
 
 ///|
 pub fn Cell::styled(self : Cell, style : Style) -> Cell {
@@ -112,3 +112,21 @@ pub fn Sheet::merge(
   self.rows = nr
   self.cols = nc
 }
+
+///|
+/// Current normalized preset, not an arbitrary source style definition.
+pub fn Cell::style(self : Cell) -> Style {
+  self.style
+}
+
+///|
+/// Explicit integer-mm width. None means no retained/requested fixed width.
+pub fn Sheet::column_width(self : Sheet, col : Int32) -> Int32? {
+  self.widths.get(col)
+}
+
+///|
+pub extend Style with Eq::{equal, not_equal}
+
+///|
+pub extend Style with @debug.Debug::{to_repr}
