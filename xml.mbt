@@ -47,16 +47,32 @@ fn xml_escape(s : String) -> String {
 fn text_paragraph(s : String) -> String {
   let b = StringBuilder()
   b.write_string("<text:p>")
+  let mut spaces = 0
   for c in s {
+    if c == ' ' {
+      spaces += 1
+      continue
+    }
+    write_text_spaces(b, spaces)
+    spaces = 0
     match c {
-      ' ' => b.write_string("<text:s/>")
       '\t' => b.write_string("<text:tab/>")
       '\n' => b.write_string("<text:line-break/>")
       _ => b.write_string(xml_escape(c.to_string()))
     }
   }
+  write_text_spaces(b, spaces)
   b.write_string("</text:p>")
   b.to_string()
+}
+
+///|
+fn write_text_spaces(out : StringBuilder, count : Int32) -> Unit {
+  if count == 1 {
+    out.write_string("<text:s/>")
+  } else if count > 1 {
+    out.write_string("<text:s text:c=\"\{count}\"/>")
+  }
 }
 
 ///|
@@ -75,21 +91,45 @@ fn Cell::xml(self : Cell, extra : String) -> String {
   let b = StringBuilder()
   b.write_string("<table:table-cell")
   b.write_string(extra)
-  b.write_string(" table:style-name=\"\{self.style.id()}\"")
+  b.write_string(" table:style-name=\"\{self.output_style()}\"")
   if self.formula is Some(f) {
     b.write_string(" table:formula=\"\{xml_escape(f)}\"")
   }
   let display = match self.value {
     Empty => ""
     Text(s) => {
-      b.write_string(
-        " office:value-type=\"string\" office:string-value=\"\{xml_escape(s)}\"",
-      )
+      // Text paragraphs are authoritative; duplicating the same value in an
+      // attribute needlessly doubles bytes. value-type keeps Text("") distinct.
+      b.write_string(" office:value-type=\"string\"")
       s
     }
     Number(n) => {
       let s = finite_number_text(n)
       b.write_string(" office:value-type=\"float\" office:value=\"\{s}\"")
+      s
+    }
+    Percentage(n) => {
+      let s = finite_number_text(n)
+      b.write_string(" office:value-type=\"percentage\" office:value=\"\{s}\"")
+      s
+    }
+    Currency(n, code) => {
+      let s = finite_number_text(n)
+      b.write_string(
+        " office:value-type=\"currency\" office:value=\"\{s}\" office:currency=\"\{code}\"",
+      )
+      code + " " + s
+    }
+    Duration(s) => {
+      b.write_string(
+        " office:value-type=\"time\" office:time-value=\"\{xml_escape(s)}\"",
+      )
+      s
+    }
+    DateTime(s) => {
+      b.write_string(
+        " office:value-type=\"date\" office:date-value=\"\{xml_escape(s)}\"",
+      )
       s
     }
     Boolean(v) => {

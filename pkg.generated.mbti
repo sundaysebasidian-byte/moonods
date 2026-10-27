@@ -6,7 +6,7 @@ import {
 }
 
 // Values
-pub fn read_ods(Bytes, allow_formatting_loss? : Bool) -> ImportResult raise OdsError
+pub fn read_ods(Bytes, allow_formatting_loss? : Bool, allow_extended_types? : Bool, preserve_basic_formatting? : Bool) -> ImportResult raise OdsError
 
 // Errors
 pub suberror OdsError {
@@ -20,6 +20,7 @@ pub fn Cell::excel_1900_date(Int, Int, Int) -> Self raise OdsError
 pub fn Cell::expression(Self) -> String?
 pub fn Cell::formula(String, Value) -> Self raise OdsError
 pub fn Cell::new(Value) -> Self raise OdsError
+pub fn Cell::style(Self) -> Style
 pub fn Cell::styled(Self, Style) -> Self
 pub fn Cell::value(Self) -> Value
 
@@ -39,6 +40,7 @@ pub fn ImportResult::diagnostics(Self) -> Array[ImportDiagnostic]
 pub fn ImportResult::workbook(Self) -> Workbook
 
 type Sheet
+pub fn Sheet::column_width(Self, Int) -> Int?
 pub fn Sheet::dimensions(Self) -> (Int, Int)
 pub fn Sheet::get(Self, Int, Int) -> Cell?
 pub fn Sheet::is_covered(Self, Int, Int) -> Bool
@@ -49,7 +51,7 @@ pub fn Sheet::records(Self, header_row? : Int) -> Array[TableRecord] raise OdsEr
 pub fn Sheet::set(Self, Int, Int, Cell) -> Unit raise OdsError
 pub fn Sheet::set_column_width(Self, Int, Int) -> Unit raise OdsError
 pub fn Sheet::set_row(Self, Int, Int, Array[Cell]) -> Unit raise OdsError
-pub fn Sheet::to_csv(Self, use_formula_cache? : Bool, reject_formula_like_text? : Bool) -> String raise OdsError
+pub fn Sheet::to_csv(Self, use_formula_cache? : Bool, reject_formula_like_text? : Bool, extended_types_as_text? : Bool) -> String raise OdsError
 
 pub(all) enum Style {
   Plain
@@ -57,7 +59,10 @@ pub(all) enum Style {
   Highlight
   Decimal2
   DateISO
-}
+} derive(Eq, @debug.Debug)
+pub fn Style::equal(Self, Self) -> Bool
+pub fn Style::not_equal(Self, Self) -> Bool
+pub fn Style::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TableRecord {
   row : Int
@@ -68,6 +73,10 @@ pub(all) enum Value {
   Empty
   Text(String)
   Number(Double)
+  Percentage(Double)
+  Currency(Double, String)
+  Duration(String)
+  DateTime(String)
   Boolean(Bool)
   Date(Int, Int, Int)
 } derive(Eq, @debug.Debug)

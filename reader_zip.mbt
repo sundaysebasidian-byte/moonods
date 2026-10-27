@@ -97,6 +97,7 @@ fn ods_zip_inflate(data : Bytes, budget : Int32) -> Bytes raise OdsError {
 fn read_ods_content_noticing(
   data : Bytes,
   omitted : Array[String],
+  style_parts~ : Array[String]? = None,
 ) -> String raise OdsError {
   let length = data.length()
   if length < 22 || length > 33554432 {
@@ -274,6 +275,8 @@ fn read_ods_content_noticing(
       mimetype = true
     } else if name == "content.xml" {
       content = Some(ods_zip_utf8(decoded))
+    } else if name == "styles.xml" && style_parts is Some(parts) {
+      parts.push(ods_zip_utf8(decoded))
     } else if name != "META-INF/manifest.xml" && name != "Configurations2/" {
       omitted.push(name)
     }

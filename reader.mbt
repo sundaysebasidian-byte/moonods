@@ -18,9 +18,21 @@ pub(all) struct ImportDiagnostic {
 } derive(Eq, Debug)
 
 ///|
+priv struct ReadNotices {
+  items : Array[ImportDiagnostic]
+  counts : Map[(String, String), Int32]
+  summaries : Map[(String, String), (Int32, Int32, Int32)]
+}
+
+///|
+fn ReadNotices::new() -> ReadNotices {
+  { items: [], counts: {}, summaries: {}, }
+}
+
+///|
 struct ImportResult {
   book : Workbook
-  notices : Array[ImportDiagnostic]
+  notices : ReadNotices
 }
 
 ///|
@@ -33,7 +45,7 @@ pub fn ImportResult::workbook(self : ImportResult) -> Workbook {
 pub fn ImportResult::diagnostics(
   self : ImportResult,
 ) -> Array[ImportDiagnostic] {
-  self.notices.copy()
+  self.notices.items.copy()
 }
 
 ///|
@@ -145,7 +157,10 @@ fn read_text_parts(node : ReadElement) -> String raise OdsError {
     let s = match part {
       ReadText(t) => t
       ReadElement(e) =>
-        if e.name == read_text + "s" {
+        if e.name == read_text + "span" {
+          e.allowed([read_text + "style-name"])
+          read_text_parts(e)
+        } else if e.name == read_text + "s" {
           e.allowed([read_text + "c"])
           if !e.parts.is_empty() {
             raise Invalid("text:s must be empty")
@@ -189,7 +204,7 @@ fn read_cell_text(node : ReadElement) -> String raise OdsError {
     if e.name != read_text + "p" {
       raise Invalid("unsupported cell child: \{e.name}")
     }
-    e.allowed([])
+    e.allowed([read_text + "style-name"])
     if !first {
       b.write_char('\n')
       units += 1
@@ -203,6 +218,22 @@ fn read_cell_text(node : ReadElement) -> String raise OdsError {
     b.write_string(s)
   }
   b.to_string()
+}
+
+///|
+// XML parsing already bounds depth (32), nodes (65536) and input size.
+// Runs are flattened only after validation by read_cell_text/read_text_parts.
+fn ReadElement::has_text_formatting(self : ReadElement) -> Bool {
+  if self.name == read_text + "span" ||
+    self.attribute(read_text, "style-name") is Some(_) {
+    return true
+  }
+  for part in self.parts {
+    if part is ReadElement(e) && e.has_text_formatting() {
+      return true
+    }
+  }
+  false
 }
 
 ///|
@@ -337,9 +368,9 @@ fn read_finite_double(raw : String) -> Double raise OdsError {
 }
 
 ///|
-fn read_value(node : ReadElement) -> Value raise OdsError {
+fn read_value(node : ReadElement, extended : Bool) -> Value raise OdsError {
   // Validate even display paragraphs on non-text values; never silently discard
-  // annotations, drawings, links, or rich text embedded in numeric cells.
+  // annotations, drawings, links, or unsupported text nodes in numeric cells.
   let text = read_cell_text(node)
   let kind = node.attribute(read_office, "value-type")
   match
@@ -369,6 +400,23 @@ fn read_value(node : ReadElement) -> Value raise OdsError {
         }
         None => Text(text)
       }
+    Some("percentage") if extended =>
+      Percentage(
+        read_finite_double(node.attribute(read_office, "value").unwrap_or("")),
+      )
+    Some("currency") if extended => {
+      let raw = node.attribute(read_office, "value").unwrap_or("")
+      let amount = read_finite_double(raw)
+      if read_decimal_identity(raw) !=
+        read_decimal_identity(finite_number_text(amount)) {
+        raise Invalid(
+          "currency decimal cannot roundtrip through binary64 without changing its decimal value",
+        )
+      }
+      Currency(amount, node.attribute(read_office, "currency").unwrap_or(""))
+    }
+    Some("time") if extended =>
+      Duration(node.attribute(read_office, "time-value").unwrap_or(""))
     Some("float") => {
       let raw = node.attribute(read_office, "value").unwrap_or("")
       Number(read_finite_double(raw))
@@ -381,26 +429,40 @@ fn read_value(node : ReadElement) -> Value raise OdsError {
       }
     Some("date") => {
       let raw = node.attribute(read_office, "date-value").unwrap_or("")
-      let p = raw.split("-").map(x => x.to_owned()).collect()
-      if p.length() != 3 ||
-        p[0].length() != 4 ||
-        p[1].length() != 2 ||
-        p[2].length() != 2 {
-        raise Invalid("only Gregorian YYYY-MM-DD dates supported")
+      if extended && raw.contains("T") {
+        DateTime(raw)
+      } else {
+        let p = raw.split("-").map(x => x.to_owned()).collect()
+        if p.length() != 3 ||
+          p[0].length() != 4 ||
+          p[1].length() != 2 ||
+          p[2].length() != 2 {
+          raise Invalid("only Gregorian YYYY-MM-DD dates supported")
+        }
+        Date(
+          read_positive(p[0], 9999),
+          read_positive(p[1], 12),
+          read_positive(p[2], 31),
+        )
       }
-      Date(
-        read_positive(p[0], 9999),
-        read_positive(p[1], 12),
-        read_positive(p[2], 31),
-      )
     }
     Some(other) => raise Invalid("unsupported ODF value type: \{other}")
   }
   // Reject conflicting alternate typed attributes instead of coercing them.
-  for field in ["value", "boolean-value", "date-value", "string-value"] {
+  for
+    field in [
+      "value", "boolean-value", "date-value", "string-value", "currency", "time-value",
+    ] {
     if node.attribute(read_office, field) is Some(_) {
       let expected = match kind {
-        Some("float") => "value"
+        Some("float") | Some("percentage") => "value"
+        Some("currency") =>
+          if field == "currency" {
+            "currency"
+          } else {
+            "value"
+          }
+        Some("time") => "time-value"
         Some("boolean") => "boolean-value"
         Some("date") => "date-value"
         Some("string") => "string-value"
@@ -417,19 +479,61 @@ fn read_value(node : ReadElement) -> Value raise OdsError {
 
 ///|
 fn read_notice(
-  notices : Array[ImportDiagnostic],
+  notices : ReadNotices,
   diagnostic : ImportDiagnostic,
 ) -> Unit raise OdsError {
-  if notices.length() >= 8192 {
+  // Count every repeated loss. Keep the first 32 exact locations per sheet/code
+  // and one explicit summary rather than rejecting an otherwise valid grid.
+  // At most 32 sheets * 4 grouped codes * 33 entries, below the old hard cap.
+  if [
+      "FORMATTING_DROPPED", "RICH_TEXT_FORMATTING_DROPPED", "FORMULA_CACHE_NOT_RECALCULATED",
+      "NUMBER_PRECISION_CHANGED",
+    ].contains(diagnostic.code) {
+    let key = (diagnostic.sheet, diagnostic.code)
+    let count = notices.counts.get(key).unwrap_or(0) + 1
+    notices.counts.set(key, count)
+    if count > 32 {
+      let (index, first_row, first_col) = match notices.summaries.get(key) {
+        Some(data) => data
+        None => {
+          if notices.items.length() >= 8192 {
+            raise Invalid("import diagnostic budget exceeded")
+          }
+          let data = (notices.items.length(), diagnostic.row, diagnostic.col)
+          notices.items.push(diagnostic)
+          notices.summaries.set(key, data)
+          data
+        }
+      }
+      notices.items[index] = {
+        sheet: diagnostic.sheet,
+        row: -1,
+        col: -1,
+        code: diagnostic.code + "_SUMMARY",
+        message: "\{count - 32} additional occurrences of \{diagnostic.code}; first additional row \{first_row} col \{first_col}, last row \{diagnostic.row} col \{diagnostic.col}. The first 32 occurrences retain exact details; all occurrences are counted, not silently truncated.",
+      }
+      return
+    }
+  }
+  if notices.items.length() >= 8192 {
     raise Invalid("import diagnostic budget exceeded")
   }
-  notices.push(diagnostic)
+  notices.items.push(diagnostic)
+}
+
+///|
+fn read_preview(text : String) -> String {
+  if text.length() <= 96 {
+    text
+  } else {
+    text[:96].to_owned() + "…"
+  }
 }
 
 ///|
 fn ReadElement::style_notice(
   self : ReadElement,
-  notices : Array[ImportDiagnostic],
+  notices : ReadNotices,
   sheet : String,
   row : Int32,
   col : Int32,
@@ -441,7 +545,7 @@ fn ReadElement::style_notice(
       row,
       col,
       code: "FORMATTING_DROPPED",
-      message: "Source formatting is not retained by data-only import.",
+      message: "Source \{if self.name == read_table + "table-column" { "column style/width and default cell style" } else if self.name == read_table + "table-row" { "row style/height and default cell style" } else if self.name == read_table + "table" { "sheet style/view settings" } else { "cell style/number-format" }} is not retained by data-only import (style-name=\{read_preview(self.attribute(read_table, "style-name").unwrap_or(""))}, default-cell-style-name=\{read_preview(self.attribute(read_table, "default-cell-style-name").unwrap_or(""))}).",
     })
   }
 }
@@ -465,7 +569,7 @@ fn read_workbook_budget(book : Workbook) -> Unit raise OdsError {
 ///|
 // Recognize only physically empty suffix rows; no values, formulas, spans,
 // covered cells, annotations or unknown attributes may be discarded.
-fn read_empty_tail_row(node : ReadElement) -> Int32? raise OdsError {
+fn read_empty_tail_row(node : ReadElement) -> (Int32, Int32)? raise OdsError {
   if node.name != read_table + "table-row" {
     return None
   }
@@ -496,14 +600,66 @@ fn read_empty_tail_row(node : ReadElement) -> Int32? raise OdsError {
     }
     cols += n
   }
-  Some(node.count(read_table, "number-rows-repeated", 1048576))
+  Some((node.count(read_table, "number-rows-repeated", 1048576), cols))
+}
+
+///|
+fn read_table_children(
+  node : ReadElement,
+  notices : ReadNotices,
+  sheet : String,
+) -> Array[ReadElement] raise OdsError {
+  let children = []
+  for child in node.elements() {
+    let expected = if [
+        read_table + "table-header-rows",
+        read_table + "table-rows",
+      ].contains(child.name) {
+      read_table + "table-row"
+    } else if [
+        read_table + "table-header-columns",
+        read_table + "table-columns",
+      ].contains(child.name) {
+      read_table + "table-column"
+    } else {
+      ""
+    }
+    if expected == "" {
+      children.push(child)
+    } else {
+      child.allowed([])
+      let contents = child.elements()
+      if contents.is_empty() {
+        raise Invalid("empty table row/column container")
+      }
+      for content in contents {
+        if content.name != expected {
+          raise Invalid("unsupported table row/column container child")
+        }
+        children.push(content)
+      }
+      if child.name == read_table + "table-header-rows" ||
+        child.name == read_table + "table-header-columns" {
+        read_notice(notices, {
+          sheet,
+          row: -1,
+          col: -1,
+          code: "TABLE_HEADER_METADATA_DROPPED",
+          message: "Source \{child.name} cells retain their positions and typed data; print/repeated-header metadata is not retained.",
+        })
+      }
+    }
+  }
+  children
 }
 
 ///|
 fn import_table(
   node : ReadElement,
   book : Workbook,
-  notices : Array[ImportDiagnostic],
+  notices : ReadNotices,
+  extended : Bool,
+  formatting : ReadFormatting?,
 ) -> Unit raise OdsError {
   node.allowed([read_table + "name", read_table + "style-name"])
   let name = node.attribute(read_table, "name").unwrap_or("")
@@ -511,9 +667,11 @@ fn import_table(
   node.style_notice(notices, name, -1, -1)
   let mut row = 0
   let mut declared_cols = 0
-  let children = node.elements()
+  let column_defaults : Map[Int32, String] = Map([])
+  let children = read_table_children(node, notices, name)
   let mut tail_start = children.length()
   let mut tail_rows = 0
+  let mut tail_cols = 0
   while tail_start > 0 {
     // Invalid suffixes use the normal parser so contextual errors are preserved.
     let empty = read_empty_tail_row(children[tail_start - 1]) catch {
@@ -521,7 +679,8 @@ fn import_table(
     }
     match empty {
       None => break
-      Some(n) => {
+      Some((n, cols)) => {
+        tail_cols = if cols > tail_cols { cols } else { tail_cols }
         if tail_rows > 1048576 - n {
           raise Invalid("empty tail exceeds row extent")
         }
@@ -531,10 +690,35 @@ fn import_table(
     }
   }
   // Preserve ordinary in-budget empty rows. Large suffixes are never expanded.
-  let trim_tail = tail_rows > 1024
+  let mut trim_tail = false
   for index, child in children {
-    if trim_tail && index >= tail_start {
-      break
+    if index == tail_start {
+      if row > 1048576 - tail_rows {
+        raise Invalid("empty tail exceeds row extent")
+      }
+      let total_rows = row + tail_rows
+      let total_cols = if sheet.cols > tail_cols {
+        sheet.cols
+      } else {
+        tail_cols
+      }
+      let mut other_grids = 0
+      for s in book.sheets {
+        if s.name != name {
+          other_grids += s.rows * s.cols
+        }
+      }
+      // Omit the whole physically empty suffix only if preserving it would
+      // exceed the remaining row, sheet-grid or workbook-grid budget.
+      trim_tail = total_rows > 1024 ||
+        total_rows * total_cols > 65536 ||
+        other_grids + total_rows * total_cols > 262144
+      if trim_tail {
+        if sheet.rows > row && !sheet.spans.is_empty() {
+          raise Invalid("merge crosses omitted empty tail boundary")
+        }
+        break
+      }
     }
     if child.name == read_table + "table-column" {
       child.allowed([
@@ -549,7 +733,33 @@ fn import_table(
       if declared_cols > 128 - n {
         raise Invalid("column declaration exceeds limit")
       }
-      child.style_notice(notices, name, -1, declared_cols)
+      let width = match formatting {
+        Some(format) =>
+          format.column_width(child.attribute(read_table, "style-name"))
+        None => None
+      }
+      for c in declared_cols..<(declared_cols + n) {
+        if child.attribute(read_table, "default-cell-style-name") is Some(style) {
+          column_defaults.set(c, style)
+        }
+        if width is Some(mm) {
+          sheet.set_column_width(c, mm)
+          if formatting is Some(format) {
+            format.retained_widths += 1
+          }
+        }
+      }
+      if width is Some(_) {
+        read_notice(notices, {
+          sheet: name,
+          row: -1,
+          col: declared_cols,
+          code: "FORMATTING_DROPPED",
+          message: "Fixed integer-mm column width retained; source column style names, default references and other metadata are normalized, not copied verbatim.",
+        })
+      } else {
+        child.style_notice(notices, name, -1, declared_cols)
+      }
       declared_cols += n
       sheet.cols = declared_cols
       read_workbook_budget(book)
@@ -592,12 +802,16 @@ fn import_table(
         for c in col..<(col + cols) {
           try {
             if is_covered {
-              node.allowed([read_table + "number-columns-repeated"])
+              node.allowed([
+                read_table + "number-columns-repeated",
+                read_table + "style-name",
+              ])
               if !node.parts.is_empty() || !sheet.is_covered(r, c) {
                 raise Invalid("unexpected/nonempty covered cell")
               }
+              node.style_notice(notices, name, r, c)
             } else {
-              node.allowed([
+              let allowed_attributes = [
                 read_table + "number-columns-repeated",
                 read_table + "number-columns-spanned",
                 read_table + "number-rows-spanned",
@@ -609,10 +823,24 @@ fn import_table(
                 read_office + "date-value",
                 read_office + "string-value",
                 "urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0#value-type",
-              ])
-              let value = read_value(node)
+              ]
+              if extended {
+                allowed_attributes.push(read_office + "currency")
+                allowed_attributes.push(read_office + "time-value")
+              }
+              node.allowed(allowed_attributes)
+              let value = read_value(node, extended)
+              if node.has_text_formatting() {
+                read_notice(notices, {
+                  sheet: name,
+                  row: r,
+                  col: c,
+                  code: "RICH_TEXT_FORMATTING_DROPPED",
+                  message: "Supported text spans/paragraph styles are flattened; text whitespace and typed values are retained, run styling and numeric display text are not.",
+                })
+              }
               match value {
-                Number(n) => {
+                Number(n) | Percentage(n) | Currency(n, _) => {
                   let raw = node.attribute(read_office, "value").unwrap_or("")
                   let stored = finite_number_text(n)
                   if read_decimal_identity(raw) != read_decimal_identity(stored) {
@@ -649,10 +877,48 @@ fn import_table(
                   Cell::formula(f, value)
                 }
               }
-              node.style_notice(notices, name, r, c)
-              let cell = match value {
-                Date(_, _, _) => cell.styled(DateISO)
-                _ => cell
+              let selected_style = match
+                node.attribute(read_table, "style-name") {
+                Some(style) => Some(style)
+                None =>
+                  match child.attribute(read_table, "default-cell-style-name") {
+                    Some(style) => Some(style)
+                    None => column_defaults.get(c)
+                  }
+              }
+              let normalized_style = match formatting {
+                Some(format) => format.cell_style(selected_style, value~)
+                None => None
+              }
+              if normalized_style is None {
+                if formatting is Some(format) &&
+                  (
+                    selected_style is Some(_) ||
+                    format.source.defaults.contains("table-cell")
+                  ) {
+                  read_notice(notices, {
+                    sheet: name,
+                    row: r,
+                    col: c,
+                    code: "FORMATTING_DROPPED",
+                    message: "Effective cell formatting is outside the supported presets after resolving defaults/inheritance (source=\{read_preview(selected_style.unwrap_or("family default"))}); typed value retained, formatting dropped. No style-name guessing is used.",
+                  })
+                } else {
+                  node.style_notice(notices, name, r, c)
+                }
+              }
+              let cell = match normalized_style {
+                Some(style) => {
+                  if formatting is Some(format) {
+                    format.retained_cells += 1
+                  }
+                  cell.styled(style)
+                }
+                None =>
+                  match value {
+                    Date(_, _, _) => cell.styled(DateISO)
+                    _ => cell
+                  }
               }
               sheet.set(r, c, cell)
               read_workbook_budget(book)
@@ -682,12 +948,17 @@ fn import_table(
     }
     row += rows
   }
+  if formatting is Some(format) {
+    for c in declared_cols..<sheet.cols {
+      if format.column_width(None) is Some(mm) {
+        sheet.set_column_width(c, mm)
+        format.retained_widths += 1
+      }
+    }
+  }
   if trim_tail {
     if row > 1048576 - tail_rows {
       raise Invalid("empty tail exceeds row extent")
-    }
-    if !sheet.spans.is_empty() {
-      raise Invalid("empty tail with merged cells unsupported")
     }
     read_notice(notices, {
       sheet: name,
@@ -710,6 +981,8 @@ fn import_table(
 pub fn read_ods(
   data : Bytes,
   allow_formatting_loss~ : Bool = false,
+  allow_extended_types~ : Bool = false,
+  preserve_basic_formatting~ : Bool = false,
 ) -> ImportResult raise OdsError {
   if !allow_formatting_loss {
     raise Invalid(
@@ -717,7 +990,18 @@ pub fn read_ods(
     )
   }
   let omitted : Array[String] = []
-  let result = import_content(read_ods_content_noticing(data, omitted))
+  let styles : Array[String] = []
+  let xml = read_ods_content_noticing(
+    data,
+    omitted,
+    style_parts=if preserve_basic_formatting { Some(styles) } else { None },
+  )
+  let result = import_content(
+    xml,
+    allow_extended_types~,
+    preserve_basic_formatting~,
+    styles~,
+  )
   for path in omitted {
     read_notice(result.notices, {
       sheet: "",
@@ -731,22 +1015,35 @@ pub fn read_ods(
 }
 
 ///|
-fn import_content(xml : String) -> ImportResult raise OdsError {
+fn import_content(
+  xml : String,
+  allow_extended_types~ : Bool = false,
+  preserve_basic_formatting~ : Bool = false,
+  styles~ : Array[String] = [],
+) -> ImportResult raise OdsError {
   let root = read_xml(xml)
   if root.name != read_office + "document-content" {
     raise Invalid("expected ODF document-content namespace")
   }
   root.allowed([read_office + "version"])
   let book = Workbook::new()
-  let notices : Array[ImportDiagnostic] = [
-    {
-      sheet: "",
-      row: -1,
-      col: -1,
-      code: "DATA_ONLY_IMPORT",
-      message: "Formatting, metadata, view settings, and numeric display text are not retained. Numbers use binary64; changed decimal representations are reported. Supported merges and formula text/cache are retained.",
+  let notices = ReadNotices::new()
+  let formatting = if preserve_basic_formatting {
+    Some(read_formatting(root, styles))
+  } else {
+    None
+  }
+  read_notice(notices, {
+    sheet: "",
+    row: -1,
+    col: -1,
+    code: "DATA_ONLY_IMPORT",
+    message: if preserve_basic_formatting {
+      "Only recognized preset styles and exact integer-mm widths may be retained; other formatting, metadata, view settings and display text are not retained. Values, merges and formula/cache follow the selected type policy. BASIC_FORMATTING_SUBSET reports actual retained counts; repeated losses retain 32 exact occurrences plus counted summaries."
+    } else {
+      "Formatting, metadata, view settings, and numeric display text are not retained. Numbers use binary64; changed decimal representations are reported. Supported merges and formula text/cache are retained. Repeated per-sheet loss diagnostics retain 32 exact occurrences and an explicit counted summary."
     },
-  ]
+  })
   let mut bodies = 0
   for child in root.elements() {
     if child.name == read_office + "automatic-styles" ||
@@ -757,7 +1054,7 @@ fn import_content(xml : String) -> ImportResult raise OdsError {
           row: -1,
           col: -1,
           code: "DOCUMENT_FORMATTING_DROPPED",
-          message: "Source \{child.name} is not retained by data-only import.",
+          message: "Source \{child.name} is not retained in full; only an explicitly enabled basic formatting subset may be normalized.",
         })
       }
       continue
@@ -790,11 +1087,20 @@ fn import_content(xml : String) -> ImportResult raise OdsError {
       if table.name != read_table + "table" {
         raise Invalid("unsupported spreadsheet feature: \{table.name}")
       }
-      import_table(table, book, notices)
+      import_table(table, book, notices, allow_extended_types, formatting)
     }
   }
   if bodies != 1 || book.sheet_count() == 0 {
     raise Invalid("missing spreadsheet body or sheets")
+  }
+  if formatting is Some(format) {
+    read_notice(notices, {
+      sheet: "",
+      row: -1,
+      col: -1,
+      code: "BASIC_FORMATTING_SUBSET",
+      message: "Retained \{format.retained_cells} normalized preset cell styles and \{format.retained_widths} exact integer-mm widths. Other definitions, names, fonts, row heights, layout, themes and metadata are not retained; arbitrary style XML is never copied.",
+    })
   }
   // Reuse writer preflight to enforce aggregate grid/text budgets as well.
   book.content_xml() |> ignore

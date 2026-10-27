@@ -82,20 +82,90 @@ def text_of(node):
         if len(out)>32767:raise ValueError('fixed-fixture text length budget')
     return out
 
+def ordered_rows(sheet):
+    """Bounded direct-child expansion in document order, not descendant search."""
+    row = '{'+TABLE+'}table-row'
+    column = '{'+TABLE+'}table-column'
+    row_containers = {'{'+TABLE+'}table-header-rows', '{'+TABLE+'}table-rows'}
+    col_containers = {'{'+TABLE+'}table-header-columns', '{'+TABLE+'}table-columns'}
+    physical = 0
+    for child in sheet:
+        if child.tag == column:
+            continue
+        if child.tag == row:
+            physical += 1
+            if physical > 65536:
+                raise ValueError('oracle physical row budget')
+            yield child
+        elif child.tag in row_containers | col_containers:
+            if child.attrib:
+                raise ValueError('oracle unsupported row/column container attributes')
+            expected = row if child.tag in row_containers else column
+            if not len(child):
+                raise ValueError('oracle empty row/column container')
+            for nested in child:
+                if nested.tag != expected:
+                    raise ValueError('oracle unsupported nested row/column container')
+                if expected == row:
+                    physical += 1
+                    if physical > 65536:
+                        raise ValueError('oracle physical row budget')
+                    yield nested
+        else:
+            raise ValueError('oracle unsupported table child: '+str(child.tag))
+
+
+def ordered_columns(sheet):
+    """Expand the supported column containers without losing document order."""
+    column = '{'+TABLE+'}table-column'
+    row = '{'+TABLE+'}table-row'
+    col_containers = {'{'+TABLE+'}table-header-columns', '{'+TABLE+'}table-columns'}
+    row_containers = {'{'+TABLE+'}table-header-rows', '{'+TABLE+'}table-rows'}
+    physical = 0
+    for child in sheet:
+        if child.tag == row:
+            continue
+        if child.tag == column:
+            physical += 1
+            if physical > 128:
+                raise ValueError('oracle physical column budget')
+            yield child
+        elif child.tag in col_containers | row_containers:
+            if child.attrib or not len(child):
+                raise ValueError('oracle unsupported/empty row/column container')
+            expected = column if child.tag in col_containers else row
+            for nested in child:
+                if nested.tag != expected:
+                    raise ValueError('oracle unsupported nested row/column container')
+                if expected == column:
+                    physical += 1
+                    if physical > 128:
+                        raise ValueError('oracle physical column budget')
+                    yield nested
+        else:
+            raise ValueError('oracle unsupported table child: '+str(child.tag))
+
+
 def semantics(path):
     root=fixed_producer_xml(path);result={};tails=[]
     for sheet in root.findall('.//t:table',NS):
         name=sheet.get('{'+TABLE+'}name');cells={};rowno=0
-        for row in sheet.findall('t:table-row',NS):
+        if name in result or len(result)>=32:raise ValueError('oracle duplicate sheet or sheet budget')
+        for row in ordered_rows(sheet):
             repeat_rows=int(row.get('{'+TABLE+'}number-rows-repeated','1'));col=0
+            if not 1<=repeat_rows<=1048576:raise ValueError('oracle row repeat budget')
             for cell in row:
-                if cell.tag not in ['{'+TABLE+'}table-cell','{'+TABLE+'}covered-table-cell']:continue
+                if cell.tag not in ['{'+TABLE+'}table-cell','{'+TABLE+'}covered-table-cell']:raise ValueError('oracle unsupported row child')
                 repeat_cols=int(cell.get('{'+TABLE+'}number-columns-repeated','1'));kind=cell.get('{'+OFFICE+'}value-type')
-                meaningful=kind is not None or cell.get('{'+TABLE+'}formula') is not None or cell.tag.endswith('covered-table-cell')
+                if not 1<=repeat_cols<=16384:raise ValueError('oracle column repeat budget')
+                meaningful=kind is not None or cell.get('{'+TABLE+'}formula') is not None or cell.tag.endswith('covered-table-cell') or cell.get('{'+TABLE+'}number-columns-spanned') is not None or cell.get('{'+TABLE+'}number-rows-spanned') is not None
                 if meaningful:
                     if rowno+repeat_rows>1024 or col+repeat_cols>128:raise ValueError('meaningful cell outside oracle profile')
                     values={k.split('}',1)[-1]:v for k,v in cell.attrib.items() if k.startswith('{'+OFFICE+'}') or k in ['{'+TABLE+'}formula','{'+TABLE+'}number-columns-spanned','{'+TABLE+'}number-rows-spanned']}
-                    values['text']='\n'.join(text_of(x) for x in cell.findall('x:p',NS))
+                    display='\n'.join(text_of(x) for x in cell.findall('x:p',NS))
+                    # office:string-value is authoritative when present, including
+                    # an empty value or a legal attribute-only string cell.
+                    values['text']=cell.get('{'+OFFICE+'}string-value',display) if kind=='string' else display
                     if cell.tag.endswith('covered-table-cell'):values['covered']=True
                     for r in range(rowno,rowno+repeat_rows):
                         for c in range(col,col+repeat_cols):cells[f'{r},{c}']=values

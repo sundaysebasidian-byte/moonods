@@ -7,7 +7,7 @@ preferred_target = "js"
 source = "src"
 
 import {
-  "sundaysebasidian-byte/moonods@0.2.0",
+  "sundaysebasidian-byte/moonods@0.4.0",
   "moonbitlang/mbtexcel@0.3.0",
   "moonbitlang/x@0.5.5",
 }

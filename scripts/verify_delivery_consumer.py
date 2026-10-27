@@ -81,6 +81,39 @@ fn main {
     assert_eq(result.get(1, 0).unwrap().value(), Text("你好😀"))
     assert_eq(imported.sheet(99) is None, true)
     put_text("api.csv", result.to_csv())
+    let ext_book = @ods.Workbook::new()
+    let ext = ext_book.add_sheet("Extended API")
+    ext.set_row(0,0,[
+      @ods.Cell::new(Text("Money")),@ods.Cell::new(Text("Ratio")),
+      @ods.Cell::new(Text("Elapsed")),@ods.Cell::new(Text("Instant")),
+      @ods.Cell::new(Text("Zero")),
+    ])
+    ext.set_row(1,0,[
+      @ods.Cell::new(Currency(12.5,"USD")).styled(Header),
+      @ods.Cell::new(Percentage(0.25)),
+      @ods.Cell::new(Duration("-PT26H")),
+      @ods.Cell::new(DateTime("2026-10-26T01:30:00.125+08:00")),
+      @ods.Cell::new(Currency(-0.0,"USD")),
+    ])
+    ext.set_column_width(0,127)
+    let extended_bytes = ext_book.to_ods()
+    assert_true(try { @ods.read_ods(extended_bytes,allow_formatting_loss=true) |> ignore; false } catch { @ods.Invalid(_) => true })
+    let checked = @ods.read_ods(extended_bytes,allow_formatting_loss=true,allow_extended_types=true,preserve_basic_formatting=true).workbook().sheet(0).unwrap()
+    assert_eq(checked.get(1,0).unwrap().value(), Currency(12.5,"USD"))
+    assert_eq(checked.get(1,0).unwrap().style(), Header)
+    assert_eq(checked.column_width(0),Some(127))
+    assert_eq(checked.get(1,1).unwrap().value(),Percentage(0.25))
+    assert_eq(checked.get(1,2).unwrap().value(),Duration("-PT26H"))
+    assert_eq(checked.get(1,3).unwrap().value(),DateTime("2026-10-26T01:30:00.125+08:00"))
+    match checked.get(1,4).unwrap().value() {
+      Currency(n,"USD") => assert_true(1.0/n < 0.0)
+      _ => assert_true(false)
+    }
+    assert_eq(checked.records()[0].values["Money"],Currency(12.5,"USD"))
+    assert_true(try { checked.to_csv() |> ignore; false } catch { @ods.Invalid(_) => true })
+    put_bytes("extended.ods",extended_bytes)
+    put_text("extended.csv",checked.to_csv(extended_types_as_text=true))
+    println("DELIVERY_EXTENDED_TYPES_FORMATTING_RECORDS_POLICIES_OK")
     println("DELIVERY_CONSUMER_JS_OK")
   } catch {
     error => { println(error); fail() }
@@ -145,7 +178,12 @@ def main():
         unpack(dep_archive, workspace / "flate")
         report["declared_dependency"] = {k: flate[k] for k in ("module", "version", "archive", "sha256")}
         consumer.mkdir()
-        (consumer / "moon.mod").write_text('name = "delivery-audit/consumer"\nversion = "0.1.0"\npreferred_target = "js"\nimport { "sundaysebasidian-byte/moonods@0.2.0" }\n')
+        module_versions = re.findall(r'^version\s*=\s*"([^"\n]+)"\s*$',
+                                     (candidate / "moon.mod").read_text(), re.M)
+        if len(module_versions) != 1:
+            raise ValueError("expected exactly one candidate module version")
+        report["candidate_module_version"] = module_versions[0]
+        (consumer / "moon.mod").write_text('name = "delivery-audit/consumer"\nversion = "0.1.0"\npreferred_target = "js"\nimport { "sundaysebasidian-byte/moonods@' + module_versions[0] + '" }\n')
         (consumer / "moon.pkg").write_text('import { "sundaysebasidian-byte/moonods" @ods }\noptions("is-main": true)\n')
         readme = (candidate / "README.md").read_text()
         examples = []
@@ -185,6 +223,23 @@ def main():
         run("build-documentation-cli", [sdk / "bin/moon", "build", "--frozen", "examples/ods_tool", "--target", "js", "--deny-warn", "-j", "1"], candidate)
         # Multiple workspace members namespace build outputs by module name.
         cli = workspace / "_build/js/debug/build/sundaysebasidian-byte/moonods/examples/ods_tool/ods_tool.js"
+        with (out / "generated/extended.csv").open(newline="", encoding="utf-8") as stream:
+            ext_rows = list(csv.reader(stream, strict=True))
+        if ext_rows[1] != ["currency:USD:12.5", "percentage:0.25", "duration:-PT26H", "datetime:2026-10-26T01:30:00.125+08:00", "currency:USD:-0"]:
+            raise ValueError("extended tagged CSV kind/unit/offset/zero oracle mismatch")
+        with zipfile.ZipFile(out / "generated/extended.ods") as z:
+            if z.testzip() is not None:
+                raise ValueError("extended ODS CRC mismatch")
+            ext_xml = ET.fromstring(z.read("content.xml"))
+        ext_ns = {"t": "urn:oasis:names:tc:opendocument:xmlns:table:1.0", "o": "urn:oasis:names:tc:opendocument:xmlns:office:1.0"}
+        ext_cells = ext_xml.findall(".//t:table-row",ext_ns)[1].findall("t:table-cell",ext_ns)
+        office = "{" + ext_ns["o"] + "}"
+        if [(c.get(office+"value-type"), c.get(office+"value"), c.get(office+"currency"), c.get(office+"time-value"), c.get(office+"date-value")) for c in ext_cells] != [
+            ("currency","12.5","USD",None,None),("percentage","0.25",None,None,None),
+            ("time",None,None,"-PT26H",None),("date",None,None,None,"2026-10-26T01:30:00.125+08:00"),
+            ("currency","-0","USD",None,None)]:
+            raise ValueError("extended ODS raw type/unit/temporal/zero mismatch")
+        report["extended_public_api"] = "PASS: opt-in read, four added value kinds, record kinds, preset Header, width127, offset/fraction, negative zero and explicit CSV/default-read policies; XML/CSV independently checked"
         source = out / "generated/edge.ods"
         source_before = sha(source)
         config = {"ODS_INPUT": str(source), "ODS_ACCEPT_LOSS": "1", "ODS_CSV": str(out / "generated/cli.csv")}

@@ -92,7 +92,8 @@ fn position(row : Int32, col : Int32) -> Unit raise OdsError {
 ///|
 fn Cell::units(self : Cell) -> Int32 {
   let n = match self.value {
-    Text(s) => s.length()
+    Text(s) | Duration(s) | DateTime(s) => s.length()
+    Currency(_, code) => code.length()
     _ => 0
   }
   n +
@@ -194,21 +195,53 @@ pub fn Workbook::content_xml(self : Workbook) -> String raise OdsError {
     }
     for row in 0..<s.rows {
       b.write_string("<table:table-row>")
-      for col in 0..<s.cols {
+      let mut col = 0
+      while col < s.cols {
+        let mut count = 1
         if s.covered.contains((row, col)) {
-          b.write_string("<table:covered-table-cell/>")
-        } else {
-          let c = match s.cells.get((row, col)) {
-            Some(c) => c
-            None => { value: Empty, formula: None, style: Plain, }
+          while col + count < s.cols && s.covered.contains((row, col + count)) {
+            count += 1
           }
+          if count == 1 {
+            b.write_string("<table:covered-table-cell/>")
+          } else {
+            b.write_string(
+              "<table:covered-table-cell table:number-columns-repeated=\"\{count}\"/>",
+            )
+          }
+        } else {
+          let cell = s.cells
+            .get((row, col))
+            .unwrap_or({ value: Empty, formula: None, style: Plain, })
           let extra = match s.spans.get((row, col)) {
             Some((nr, nc)) =>
               " table:number-rows-spanned=\"\{nr}\" table:number-columns-spanned=\"\{nc}\""
-            None => ""
+            None => {
+              let identity = cell.xml("")
+              // Do not coalesce formula cells: relative-reference behavior in
+              // office applications is not established by the stored cache.
+              while cell.formula is None &&
+                    col + count < s.cols &&
+                    !s.covered.contains((row, col + count)) &&
+                    !s.spans.contains((row, col + count)) {
+                let next = s.cells
+                  .get((row, col + count))
+                  .unwrap_or({ value: Empty, formula: None, style: Plain, })
+                if next.xml("") != identity {
+                  break
+                }
+                count += 1
+              }
+              if count > 1 {
+                " table:number-columns-repeated=\"\{count}\""
+              } else {
+                ""
+              }
+            }
           }
-          b.write_string(c.xml(extra))
+          b.write_string(cell.xml(extra))
         }
+        col += count
       }
       b.write_string("</table:table-row>")
     }

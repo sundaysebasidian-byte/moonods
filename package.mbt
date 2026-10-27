@@ -69,12 +69,33 @@ fn stored_package(files : Array[(String, Bytes)]) -> Bytes raise OdsError {
 }
 
 ///|
-/// Return a complete deterministic ODS package. I/O belongs to the caller.
+/// Return a deterministic ODS within the reader's bounded output profile:
+/// 4 MiB total uncompressed entry bytes and the existing XML depth/node caps.
+/// Grid/text limits alone do not guarantee serializability. Oversized output
+/// raises before returning any package; I/O belongs to the caller.
 pub fn Workbook::to_ods(self : Workbook) -> Bytes raise OdsError {
-  stored_package([
+  let content = self.content_xml()
+  let files = [
     ("mimetype", @utf8.encode(media_type[:])),
-    ("content.xml", @utf8.encode(self.content_xml()[:])),
-    ("styles.xml", @utf8.encode(styles_xml()[:])),
+    ("content.xml", @utf8.encode(content[:])),
+    (
+      "styles.xml",
+      @utf8.encode(
+        styles_xml().replace(
+          old="</office:styles>",
+          new=self.typed_styles() + "</office:styles>",
+        )[:],
+      ),
+    ),
     ("META-INF/manifest.xml", @utf8.encode(manifest_xml()[:])),
-  ])
+  ]
+  let mut total = 0
+  for (_, data) in files {
+    if data.length() > 4194304 - total {
+      raise Invalid("ODS output exceeds 4 MiB reader profile")
+    }
+    total += data.length()
+  }
+  read_xml(content) |> ignore
+  stored_package(files)
 }

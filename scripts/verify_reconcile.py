@@ -9,6 +9,7 @@ import csv
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import signal
 import subprocess
@@ -19,6 +20,7 @@ import sys
 from lxml import etree as ET
 from verify_delivery_consumer import unpack
 from verify_value import semantic
+from ods_value_oracle import normalize_expected, expected_number
 
 
 def sha(p):
@@ -82,7 +84,11 @@ def main():
         run('restore-declared-dependency',['python3','scripts/restore_deps.py'])
         run('workspace',['moon','work','use','.mooncakes/moonbit-community/flate'])
         unit=run('project-js-regression',['moon','test','--frozen','--target','js','--deny-warn','-j','1','--no-parallelize','-p','sundaysebasidian-byte/moonods','-p','sundaysebasidian-byte/moonods/tests/consumer'])
-        if 'Total tests: 76, passed: 76, failed: 0.' not in unit: raise ValueError('project regression summary differs')
+        summaries = re.findall(r'^Total tests: (\d+), passed: (\d+), failed: (\d+)\.$', unit, re.M)
+        if len(summaries) != 1: raise ValueError('missing or ambiguous project regression summary')
+        total, passed, failed = map(int, summaries[0])
+        if total < 76 or total != passed or failed != 0: raise ValueError('project regression incomplete or failed')
+        report['project_js_tests'] = total
         generated=out/'generated'; generated.mkdir()
         run('generate-template',['moon','run','--frozen','--target','js','--deny-warn','-j','1','examples/procurement'],{'REPORT_OUTPUT':str(generated)})
         report['office_version']=run('office-version',[a.soffice.resolve(),'--version']).strip()
@@ -99,6 +105,7 @@ def main():
         expected=copy.deepcopy(before)
         d=expected['采购明细']; d['1,3']['value']=5.0; d['1,5']['value']=627.5; d['4,3']['value']=0.0; d['4,5']['value']=0.0
         b=expected['预算复核']; b['0,4']={'value-type':'string','text':'超预算'}; b['1,2']['value']=787.5; b['1,3']['value']=-187.5; b['2,2']['value']=219.0; b['2,3']['value']=81.0; b['1,4']={'value-type':'boolean','boolean-value':'true'}; b['2,4']={'value-type':'boolean','boolean-value':'false'}
+        expected=normalize_expected(expected)
         assert semantic(result/'reconciled.ods')==expected
         detail=rows(result/'details.csv'); assert detail[1][3:6]==['5','125.5','627.5'] and detail[4][3:6]==['0','9.5','0']
         assert detail[1][8]=='含引号"样品",\n第二行' and detail[2][8]==detail[3][8]==''
@@ -128,7 +135,7 @@ def main():
         stale_marker=run('unrequested-stale-cache-is-audited',cmd,{**conf,'RECONCILE_INPUT':str(stale),'RECONCILE_CHANGES':str(no_changes),'RECONCILE_OUTPUT':str(stale_out)})
         assert 'changed_orders=0' in stale_marker and 'audited_orders=1' in stale_marker
         assert rows(stale_out/'audit.csv')==[rows(result/'audit.csv')[0],['SYN-202610-002','12','12','1','219']]
-        assert semantic(stale_out/'reconciled.ods')['采购明细']['2,5']['value']==219.0
+        assert semantic(stale_out/'reconciled.ods')['采购明细']['2,5']['value']==expected_number(219.0)
         noop=out/'noop.csv'; noop.write_text('订单,数量\r\nSYN-202610-001,3\r\n',newline='')
         noop_out=out/'noop-request'; noop_out.mkdir()
         noop_marker=run('noop-request-counter',cmd,{**conf,'RECONCILE_CHANGES':str(noop),'RECONCILE_OUTPUT':str(noop_out)})
@@ -156,7 +163,7 @@ def main():
             assert not list(case.glob('.moonods-*.tmp'))
             report['negative_cases'].append({'name':name,'status':'PASS','expected_refusal_reason':reasons[name],'inputs_and_existing_outputs_unchanged':True})
         assert sha(source)==source_before and sha(archive)==report['archive_sha256']
-        report.update(status='PASS',project_js_tests=76,business_outcome={'old_total_cents':80300,'new_total_cents':100650,'changed_orders':2,'over_budget_departments':1,'research_department_remaining_cents':-18750,'operations_remaining_cents':8100},independent_semantic_and_csv_oracles='PASS',order_independent_generation='PASS',actual_Office_input_and_output_roundtrip='PASS',loss_scope='data-only import; no style preservation or GUI proof',formula_scope='recompute only whitelisted template arithmetic in integer cents; not general formula evaluation',input_ods_and_archive_unchanged=True,not_run=['competitor execution/performance','Excel','GUI/print/layout','Wasm/WasmGC/native runtime','registry install or publish'],output_sha256={n:sha(result/n) for n in ['reconciled.ods','details.csv','audit.csv']})
+        report.update(status='PASS',business_outcome={'old_total_cents':80300,'new_total_cents':100650,'changed_orders':2,'over_budget_departments':1,'research_department_remaining_cents':-18750,'operations_remaining_cents':8100},independent_semantic_and_csv_oracles='PASS',order_independent_generation='PASS',actual_Office_input_and_output_roundtrip='PASS',loss_scope='data-only import; no style preservation or GUI proof',formula_scope='recompute only whitelisted template arithmetic in integer cents; not general formula evaluation',input_ods_and_archive_unchanged=True,not_run=['competitor execution/performance','Excel','GUI/print/layout','Wasm/WasmGC/native runtime','registry install or publish'],output_sha256={n:sha(result/n) for n in ['reconciled.ods','details.csv','audit.csv']})
         (out/'expected-semantics.json').write_text(json.dumps(expected,ensure_ascii=False,indent=2)+'\n')
     except Exception as error:
         report.update(status='FAIL',error=type(error).__name__+': '+str(error))

@@ -171,6 +171,7 @@ pub fn Sheet::to_csv(
   self : Sheet,
   use_formula_cache~ : Bool = false,
   reject_formula_like_text~ : Bool = false,
+  extended_types_as_text~ : Bool = false,
 ) -> String raise OdsError {
   if !self.spans.is_empty() {
     raise Invalid("CSV export requires an unmerged sheet")
@@ -197,6 +198,21 @@ pub fn Sheet::to_csv(
             raise Invalid("CSV formula-like text at row \{row} col \{col}")
           }
           s
+        }
+        Percentage(_) | Currency(_, _) | Duration(_) | DateTime(_) => {
+          if !extended_types_as_text {
+            raise Invalid(
+              "CSV extended values require extended_types_as_text=true (typed literal text)",
+            )
+          }
+          match value {
+            Percentage(n) => "percentage:" + finite_number_text(n)
+            Currency(n, code) =>
+              "currency:" + code + ":" + finite_number_text(n)
+            Duration(s) => "duration:" + s
+            DateTime(s) => "datetime:" + s
+            _ => abort("unreachable extended CSV type")
+          }
         }
         Number(n) => finite_number_text(n)
         Boolean(b) => if b { "true" } else { "false" }

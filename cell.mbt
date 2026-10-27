@@ -12,6 +12,10 @@ pub(all) enum Value {
   Empty
   Text(String)
   Number(Double)
+  Percentage(Double)
+  Currency(Double, String)
+  Duration(String)
+  DateTime(String)
   Boolean(Bool)
   Date(Int32, Int32, Int32)
 } derive(Eq, Debug)
@@ -107,10 +111,25 @@ fn validate_value(v : Value) -> Unit raise OdsError {
   match v {
     Empty | Boolean(_) => ()
     Text(s) => validate_text(s)
-    Number(n) =>
+    Percentage(n) | Number(n) =>
       if n.is_nan() || n.is_inf() {
         raise Invalid("number must be finite")
       }
+    Currency(n, code) => {
+      if n.is_nan() || n.is_inf() {
+        raise Invalid("currency amount must be finite")
+      }
+      if code.length() != 3 {
+        raise Invalid("currency requires three uppercase ISO-style letters")
+      }
+      for c in code {
+        if c < 'A' || c > 'Z' {
+          raise Invalid("currency requires three uppercase ISO-style letters")
+        }
+      }
+    }
+    Duration(text) => validate_duration(text)
+    DateTime(text) => validate_datetime(text)
     Date(y, m, d) => {
       if y < 1 || y > 9999 || m < 1 || m > 12 {
         raise Invalid("date is outside Gregorian range")
@@ -136,3 +155,156 @@ pub extend Value with @debug.Debug::{to_repr}
 
 ///|
 pub extend OdsError with @debug.Debug::{to_repr}
+
+///|
+fn extended_digits(
+  chars : Array[Char],
+  start : Int32,
+  count : Int32,
+) -> Int32 raise OdsError {
+  if start < 0 || count < 1 || count > 9 || start + count > chars.length() {
+    raise Invalid("invalid temporal digits")
+  }
+  let mut n = 0
+  for i in start..<(start + count) {
+    let c = chars[i]
+    if c < '0' || c > '9' {
+      raise Invalid("invalid temporal digits")
+    }
+    n = n * 10 + c.to_int() - 48
+  }
+  n
+}
+
+///|
+fn extended_chars(text : String) -> Array[Char] raise OdsError {
+  if text.length() > 128 {
+    raise Invalid("temporal lexical value exceeds 128 units")
+  }
+  let chars = []
+  for c in text {
+    chars.push(c)
+  }
+  chars
+}
+
+///|
+// A Gregorian local or offset timestamp. No timezone conversion or arithmetic;
+// the exact lexical offset/fraction is stored. Leap seconds/year zero excluded.
+fn validate_datetime(text : String) -> Unit raise OdsError {
+  let c = extended_chars(text)
+  if c.length() < 19 ||
+    c[4] != '-' ||
+    c[7] != '-' ||
+    c[10] != 'T' ||
+    c[13] != ':' ||
+    c[16] != ':' {
+    raise Invalid(
+      "dateTime requires YYYY-MM-DDThh:mm:ss with optional fraction/offset",
+    )
+  }
+  validate_value(
+    Date(
+      extended_digits(c, 0, 4),
+      extended_digits(c, 5, 2),
+      extended_digits(c, 8, 2),
+    ),
+  )
+  if extended_digits(c, 11, 2) > 23 ||
+    extended_digits(c, 14, 2) > 59 ||
+    extended_digits(c, 17, 2) > 59 {
+    raise Invalid("dateTime clock fields outside supported range")
+  }
+  let mut at = 19
+  if at < c.length() && c[at] == '.' {
+    at += 1
+    let start = at
+    while at < c.length() && c[at] >= '0' && c[at] <= '9' {
+      at += 1
+    }
+    if at - start < 1 || at - start > 9 {
+      raise Invalid("dateTime fraction requires 1..9 digits")
+    }
+  }
+  if at == c.length() {
+    return
+  }
+  if c[at] == 'Z' && at + 1 == c.length() {
+    return
+  }
+  if c.length() - at != 6 || (c[at] != '+' && c[at] != '-') || c[at + 3] != ':' {
+    raise Invalid("invalid dateTime UTC offset")
+  }
+  let hour = extended_digits(c, at + 1, 2)
+  let minute = extended_digits(c, at + 4, 2)
+  if hour > 14 || minute > 59 || (hour == 14 && minute != 0) {
+    raise Invalid("dateTime UTC offset outside 14:00")
+  }
+}
+
+///|
+// Day/time duration subset of xsd:duration. Never treats calendar months/years
+// as a fixed number of seconds; preserve exact sign/components/fraction.
+fn validate_duration(text : String) -> Unit raise OdsError {
+  let c = extended_chars(text)
+  let mut at = if !c.is_empty() && c[0] == '-' { 1 } else { 0 }
+  if at >= c.length() || c[at] != 'P' {
+    raise Invalid("duration requires ISO day/time P...T... form")
+  }
+  at += 1
+  let mut time = false
+  let mut time_parts = 0
+  let mut parts = 0
+  let mut order = -1
+  while at < c.length() {
+    if c[at] == 'T' {
+      if time {
+        raise Invalid("duplicate duration T separator")
+      }
+      time = true
+      at += 1
+      continue
+    }
+    let start = at
+    while at < c.length() && c[at] >= '0' && c[at] <= '9' {
+      at += 1
+    }
+    if at - start < 1 || at - start > 9 {
+      raise Invalid("duration component requires 1..9 digits")
+    }
+    let mut fraction = false
+    if at < c.length() && c[at] == '.' {
+      fraction = true
+      at += 1
+      let start = at
+      while at < c.length() && c[at] >= '0' && c[at] <= '9' {
+        at += 1
+      }
+      if at - start < 1 || at - start > 9 {
+        raise Invalid("duration fraction requires 1..9 digits")
+      }
+    }
+    if at >= c.length() {
+      raise Invalid("duration component missing unit")
+    }
+    let next = match c[at] {
+      'D' if !time && !fraction => 0
+      'H' if time && !fraction => 1
+      'M' if time && !fraction => 2
+      'S' if time => 3
+      _ => raise Invalid("unsupported duration unit or fraction")
+    }
+    if next <= order {
+      raise Invalid("duration units duplicated or out of order")
+    }
+    order = next
+    at += 1
+    parts += 1
+    if time {
+      time_parts += 1
+    }
+  }
+  if parts == 0 || (time && time_parts == 0) {
+    raise Invalid("empty or incomplete duration")
+  }
+}

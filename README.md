@@ -2,7 +2,7 @@
 
 MoonBit 的数据型 ODS 读写库：类型化 `Workbook → Sheet → Cell`、有界 ZIP/XML 读取、显式损失诊断、CSV 与表头记录。适合需要把数据以 `.ods` 交给办公软件的报表和离线处理。
 
-[当前安装版本 0.3.1](https://mooncakes.io/docs/sundaysebasidian-byte/moonods@0.3.1/)，新增读取、CSV 与表头记录；0.2.0 只有写出功能。安装：`moon add sundaysebasidian-byte/moonods@0.3.1`，在 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。注册表包含库和示例源码，不安装命令行工具；下面的业务工作流示例需要源码检出和 Node.js。
+0.4.0 新增显式比例、货币、时长、时间戳与基础格式读取。[版本及迁移说明](docs/release-0.4.0.zh-CN.md)。安装命令：`moon add sundaysebasidian-byte/moonods@0.4.0`，在 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。注册表包含库和示例源码，不安装命令行工具；下面的业务工作流示例需要源码检出和 Node.js。
 
 复审入口：[技术证据索引](docs/TECHNICAL_EVIDENCE.zh-CN.md)。
 
@@ -36,7 +36,7 @@ fn make_report() -> Bytes raise @ods.OdsError {
 }
 ```
 
-在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。0.3.1 可直接从注册表安装；只有验证未发布源码时才使用 workspace。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
+在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。已发布旧版 0.3.1 不含新增类型与格式 API；发布前验证本分支时使用 workspace。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
 
 读取 `@ods.read_ods(bytes, allow_formatting_loss=true)` 得到 Workbook 和带表名、行列、错误码的损失诊断。默认拒绝有损导入；显式接受后保留值、公式文本/缓存及合并，丢弃样式。CSV 按文本导入，导出时丢失公式、类型、样式及 Empty/空字符串区别。公式缓存可能过期，编辑不会自动重算。
 
@@ -83,6 +83,8 @@ moon run examples/reconcile --target js
 
 ## 性能
 
+以下为已公开旧版的固定运行记录；本地候选改变了序列化与写出预检，尚未重新测量，不能沿用这些数字描述候选性能。
+
 `moon bench --release` 实测，每项 5 组取平均；GitHub Actions ubuntu-24.04（Intel Xeon Platinum 8573C，4 个逻辑 CPU），moonc v0.10.15。工作表 1000 行 × 5 列（文本、两位小数、日期、布尔、中文备注），带表头样式。
 
 | 操作 | JS | native |
@@ -95,9 +97,13 @@ moon run examples/reconcile --target js
 
 ## 边界
 
+0.4.0 增加显式货币/比例/时长/时间戳和基础格式读取，见[类型与格式契约](docs/EXTENDED_VALUES_DRAFT.zh-CN.md)及[本轮验收矩阵](docs/DATA_WORKFLOW_SUPPORT.zh-CN.md)。真实 LibreOffice 读改写回存、精确值比较、格式属性检查已有本轮执行证据；时区偏移回存存在明确损失。新增 API 不属于 0.3.1；本分支的 CI 与发布后安装验收分别记录。
+
 - 支持文本、有限 Double、布尔、公历日期、空值、多表、基础样式、列宽和合并。
 - 不提供宏、图表、加密、ZIP64、大文件流式处理和通用公式重算；没有针对 Excel 和打印外观做测试。
 - 读取采用严格 ZIP 条目白名单。0.3.1 接受两个精确的空 UI 配置条目；纯空白尾行可有界省略并报告损失，不提高 1024 内容行预算。[LibreOffice 固定夹具](docs/LIBREOFFICE_REGISTRY_CASE.zh-CN.md)的类型、值及往返已通过；不代表任意 LibreOffice 文件兼容。
+- 0.4.0 新增有限 `text:span`/段落样式、简单行列表头容器和带样式覆盖格读取，以及按有效前缀和剩余网格预算省略纯空白尾行。允许的属性、损失诊断及复现见 [读取兼容说明](docs/READER_COMPAT.zh-CN.md)及[数据流程验收矩阵](docs/DATA_WORKFLOW_SUPPORT.zh-CN.md)。
+- 0.4.0 的 `to_ods` 在返回包之前检查 4 MiB 总解压条目及原 XML 深度/节点预算；网格/文本上限不保证每种组合都能序列化。检查性 `content_xml` 仍有独立 16 MiB 上限。重复损失保留每表每类前 32 个位置，其余给出精确计数汇总，仍保留 8192 条总诊断硬限制。
 - 每个输出文件独立 rename，多个文件不是整体事务。
 - 库核心是纯 MoonBit；示例里的文件读写使用 JS 宿主。
 

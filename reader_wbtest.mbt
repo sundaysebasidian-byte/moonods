@@ -197,5 +197,39 @@ test "diagnostics cannot expand without bound and returned list is a copy" {
   let xml = reader_xml_fixture(
     "<t:table-row t:number-rows-repeated=\"65\"><t:table-cell t:number-columns-repeated=\"128\" t:style-name=\"x\"/></t:table-row>",
   )
-  assert_true(reader_xml_rejects(xml))
+  let many = import_content(xml).diagnostics()
+  assert_eq(many.filter(d => d.code == "FORMATTING_DROPPED").length(), 32)
+  assert_true(
+    many
+    .iter()
+    .any(d => {
+      d.code == "FORMATTING_DROPPED_SUMMARY" &&
+      d.message.contains("8288 additional occurrences")
+    }),
+  )
+  // Non-coalesced diagnostic kinds still hit the unchanged hard budget.
+  let notices = ReadNotices::new()
+  for _ in 0..<8192 {
+    read_notice(notices, {
+      sheet: "",
+      row: -1,
+      col: -1,
+      code: "CONTROL",
+      message: "bounded",
+    })
+  }
+  assert_true(
+    try {
+      read_notice(notices, {
+        sheet: "",
+        row: -1,
+        col: -1,
+        code: "CONTROL",
+        message: "bounded",
+      })
+      false
+    } catch {
+      Invalid(_) => true
+    },
+  )
 }
