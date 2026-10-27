@@ -1,5 +1,7 @@
 # MoonODS 0.4.0：类型、格式与读取兼容
 
+发布日期：2026-10-27。安装：`moon add sundaysebasidian-byte/moonods@0.4.0`；[官方包](https://mooncakes.io/docs/sundaysebasidian-byte/moonods@0.4.0/)。
+
 相对 0.3.1，增加 `Percentage`、`Currency`、`Duration`、`DateTime` 四个公开 `Value` 分支、`Cell.style` 与 `Sheet.column_width`。读取支持有限富文本/表头容器和基础格式子集；写出前预检往返所需的 ZIP/XML 预算，频繁损失用有界明细和精确汇总报告。
 
 ## 从 0.3.1 迁移
@@ -17,8 +19,10 @@
 
 ## 验证范围
 
-最终实现输入的 Mac pinned SDK 0.10.15 四后端各 119/119、最小控制和独立消费者已实际运行；同步接口后的候选四后端 `moon info` 均零 diff，实际官方私有 ZIP 的消费者也运行通过。它们是本地源码/打包证据，不等于本 PR 远端 CI 或正式 registry 安装。
+[版本 PR #9](https://github.com/sundaysebasidian-byte/moonods/pull/9)记录最终 head `e567857`、合并提交 `4413e1a`、8 个成功 CI run / 20 个 job，以及正式发布回执。官方 CLI 退出 0、HTTP 200；71 个发行文件与源码、registry 安装一致。ZIP SHA256：`f29d494c247a80c64c08d8c44d415825a1e8fd5f03abff79325a4b7d4df75c28`。
 
-远端精确 head、合后 CI、官方发布 checksum 和干净 registry 安装回执在版本 PR 中记录；未执行前不宣称完成。已存在的 Office 25.2.3.2 闭环结果沿用原测试日期与范围，不写成此次重新运行；没有 Excel、GUI/打印外观、生产采用或并发事务保证。
+干净 registry 消费者在 JS、Wasm、Wasm GC、native 实际运行，覆盖十种 Value、扩展类型开关、Header 样式、列宽、CSV 显式策略及往返；JS 另通过未修改的官方 LibreOffice 样本 B2–B5 类型、值及导出再读。精确 CI 链接见[技术证据索引](TECHNICAL_EVIDENCE.zh-CN.md)。
+
+实现阶段 Mac pinned SDK 0.10.15 四后端各 119/119 及接口零 diff，属于此前源码证据。Office 25.2.3.2 闭环也保持原测试日期；此次发布轮未重跑 Office。没有 Excel、GUI/打印外观、生产采用或并发事务保证。
 
 MIT、依赖许可、来源及 AI 辅助披露分别见 `LICENSE`、`THIRD_PARTY_NOTICES.md`、`SOURCES.md` 与 `AI_USAGE.md`。外部 Office 二进制夹具不打入发行包。
