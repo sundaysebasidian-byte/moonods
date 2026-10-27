@@ -11,7 +11,7 @@
 
 ## 安装与复现
 
-正式发布后使用 `moon add sundaysebasidian-byte/moonods@0.4.0`。发布前检出本 PR 源码，并使用声明的锁定依赖；0.3.1 包不含新增 API。
+安装命令：`moon add sundaysebasidian-byte/moonods@0.4.0`；实际可用版本以[Mooncakes manifest](https://mooncakes.io/api/v0/manifest/sundaysebasidian-byte/moonods@0.4.0)为准。源码消费使用声明的锁定依赖；0.3.1 包不含新增 API。
 
 源码：`moon test --target js -j 1 --deny-warn . tests/consumer`；工具链见 `TOOLCHAIN.lock`。接口与格式复现：`moon info`、`moon fmt --check`。完整验证脚本见[数据流程矩阵](DATA_WORKFLOW_SUPPORT.zh-CN.md)。
 

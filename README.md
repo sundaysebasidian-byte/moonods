@@ -2,7 +2,7 @@
 
 MoonBit 的数据型 ODS 读写库：类型化 `Workbook → Sheet → Cell`、有界 ZIP/XML 读取、显式损失诊断、CSV 与表头记录。适合需要把数据以 `.ods` 交给办公软件的报表和离线处理。
 
-0.4.0 新增显式比例、货币、时长、时间戳与基础格式读取。[版本及迁移说明](docs/release-0.4.0.zh-CN.md)。正式发布后安装：`moon add sundaysebasidian-byte/moonods@0.4.0`，在 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。注册表包含库和示例源码，不安装命令行工具；下面的业务工作流示例需要源码检出和 Node.js。
+0.4.0 新增显式比例、货币、时长、时间戳与基础格式读取。[版本及迁移说明](docs/release-0.4.0.zh-CN.md)。安装命令：`moon add sundaysebasidian-byte/moonods@0.4.0`，在 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。注册表包含库和示例源码，不安装命令行工具；下面的业务工作流示例需要源码检出和 Node.js。
 
 复审入口：[技术证据索引](docs/TECHNICAL_EVIDENCE.zh-CN.md)。
 
