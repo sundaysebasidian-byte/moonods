@@ -21,7 +21,7 @@
 
 [版本 PR #9](https://github.com/sundaysebasidian-byte/moonods/pull/9)记录最终 head `e567857`、合并提交 `4413e1a`、8 个成功 CI run / 20 个 job，以及正式发布回执。官方 CLI 退出 0、HTTP 200；71 个发行文件与源码、registry 安装一致。ZIP SHA256：`f29d494c247a80c64c08d8c44d415825a1e8fd5f03abff79325a4b7d4df75c28`。
 
-干净 registry 消费者在 JS、Wasm、Wasm GC、native 实际运行，覆盖十种 Value、扩展类型开关、Header 样式、列宽、CSV 显式策略及往返；JS 另通过未修改的官方 LibreOffice 样本 B2–B5 类型、值及导出再读。精确 CI 链接见[技术证据索引](TECHNICAL_EVIDENCE.zh-CN.md)。
+干净 registry 消费者在 JS、Wasm、Wasm GC、native 实际运行，覆盖九种 Value 分支、扩展类型开关、Header 样式、列宽、CSV 显式策略及往返；JS 另通过未修改的官方 LibreOffice 样本 B2–B5 类型、值及导出再读。精确 CI 链接见[技术证据索引](TECHNICAL_EVIDENCE.zh-CN.md)。
 
 实现阶段 Mac pinned SDK 0.10.15 四后端各 119/119 及接口零 diff，属于此前源码证据。Office 25.2.3.2 闭环也保持原测试日期；此次发布轮未重跑 Office。没有 Excel、GUI/打印外观、生产采用或并发事务保证。
 
