@@ -20,7 +20,7 @@ PASS 指已有对应配置的执行结果。下表区分此前源码/Office 实�
 | Wasm/Wasm GC | PASS（Mac pinned SDK） | Mac 原生 0.10.15 四后端各 119/119，最小控制及独立消费者实际运行通过。旧云工具链的控制失败仍为历史环境结果，不代表库失败。 |
 | native | PASS（Mac arm64） | 现有原生 0.10.15 SDK/Apple clang 已完成 119/119 与独立消费者运行；不扩展为 Linux/Windows native 消费验证。 |
 | 干净源码ZIP消费者 | PASS（此前本地） | 从实际源码包解压，只用其声明的锁定依赖，核候选版本、README API、扩展类型/格式/records及ODS→CSV和失败保护；不等于正式打包或注册表安装。 |
-| 正式包/registry/精确 head CI | PASS（0.4.0） | 最终 head e567857、合并 4413e1a 的 8 个 CI run / 20 个 job 通过；正式包 71 文件与源码及安装一致。干净 registry 消费者四后端实际运行；十种 Value、格式/列宽、CSV 策略、往返通过。[PR #9 正式回执](https://github.com/sundaysebasidian-byte/moonods/pull/9)。 |
+| 正式包/registry/精确 head CI | PASS（0.4.0） | 最终 head e567857、合并 4413e1a 的 8 个 CI run / 20 个 job 通过；正式包 71 文件与源码及安装一致。干净 registry 消费者四后端实际运行；九种 Value 分支、格式/列宽、CSV 策略、往返通过。[PR #9 正式回执](https://github.com/sundaysebasidian-byte/moonods/pull/9)。 |
 
 ## 可替换输入的实用流程
 

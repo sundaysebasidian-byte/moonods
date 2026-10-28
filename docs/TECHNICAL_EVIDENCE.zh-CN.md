@@ -14,7 +14,7 @@
 
 0.4.0 的官方 CLI 发布退出码为 0，HTTP 200，registry 构建成功。ZIP SHA256：`f29d494c247a80c64c08d8c44d415825a1e8fd5f03abff79325a4b7d4df75c28`；71 个文件与发布源码和实际安装包一致。[PR #9](https://github.com/sundaysebasidian-byte/moonods/pull/9)包含正式回执。
 
-干净消费者从 registry 精确安装 0.4.0，无 workspace/path 覆盖，实际运行 JS、Wasm、Wasm GC、native，检查十种 Value、扩展类型显式启用、Header 样式、列宽、CSV 策略和 ODS 往返。JS 另对未修改的官方 LibreOffice/core 样本核对 B2–B5 类型和值，再导出读回。
+干净消费者从 registry 精确安装 0.4.0，无 workspace/path 覆盖，实际运行 JS、Wasm、Wasm GC、native，检查九种 Value 分支、扩展类型显式启用、Header 样式、列宽、CSV 策略和 ODS 往返。JS 另对未修改的官方 LibreOffice/core 样本核对 B2–B5 类型和值，再导出读回。
 
 项目合成 FODS 经 LibreOfficeDev 转换的兼容样本，与官方固定样本分开记录。候选阶段的 LibreOffice 25.2.3.2 闭环没有在此次发布轮重跑；Office 回存时间戳偏移会损失。来源与摘要见[来源说明](../SOURCES.md)、[兼容说明](READER_COMPAT.zh-CN.md)。
 
