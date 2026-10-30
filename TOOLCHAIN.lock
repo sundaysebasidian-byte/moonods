@@ -1,13 +1,20 @@
-CI pinned compiler: moonc v0.10.15+943464bfa (2026-10-12)
-CI pinned build tool: moon 0.1.20261012 (748b63c 2026-10-12)
-core: bundled with the exact SDK; do not mix distributions
-runtime dependency: moonbit-community/flate@0.9.0
-CI verifier: CPython 3.13.14, odfpy 1.4.1, lxml 6.0.2, defusedxml 0.7.1
-CI JS runtime: Node.js v24.18.0
-Dependency source hashes: DEPENDENCIES.lock.json
-
-These are configured CI versions, not a claim that all targets pass this source snapshot.
-Fresh-clone CI also checks the current official SDK. Local matching 0.10.16 JS
-verification is reported separately; recorded Wasm/Wasm GC runtime and native
-component limitations remain unresolved. No Excel, GUI, layout, concurrency or
-crash-recovery claim is made. Refer to the exact commit's CI results.
+{
+  "compiler": "0.10.18+6c83a7f62",
+  "moon": "0.1.20261028",
+  "sdk_url": "https://cli.moonbitlang.com/binaries/0.10.18%2B6c83a7f62/moonbit-linux-x86_64.tar.gz",
+  "sdk_sha256": "0e4cde1ace98e8ef00552a937738b59c6901c4b8a004ebad71ea0e63688f63f1",
+  "core_url": "https://cli.moonbitlang.com/cores/core-0.10.18%2B6c83a7f62.tar.gz",
+  "core_sha256": "30a8ae1c1e1e8fde478ea742cbc928c8f4ae1f5c00090afe3f10c97be9e5da64",
+  "hash_basis": "prior recorded bytes, rechecked after fresh official download; not claimed separately vendor-signed checksums",
+  "scope": "MoonODS review branch CI configuration; not a claim of new source passing remote CI",
+  "moon_build": "e1e1f15",
+  "runtime_dependency": "moonbit-community/flate@0.9.0",
+  "dependency_source_hashes": "DEPENDENCIES.lock.json",
+  "node": "24.22.1",
+  "python": "3.12.14",
+  "verifier": {
+    "odfpy": "1.4.1",
+    "lxml": "6.0.2",
+    "defusedxml": "0.7.1"
+  }
+}

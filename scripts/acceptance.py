@@ -29,25 +29,26 @@ def main():
     source_files = [f for f in source_files if '_build' not in f.parts]
     report['source_sha256'] = {str(f.relative_to(ROOT)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(source_files)}
     try:
+        lock = json.loads((ROOT / 'TOOLCHAIN.lock').read_text())
         if not args.moon: raise RuntimeError('Existing moon binary required; no automatic installation')
         moon = Path(args.moon).resolve()
         compiler = moon.parent / 'moonc'
         compiler_version = run('moonc-version', [compiler, '-v'])
-        if not compiler_version.startswith('v0.10.15+943464bfa '): raise RuntimeError('Compiler differs from TOOLCHAIN.lock')
+        if not compiler_version.startswith('v' + lock['compiler'] + ' '): raise RuntimeError('Compiler differs from TOOLCHAIN.lock')
         tool_version = run('moon-version', [moon, 'version'])
-        if not tool_version.startswith('moon 0.1.20261012 (748b63c '): raise RuntimeError('Moon build tool differs from TOOLCHAIN.lock')
+        if not tool_version.startswith('moon ' + lock['moon'] + ' (' + lock['moon_build'] + ' '): raise RuntimeError('Moon build tool differs from TOOLCHAIN.lock')
         node_version = run('node-version', ['node', '--version']).strip()
         verifier_versions = {k: version(k) for k in ['odfpy', 'lxml', 'defusedxml']}
         report['runtime_versions'] = {'node': node_version, 'python': platform.python_version(), **verifier_versions}
-        if node_version != 'v24.18.0' or platform.python_version() != '3.13.14':
+        if node_version != 'v' + lock['node'] or platform.python_version() != lock['python']:
             raise RuntimeError('Node/Python differs from TOOLCHAIN.lock')
-        if verifier_versions != {'odfpy': '1.4.1', 'lxml': '6.0.2', 'defusedxml': '0.7.1'}:
+        if verifier_versions != lock['verifier']:
             raise RuntimeError('Verifier dependencies differ from TOOLCHAIN.lock')
         report['dependencies'] = verify()
         run('format', [moon, 'fmt', '--check'])
         run('check', [moon, 'check', '--target', 'js', '-j', '1', '--deny-warn'])
         run('build', [moon, 'build', '--target', 'js', '-j', '1', '--deny-warn'])
-        tests = run('test', [moon, 'test', '--target', 'js', '-j', '1', '--deny-warn'])
+        tests = run('test', [moon, 'test', '--target', 'js', '-j', '1', '--no-parallelize', '--deny-warn', '.', 'tests/consumer'])
         m = re.search(r'Total tests: (\d+), passed: (\d+), failed: (\d+)', tests)
         if not m or int(m[1]) < 31 or m[1] != m[2] or m[3] != '0': raise RuntimeError('Missing or incomplete test summary')
         report['unit_tests'] = {'total': int(m[1]), 'passed': int(m[2]), 'failed': int(m[3])}

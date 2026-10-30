@@ -1,24 +1,31 @@
 # MoonODS
 
-MoonBit 的数据型 ODS 读写库：类型化 `Workbook → Sheet → Cell`、有界 ZIP/XML 读取、显式损失诊断、CSV 与表头记录。适合需要把数据以 `.ods` 交给办公软件的报表和离线处理。
+MoonBit 数据型 ODS 读写库：类型化工作簿、有界 ZIP/XML 读取、显式损失诊断、CSV 与表头记录。适合报表与离线数据处理，不是通用办公软件。
 
-0.4.0 新增显式比例、货币、时长、时间戳与基础格式读取。[版本及迁移说明](docs/release-0.4.0.zh-CN.md)。安装命令：`moon add sundaysebasidian-byte/moonods@0.4.0`，在 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。注册表包含库和示例源码，不安装命令行工具；下面的业务工作流示例需要源码检出和 Node.js。
+## 2026-10-30 复审修订
 
-复审入口：[技术证据索引](docs/TECHNICAL_EVIDENCE.zh-CN.md)。
+本分支基于公开提交 `6dcb77df291acf8b592224c7ba94ce648f395cc2`，不是新的 registry 发行版。`moon add sundaysebasidian-byte/moonods@0.4.0` **不包含本轮修改**。
 
-## 从源码运行
+新增 Unicode XML 名称、UTF-8/BOM UTF-16、内部 DTD/实体/默认属性、非致命 xml:id 赋型报告、PI/notation/未读取外部依赖通知，以及安全附加包部件、manifest 与签名 XML 处理。签名不做密码学验证；未知部件与嵌入文档不解释其语义，转换时明确报告丢失。外部 XML 资源不联网获取，必须依赖其内容的导入明确拒绝。接口与限制见 [XML处理器说明](docs/XML_PROCESSOR_API.md)。
 
-需要已有的 MoonBit SDK 和 Node.js。CI 的固定版本见 [TOOLCHAIN.lock](TOOLCHAIN.lock)。
+当前不声明完整 ODF 或 XML 标准认证，也不以有限样本通过替代通用符合性证明。公式仅保存文本和缓存、检查外层前缀，不验证完整 OpenFormula，也不通用重算。
+
+## 从本分支源码运行
+
+使用 [TOOLCHAIN.lock](TOOLCHAIN.lock) 固定的 MoonBit 0.10.18；[项目内安装脚本](scripts/install-ci-sdk.py) 验证 SDK/core 双 SHA，不改全局配置。
 
 ```sh
-git clone https://github.com/sundaysebasidian-byte/moonods.git
-cd moonods
+python3 scripts/install-ci-sdk.py --dest "$PWD/.toolchains/ci-sdk"
+export MOON_REGISTRY_API=1
+export MOON_HOME="$PWD/.toolchains/ci-sdk"
+export PATH="$MOON_HOME/bin:$PATH"
+python3 scripts/restore_deps.py
 moon update
 moon test --target js
 moon run examples/generate --target js
 ```
 
-生成的文件位于 `examples/generated/`。无法连接注册表时，可用 `python3 scripts/restore_deps.py` 恢复仓库锁定的 flate 依赖，再执行 `moon work use .mooncakes/moonbit-community/flate`。
+生成文件位于 `examples/generated/`。本分支的实际公开可用性以 GitHub 分支为准，不能用默认分支或旧版本复现新修复。
 
 ## 公共 API
 
@@ -38,7 +45,7 @@ fn make_report() -> Bytes raise @ods.OdsError {
 
 在消费模块的 `moon.pkg` 导入 `"sundaysebasidian-byte/moonods" @ods`。上述 API 已包含在 0.4.0 注册表包；0.3.1 不含新增类型与格式 API。公开接口见 [pkg.generated.mbti](pkg.generated.mbti)，独立模块测试见 [tests/consumer](tests/consumer)。
 
-默认拒绝有损导入。调用 `@ods.read_ods(bytes, allow_formatting_loss=true)` 显式接受后，得到 Workbook 及带表名、行列、错误码的损失诊断；默认保留值、公式文本/缓存及合并，丢弃样式。另设 `preserve_basic_formatting=true` 可保留可识别的五种预设样式及 1..500 的整数毫米列宽；未知格式仍报告损失。扩展类型另需 `allow_extended_types=true`。CSV 按文本导入，导出时丢失公式、类型、样式及 Empty/空字符串区别。公式缓存可能过期，编辑不会自动重算。
+默认一律拒绝导入，要求显式确认接受数据型转换可能损失信息，即使输入只含支持类型也是如此。调用 `@ods.read_ods(bytes, allow_formatting_loss=true)` 显式接受后，得到 Workbook 及带表名、行列、错误码的损失诊断；默认保留值、公式文本/缓存及合并，丢弃样式。另设 `preserve_basic_formatting=true` 可保留可识别的五种预设样式、精确物理列宽及固定行高（mm/cm/in/pt/pc，0 < 长度 ≤ 500mm，最多 12 位十进制数字）；未知格式仍报告损失。扩展类型另需 `allow_extended_types=true`。CSV 按文本导入，导出时丢失公式、类型、样式及 Empty/空字符串区别。公式缓存可能过期，编辑不会自动重算。
 
 ## 读取、修改和导出
 
@@ -70,43 +77,55 @@ RECONCILE_OUTPUT=/tmp/moonods-procurement/output RECONCILE_ACCEPT_LOSS=1 \
 moon run examples/reconcile --target js
 ```
 
-输出 `reconciled.ods`、`details.csv`、`audit.csv`。这个样例的采购额从 80300 分变为 100650 分，研发超预算 18750 分；`audit.csv` 记录 CSV 请求修改的订单，以及未请求但缓存实际变化的订单。输入可以替换为符合相同三表契约的 ODS，订单和汇总不是程序中写死的数据。
+输出 `reconciled.ods`、`details.csv`、`audit.csv`。请使用新的输出目录；复用目录会替换同名输出，先保留旧文件。这个样例的采购额从 80300 分变为 100650 分，研发超预算 18750 分；`audit.csv` 记录 CSV 请求修改的订单，以及未请求但缓存实际变化的订单。输入可以替换为符合相同三表契约的 ODS，订单和汇总不是程序中写死的数据。
 
 这是固定模板的业务示例：数量 0..10000，金额以整数分计，总额不超过 2,000,000,000 分；只重算模板内已知的算术公式，遇到未知公式直接拒绝，不是通用采购系统或公式引擎。
 
-## 测试
+## 验证与范围
 
-- 测试覆盖类型、空值、Unicode、CSV、ZIP/XML、错误输入和资源上限；仓库读取夹具来自项目合成 FODS、LibreOfficeDev 转换结果及故障变体。官方 LibreOffice/core 固定样本另行下载校验，不随仓库或发行包分发，见 [SOURCES.md](SOURCES.md)。
-- CI：[ci.yml](.github/workflows/ci.yml) 在 wasm、wasm-gc、native 三个后端上跑库和消费者测试，并在 JS 上跑完整验收（示例、独立消费者、ODF schema 校验）；[fresh-clone.yml](.github/workflows/fresh-clone.yml) 用固定版和最新版 SDK 模拟新用户克隆后跑快速开始。
-- 本地完整验收：`python3 scripts/acceptance.py --output /tmp/moonods-acceptance`，依赖见 `requirements-verify.txt`。
-- `scripts/package_source.py` 导出干净源码 ZIP，`scripts/verify_delivery_consumer.py` 用独立模块消费它；`scripts/verify_reconcile.py` 可配合 LibreOffice 验证业务往返，参数见各脚本 `--help`。
+此前处理器及包层冻结阶段根包加独立消费者四后端各 **176/176**；独立包层审查另生成31份API夹具，首批29份执行58次CLI，13份成功导入编辑再导出的包通过CRC、XML值和CSV检查。独立 native 全包542项包含额外夹具/示例，与176统计范围不同。
 
-## 性能
+真实 LibreOffice 26.8.2.2 GUI 在此前170阶段完成类型、公式缓存和合并单元格闭环：修改 A1 后由 Calc 将 B1=A1*3 的缓存6重算12，库导出后再开仍保留公式和A2:B2合并。库没有计算公式。后续包层候选另读回同一Calc文件；这不是新版本再次GUI操作或所有Office兼容证明。详细版本绑定见[技术证据](docs/TECHNICAL_EVIDENCE.zh-CN.md)。
 
-下表保留旧版固定运行的原始数值，不作为 0.4.0 的性能测量。0.4.0 合并提交另有[基准 CI](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40539129794)，两次运行不可混算。
-
-`moon bench --release` 实测，每项 5 组取平均；GitHub Actions ubuntu-24.04（Intel Xeon Platinum 8573C，4 个逻辑 CPU），moonc v0.10.15。工作表 1000 行 × 5 列（文本、两位小数、日期、布尔、中文备注），带表头样式。
-
-| 操作 | JS | native |
-| --- | --- | --- |
-| 构建工作簿并写出 `.ods` | 19.6 ms | 9.9 ms |
-| 读取 `.ods` 为类型化 Workbook | 110 ms | 62.3 ms |
-| 导出 CSV | 7.1 ms | 1.6 ms |
-
-数字只说明数量级，换机器会变。复现：`moon bench benchmarks --target native --release`；CI 见 [bench.yml](.github/workflows/bench.yml)，本表来自[这次运行](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40287799404)。
+使用锁定 Node/Python 与 `requirements-verify.txt`，可运行 `python scripts/acceptance.py --output /tmp/moonods-acceptance`。源码CI配置见 [.github/workflows/ci.yml](.github/workflows/ci.yml)；配置存在不等于本轮远端CI已通过。
 
 ## 边界
 
-0.4.0 增加显式货币/比例/时长/时间戳和基础格式读取，见[类型与格式契约](docs/EXTENDED_VALUES_DRAFT.zh-CN.md)及[数据流程矩阵](docs/DATA_WORKFLOW_SUPPORT.zh-CN.md)。候选阶段已完成 LibreOffice 25.2.3.2 读改写回存、值与格式属性比较；Office 回存时区偏移会丢失。0.4.0 发布轮另完成四后端 registry 消费及 JS 官方固定样本往返，见[版本 PR #9](https://github.com/sundaysebasidian-byte/moonods/pull/9)；该轮未重跑 Office。
-
-- 支持文本、有限 Double、布尔、公历日期、空值、多表、基础样式、列宽和合并。
-- 不提供宏、图表、加密、ZIP64、大文件流式处理和通用公式重算；没有针对 Excel 和打印外观做测试。
-- 读取采用严格 ZIP 条目白名单。0.3.1 接受两个精确的空 UI 配置条目；纯空白尾行可有界省略并报告损失，不提高 1024 内容行预算。[LibreOffice 固定夹具](docs/LIBREOFFICE_REGISTRY_CASE.zh-CN.md)的类型、值及往返已通过；不代表任意 LibreOffice 文件兼容。
-- 0.4.0 新增有限 `text:span`/段落样式、简单行列表头容器和带样式覆盖格读取，以及按有效前缀和剩余网格预算省略纯空白尾行。允许的属性、损失诊断及复现见 [读取兼容说明](docs/READER_COMPAT.zh-CN.md)及[数据流程验收矩阵](docs/DATA_WORKFLOW_SUPPORT.zh-CN.md)。
-- 0.4.0 的 `to_ods` 在返回包之前检查 4 MiB 总解压条目及原 XML 深度/节点预算；网格/文本上限不保证每种组合都能序列化。检查性 `content_xml` 仍有独立 16 MiB 上限。重复损失保留每表每类前 32 个位置，其余给出精确计数汇总，仍保留 8192 条总诊断硬限制。
-- 每个输出文件独立 rename，多个文件不是整体事务。
-- 库核心是纯 MoonBit；示例里的文件读写使用 JS 宿主。
+- 默认拒绝有损读取，需要显式接受；基础格式与扩展类型分别显式开启。
+- 仅解释根 spreadsheet 数据模型。附加部件可安全解析包结构，但嵌入文档不验证 XML、不保留语义；签名丢弃且不验签。
+- 保留安全路径、CRC、条目数量、4 MiB总解压、XML深度/实体预算等资源限制；超限是实现限制，不称为标准禁止。
+- 支持类型、值、公式缓存、合并及有限基础格式，不承诺图片、宏、图表、全样式、加密、ZIP64或打印保真。
+- 没有 Microsoft Office 互通实测；金额使用binary64，非精确十进制金融计算。
+- 每个输出文件独立rename，多文件不是整体事务；业务模板只重算已知算术关系。
 
 ## 许可与来源
 
-原创代码 MIT，压缩/CRC32 依赖 flate 为 Apache-2.0，SDK 不打包。见 [LICENSE](LICENSE)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)、[SOURCES.md](SOURCES.md) 与 [AI_USAGE.md](AI_USAGE.md)。
+原创代码 MIT；flate 依赖 Apache-2.0；SDK不打包。[LICENSE](LICENSE)、[SOURCES.md](SOURCES.md)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)、[AI_USAGE.md](AI_USAGE.md)。历史发行能力和性能数据保留在版本文档及历史技术索引，不当作当前修订的实测。
+
+## 精确物理布局（有边界）
+
+`set_column_width_length(col, "0.889in")` / `column_width_length(col)` 与
+`set_row_height_length(row, "12.5pt")` / `row_height_length(row)` 保留经验证的原始长度单位与十进制值，避免强制换算成整数毫米造成损失。旧 `set_column_width(col, Int)` 保持兼容；新长度只有恰好为整数毫米时，旧 `column_width()` 才返回整数，否则返回 `None`。同列最后一次 setter 生效。
+
+导入必须显式启用 `preserve_basic_formatting=true`，并仍确认 `allow_formatting_loss=true`。样式默认值和父样式先解析再决定是否可保留：固定行高不能有有效的 `use-optimal-row-height=true`；缺失行高不推测。输出固定布局显式写 optimal=false。未知属性、最小行高、相对宽度、自动适应和强制分页不假装保留。这里不是完整样式、字体、图片、对象或视觉布局保真。
+
+长度预算属于产品范围而不是 ODF 有效性规则：例如合法但超范围的 501mm/px 不在此 API 范围。拒绝零、负数、指数、百分比、超过 12 位数字与超过 500mm 的物理长度。失败 setter 不修改工作表。导入超范围布局给出损失诊断；不将它误称为无效 ODF。
+
+历史182布局阶段根包及消费者 JS / Wasm / WasmGC / native 各 **182/182**。独立审查另使用 31 份输入包逐一读改写并核对 Fraction 精确尺寸和输出 ODF 1.3 RNG；下游 API JS/native 各 9/9（其中 3 组为本次独立新增）。真实 Calc 产物原 `0.889in` 列宽可保留，`optimal=true` 的自动行高不误转为固定。上述结构验收不等于完整视觉保真。
+
+
+## 新布局182阶段的实际GUI互通
+
+官方LibreOffice26.8.2.2实际打开本阶段导出、另存、关闭再开，最后182再次读取Calc另存件并导出，再由GUI打开。A1修改7→8保持；原生另存XML列宽0.889in、固定行高0.2173in、optimal=false保持，独立Fraction尺寸差为0。界面以0.01in显示为0.89/0.22，不能把界面舍入读数当作底层XML精确值。对话框均取消未确认改变尺寸。该正控不证明所有视觉样式保真，仍有12条其他损失诊断。
+
+本次GUI精确绑定182 CLI SHA `a60cad4b05d895b2df43e1b27c22b5b5050f7fd122c0a6cc0f7d7bc7039eef62`，并核对161份源码清单零差异；这与此前170阶段公式/合并GUI是两个独立回执。182阶段集成23步骤验收通过，源码hash结束逐项无差异；这是历史182回执，不代表后续189阶段的GUI或远端CI。
+
+
+### Subsequent normative regression fixes
+
+Physical length setters reject leading plus and non-XML surrounding whitespace; accepted tokens are checked against external ODF1.3 RNG cases. Paragraph raw XML whitespace collapses across spans according to Part3 section6.1.2, while explicit text:s/tab/line-break and NBSP remain. Text containing CR is represented with office:string-value numeric references rather than a conflicting display paragraph; this preserves data, not display fidelity. Historical182/GUI evidence remains historical; new validation is bound in the next private receipt.
+
+
+189修订四后端根包及consumer各189/189；独立14段落首读/再读28次CLI与18份真实API导出RNG通过。`+1mm`拒绝，`.5mm`、`1.mm`和合法前导零按外部schema保留；只trim XML空白，不接受NBSP/EM SPACE等包围长度。CR数据属性路径已用独立负控确认：改/删属性或加入冲突段落均被验收拒绝。普通Text显式控制与NBSP保留。旧GUI测试不外推此新CR表示。
+
+最终189集成严格23步骤全部通过，结束后全部源码/脚本哈希与运行起点一致。此运行使用固定SDK和锁定依赖；新GUI及远端CI未在该验收中运行。原错误oracle和环境依赖失败记录与修后结果分别保存，不覆盖历史。

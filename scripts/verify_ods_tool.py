@@ -20,7 +20,7 @@ LOSS_REFUSAL = 'ERROR: data-only import requires allow_formatting_loss=true'
 # control -> expected substring of the accepted-loss rejection ('' means accepted with diagnostics)
 CONTROLS = {
     'deep-xml': 'XML depth/node budget exceeded',
-    'dtd-entity': 'unsupported XML name',
+    'dtd-entity': 'XML_DEPENDENCY_NOT_READ:',
     'duplicate-content': 'duplicate ZIP entry',
     'forged-inflate-size': 'forged ZIP uncompressed size',
     'formula-without-cache': 'formula requires a typed nonempty cache',

@@ -177,7 +177,7 @@ test "styles cannot smuggle unsupported semantic children and covered values are
 ///|
 test "date empty blank and significant whitespace remain distinct in edited output" {
   let imported = loss_case(
-    "<t:table-cell o:value-type=\"date\" o:date-value=\"2000-02-29\"/><t:table-cell o:value-type=\"string\"/><t:table-cell/><t:table-cell o:value-type=\"string\"><x:p> </x:p></t:table-cell>",
+    "<t:table-cell o:value-type=\"date\" o:date-value=\"2000-02-29\"/><t:table-cell o:value-type=\"string\"/><t:table-cell/><t:table-cell o:value-type=\"string\"><x:p><x:s/></x:p></t:table-cell>",
   )
   let w = read_ods(imported.workbook().to_ods(), allow_formatting_loss=true).workbook()
   let s = w.sheet(0).unwrap()

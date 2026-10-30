@@ -40,7 +40,7 @@ def controls():
       'duplicate-content.ods':(package(xml(typed),duplicate=True),'REJECT_DUPLICATE_ENTRY'),
       'wrong-table-namespace.ods':(package(xml(typed).replace(TABLE.encode(),b'urn:wrong-table')),'REJECT_WRONG_NAMESPACE'),
       'deep-xml.ods':(package(xml('<t:table-row><t:table-cell>'+'<x:span>'*256+'x'+'</x:span>'*256+'</t:table-cell></t:table-row>')),'REJECT_XML_DEPTH'),
-      'dtd-entity.ods':(package(b'<?xml version="1.0"?><!DOCTYPE x [<!ENTITY e SYSTEM "http://127.0.0.1:9/moonods-never-fetch">]>'+xml('<t:table-row><t:table-cell o:value-type="string"><x:p>&e;</x:p></t:table-cell></t:table-row>')),'REJECT_DTD_WITHOUT_NETWORK'),
+      'dtd-entity.ods':(package(b'<?xml version="1.0"?><!DOCTYPE x [<!ENTITY e SYSTEM "http://127.0.0.1:9/moonods-never-fetch">]>'+xml('<t:table-row><t:table-cell o:value-type="string"><x:p>&e;</x:p></t:table-cell></t:table-row>')),'REJECT_EXTERNAL_DEPENDENCY_WITHOUT_NETWORK'),
       'inflate-ratio.ods':(package(xml('<t:table-row><t:table-cell o:value-type="string"><x:p>'+'A'*262144+'</x:p></t:table-cell></t:table-row>'),zipfile.ZIP_DEFLATED),'REJECT_OR_BOUND_ACTUAL_INFLATE_OUTPUT'),
     }
     forged=bytearray(cases['inflate-ratio.ods'][0])
@@ -69,17 +69,33 @@ def fixed_producer_xml(path):
     return etree.fromstring(data,etree.XMLParser(resolve_entities=False,no_network=True,load_dtd=False,huge_tree=False))
 
 def text_of(node):
-    out=node.text or ''
-    for child in node:
-        if child.tag=='{'+TEXT+'}s':
-            count=int(child.get('{'+TEXT+'}c','1'))
-            if not 1<=count<=32767:raise ValueError('fixed-fixture text repeat budget')
-            out+=' '*count
-        elif child.tag=='{'+TEXT+'}tab':out+='\t'
-        elif child.tag=='{'+TEXT+'}line-break':out+='\n'
-        else:out+=text_of(child)
-        out+=child.tail or ''
-        if len(out)>32767:raise ValueError('fixed-fixture text length budget')
+    # Independent ODF 1.3 section 6.1.2 oracle: flatten span text, normalize
+    # raw XML whitespace, then expand explicit controls. NUL is forbidden
+    # in XML, so it is a collision-free internal placeholder, never output.
+    import re
+    pieces, controls = [], []
+    def raw(text):
+        if '\0' in text: raise ValueError('illegal XML NUL in oracle')
+        pieces.append(text)
+    def visit(element):
+        raw(element.text or '')
+        for child in element:
+            if child.tag == '{'+TEXT+'}s':
+                count = int(child.get('{'+TEXT+'}c', '1'))
+                if not 1 <= count <= 32767: raise ValueError('fixed-fixture text repeat budget')
+                controls.append(' ' * count); pieces.append('\0')
+            elif child.tag == '{'+TEXT+'}tab':
+                controls.append('\t'); pieces.append('\0')
+            elif child.tag == '{'+TEXT+'}line-break':
+                controls.append('\n'); pieces.append('\0')
+            else:
+                visit(child)
+            raw(child.tail or '')
+    visit(node)
+    normalized = re.sub(r'[ \t\r\n]+', ' ', ''.join(pieces)).strip(' ')
+    chunks = normalized.split('\0')
+    out = chunks[0] + ''.join(control + tail for control, tail in zip(controls, chunks[1:]))
+    if len(out) > 32767: raise ValueError('fixed-fixture text length budget')
     return out
 
 def ordered_rows(sheet):

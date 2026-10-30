@@ -46,6 +46,7 @@ pub fn Sheet::set_column_width(
   if self.rows * cols > 65536 {
     raise Invalid("sheet rendered grid exceeds 65536 cells")
   }
+  self.precise_widths.remove(col)
   self.widths.set(col, mm)
   self.cols = cols
 }
@@ -54,8 +55,10 @@ pub fn Sheet::set_column_width(
 fn Workbook::column_styles(self : Workbook) -> String {
   let used : Map[Int32, Bool] = Map([])
   for s in self.sheets {
-    for _, mm in s.widths {
-      used.set(mm, true)
+    for col, mm in s.widths {
+      if !s.precise_widths.contains(col) {
+        used.set(mm, true)
+      }
     }
   }
   let b = StringBuilder()
@@ -64,6 +67,22 @@ fn Workbook::column_styles(self : Workbook) -> String {
       b.write_string(
         "<style:style style:name=\"W\{mm}\" style:family=\"table-column\"><style:table-column-properties style:column-width=\"\{mm}mm\"/></style:style>",
       )
+    }
+  }
+  for sheet_index, s in self.sheets {
+    for col in 0..<s.cols {
+      if s.precise_widths.get(col) is Some(length) {
+        b.write_string(
+          "<style:style style:name=\"CW\{sheet_index}_\{col}\" style:family=\"table-column\"><style:table-column-properties style:column-width=\"\{length}\" style:use-optimal-column-width=\"false\"/></style:style>",
+        )
+      }
+    }
+    for row in 0..<s.rows {
+      if s.row_heights.get(row) is Some(length) {
+        b.write_string(
+          "<style:style style:name=\"RH\{sheet_index}_\{row}\" style:family=\"table-row\"><style:table-row-properties style:row-height=\"\{length}\" style:use-optimal-row-height=\"false\"/></style:style>",
+        )
+      }
     }
   }
   b.to_string()

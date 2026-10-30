@@ -88,6 +88,12 @@ fn pad(n : Int32, size : Int32) -> String {
 
 ///|
 fn Cell::xml(self : Cell, extra : String) -> String {
+  // ODF paragraph whitespace cannot represent a literal CR. Preserve that
+  // typed string in office:string-value instead of emitting a misleading p.
+  let attribute_text = match self.value {
+    Text(s) => s.contains("\r")
+    _ => false
+  }
   let b = StringBuilder()
   b.write_string("<table:table-cell")
   b.write_string(extra)
@@ -98,9 +104,12 @@ fn Cell::xml(self : Cell, extra : String) -> String {
   let display = match self.value {
     Empty => ""
     Text(s) => {
-      // Text paragraphs are authoritative; duplicating the same value in an
-      // attribute needlessly doubles bytes. value-type keeps Text("") distinct.
+      // Ordinary strings use explicit paragraph controls without duplicated
+      // attributes. CR strings use the typed attribute only; no visual claim.
       b.write_string(" office:value-type=\"string\"")
+      if attribute_text {
+        b.write_string(" office:string-value=\"\{xml_escape(s)}\"")
+      }
       s
     }
     Number(n) => {
@@ -146,7 +155,7 @@ fn Cell::xml(self : Cell, extra : String) -> String {
     }
   }
   b.write_string(">")
-  if self.value != Empty {
+  if self.value != Empty && !attribute_text {
     b.write_string(text_paragraph(display))
   }
   b.write_string("</table:table-cell>")

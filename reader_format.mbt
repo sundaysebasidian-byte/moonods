@@ -19,9 +19,11 @@ priv struct ReadFormatting {
   source : ReadFormats
   presets : ReadFormats
   cell_cache : Map[(String, String), Style?]
-  width_cache : Map[(Bool, String), Int32?]
+  width_cache : Map[(Bool, String), String?]
+  height_cache : Map[(Bool, String), String?]
   mut retained_cells : Int32
   mut retained_widths : Int32
+  mut retained_heights : Int32
 }
 
 ///|
@@ -203,6 +205,7 @@ fn ReadFormats::properties(
         read_style + "paragraph-properties",
         read_style + "table-cell-properties",
         read_style + "table-column-properties",
+        read_style + "table-row-properties",
       ].contains(property.name) ||
       visited.contains(property.name) ||
       !property.elements().is_empty() {
@@ -324,64 +327,10 @@ fn ReadFormatting::resolve_cell_style(
 }
 
 ///|
-// Rational unit conversion: no floating rounding and no guessed pixel DPI.
-fn read_width_mm(text : String) -> Int32? {
-  let text = text.trim().to_owned()
-  let (unit, mul, div) = if text.has_suffix("mm") {
-    ("mm", 1L, 1L)
-  } else if text.has_suffix("cm") {
-    ("cm", 10L, 1L)
-  } else if text.has_suffix("in") {
-    ("in", 127L, 5L)
-  } else if text.has_suffix("pt") {
-    ("pt", 127L, 360L)
-  } else if text.has_suffix("pc") {
-    ("pc", 127L, 30L)
-  } else {
-    return None
-  }
-  let raw = text[:text.length() - unit.length()].to_owned()
-  let mut num = 0L
-  let mut scale = 1L
-  let mut fraction = false
-  let mut digits = 0
-  for i, c in raw {
-    if i == 0 && c == '+' {
-      continue
-    }
-    if c == '.' && !fraction {
-      fraction = true
-      continue
-    }
-    if c < '0' || c > '9' || digits >= 9 {
-      return None
-    }
-    num = num * 10L + (c.to_int() - 48).to_int64()
-    if fraction {
-      scale *= 10L
-    }
-    digits += 1
-  }
-  if digits == 0 {
-    return None
-  }
-  let numerator = num * mul
-  let denominator = scale * div
-  if numerator % denominator != 0L {
-    return None
-  }
-  let mm = numerator / denominator
-  if mm < 1L || mm > 500L {
-    return None
-  }
-  Some(mm.to_int())
-}
-
-///|
 fn ReadFormatting::resolve_column_width(
   self : ReadFormatting,
   name : String?,
-) -> Int32? raise OdsError {
+) -> String? raise OdsError {
   let props = match self.source.effective("table-column", name) {
     Some(p) => p
     None => return None
@@ -411,7 +360,7 @@ fn ReadFormatting::resolve_column_width(
     }
   }
   match props.get(width_key) {
-    Some(width) => read_width_mm(width)
+    Some(width) => physical_length(width).map(v => v.0)
     None => None
   }
 }
@@ -433,8 +382,10 @@ fn read_formatting(
     presets,
     cell_cache: Map([]),
     width_cache: Map([]),
+    height_cache: Map([]),
     retained_cells: 0,
     retained_widths: 0,
+    retained_heights: 0,
   }
 }
 
@@ -469,7 +420,7 @@ fn ReadFormatting::cell_style(
 fn ReadFormatting::column_width(
   self : ReadFormatting,
   name : String?,
-) -> Int32? raise OdsError {
+) -> String? raise OdsError {
   let key = (name is Some(_), name.unwrap_or(""))
   match self.width_cache.get(key) {
     Some(cached) => cached
@@ -485,4 +436,44 @@ fn ReadFormatting::column_width(
       resolved
     }
   }
+}
+
+///|
+fn ReadFormatting::row_height(
+  self : ReadFormatting,
+  name : String?,
+) -> String? raise OdsError {
+  let key = (name is Some(_), name.unwrap_or(""))
+  if self.height_cache.get(key) is Some(cached) {
+    return cached
+  }
+  let props = match self.source.effective("table-row", name) {
+    Some(p) => p
+    None => return None
+  }
+  let prefix = read_style + "table-row-properties@"
+  let height_key = prefix + read_style + "row-height"
+  let optimal_key = prefix + read_style + "use-optimal-row-height"
+  for k, v in props {
+    let neutral_break = (
+        k ==
+        prefix +
+        "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0#break-before" ||
+        k ==
+        prefix +
+        "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0#break-after"
+      ) &&
+      v == "auto"
+    if k != height_key && !(k == optimal_key && v == "false") && !neutral_break {
+      return None
+    }
+  }
+  let result = match props.get(height_key) {
+    Some(v) => physical_length(v).map(x => x.0)
+    None => None
+  }
+  if self.height_cache.length() < 2049 {
+    self.height_cache.set(key, result)
+  }
+  result
 }

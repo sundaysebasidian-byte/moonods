@@ -54,7 +54,7 @@ test "stable LibreOffice empty UI directories are bounded and never interpreted"
     if name != "Configurations2/" {
       assert_true(notices.contains(name))
     }
-    assert_true(
+    assert_eq(
       zip_rejects(
         stored_package([
           ("mimetype", @utf8.encode(media_type[:])),
@@ -62,6 +62,7 @@ test "stable LibreOffice empty UI directories are bounded and never interpreted"
           (name, b"unexpected content"),
         ]),
       ),
+      name.has_suffix("/"),
     )
   }
   for
@@ -70,7 +71,7 @@ test "stable LibreOffice empty UI directories are bounded and never interpreted"
       "Basic/", "Configurations2/images/Bitmaps/payload.png", "Configurations2/accelerator/other.xml",
       "Configurations2/accelerator/../current.xml", "Configurations2/accelerator/Current.xml",
     ] {
-    assert_true(
+    assert_eq(
       zip_rejects(
         stored_package([
           ("mimetype", @utf8.encode(media_type[:])),
@@ -78,6 +79,7 @@ test "stable LibreOffice empty UI directories are bounded and never interpreted"
           (name, b""),
         ]),
       ),
+      name.contains("/../"),
     )
   }
 }
@@ -1906,7 +1908,7 @@ fn reader_fixture(name : String) -> Bytes {
 }
 
 ///|
-test "ZIP reader rejects unknown assets macros signatures and nonempty configuration" {
+test "ZIP reader accepts opaque safe assets but rejects nonempty directories" {
   for
     path in [
       "Basic/script.xml", "Pictures/image.png", "META-INF/documentsignatures.xml",
@@ -1917,7 +1919,7 @@ test "ZIP reader rejects unknown assets macros signatures and nonempty configura
       ("content.xml", b"<xml/>"),
       (path, b"x"),
     ])
-    assert_true(zip_rejects(archive))
+    assert_eq(zip_rejects(archive), path.has_suffix("/"))
   }
 }
 

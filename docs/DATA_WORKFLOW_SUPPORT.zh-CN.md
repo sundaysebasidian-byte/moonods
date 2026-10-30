@@ -1,3 +1,5 @@
+> 本页矩阵保留历史发行验证；当前复审运行锁与能力以根README为准。
+
 # 数据型 ODS 交付验收矩阵
 
 0.4.0 的数据流程能力与边界；[类型与格式契约](EXTENDED_VALUES_DRAFT.zh-CN.md)列出选项，[版本说明](release-0.4.0.zh-CN.md)列出迁移及发布验收。
@@ -49,4 +51,4 @@ python3 scripts/verify_basic_formatting.py --moon /path/to/moon --output /tmp/od
 python3 scripts/verify_extended_compat.py --moon /path/to/moon --soffice /path/to/soffice --output /tmp/ods-extended-check
 ```
 
-输出目录需尚不存在，避免覆盖旧证据。当前固定 SDK 见 `TOOLCHAIN.lock`（0.10.15），精确版本 CI 见[技术证据索引](TECHNICAL_EVIDENCE.zh-CN.md)。上表 0.10.16/0.10.17 是此前隔离源码验证，不替代此次固定 SDK 或 registry 结果；旧云控制失败保留原环境归属。
+输出目录需尚不存在，避免覆盖旧证据。当前固定 SDK 见 `TOOLCHAIN.lock`（本复审分支0.10.18；下述旧CI只代表历史），精确版本 CI 见[技术证据索引](TECHNICAL_EVIDENCE.zh-CN.md)。上表 0.10.16/0.10.17 是此前隔离源码验证，不替代此次固定 SDK 或 registry 结果；旧云控制失败保留原环境归属。

@@ -38,7 +38,11 @@ def fixture(path,body,defs=DEFS):
     from io import BytesIO
     result=BytesIO()
     with zipfile.ZipFile(BytesIO(package(content))) as base,zipfile.ZipFile(result,'w') as out:
-        for info in base.infolist():out.writestr(info,base.read(info))
+        for info in base.infolist():
+            data=base.read(info)
+            if info.filename=='META-INF/manifest.xml':
+                data=data.replace(b'</manifest:manifest>',b'<manifest:file-entry manifest:full-path="styles.xml" manifest:media-type="text/xml"/></manifest:manifest>')
+            out.writestr(info,data)
         out.writestr('styles.xml',styles)
     path.write_bytes(result.getvalue())
 

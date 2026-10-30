@@ -1,3 +1,4 @@
 members = [
   ".",
+  ".mooncakes/moonbit-community/flate",
 ]

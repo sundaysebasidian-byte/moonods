@@ -7,3 +7,6 @@ __pycache__/
 .schemas/
 ~$*
 **/isolated-work/
+
+# Project-local CI SDK, never source/package content.
+.toolchains/

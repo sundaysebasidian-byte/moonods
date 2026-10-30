@@ -7,29 +7,28 @@ permissions:
 jobs:
   quickstart:
     name: moon ${{ matrix.sdk }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        sdk: [pinned, latest]
+        sdk: [pinned]
     env:
-      PINNED_SDK: 0.10.15+943464bfa
+      PINNED_SDK: 0.10.18+6c83a7f62
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
-          node-version: 24
-      - name: Install official MoonBit SDK
+          node-version: 24.22.1
+      - name: Install locked project-local SDK
+        env:
+          MOON_HOME: ${{ github.workspace }}/.toolchains/fresh-sdk
         run: |
-          curl -fsSL https://cli.moonbitlang.com/install/unix.sh -o "$RUNNER_TEMP/install-moonbit.sh"
-          if [ "${{ matrix.sdk }}" = pinned ]; then
-            bash "$RUNNER_TEMP/install-moonbit.sh" "$PINNED_SDK"
-          else
-            bash "$RUNNER_TEMP/install-moonbit.sh"
-          fi
-          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+          python3 scripts/install-ci-sdk.py --dest "$MOON_HOME"
+          echo "MOON_HOME=$MOON_HOME" >> "$GITHUB_ENV"
+          echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
       - run: moon version --all
-      # A fresh SDK has no registry index yet; needed for flate.
+      - run: python3 scripts/restore_deps.py
+      # Resolve the existing dependency lock; do not change dependency versions.
       - run: moon update
       - run: moon check
       - run: moon test

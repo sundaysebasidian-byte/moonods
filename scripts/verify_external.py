@@ -175,7 +175,11 @@ def main():
             g = tables['边界 & XML']
             text = ' <&>"\'\t\n\r 😀 中文 '
             for r, v in enumerate([('string', text), ('string', ''), None, ('number', 1e300), ('number', 1e-300), ('boolean', False), ('date', '0001-01-01'), ('date', '9999-12-31'), ('string', 'x' * 32767)]): expect(g[r][0], v)
-            assert teletype.extractText(g[0][0]) == text
+            # Raw CR in text:p is collapsed by ODF paragraph semantics. The
+            # writer instead stores its exact data value in office:string-value.
+            assert g[0][0].getAttribute('stringvalue') == text
+            assert not [p for p in g[0][0].childNodes if getattr(p, 'qname', None) == ('urn:oasis:names:tc:opendocument:xmlns:text:1.0', 'p')]
+            assert teletype.extractText(g[0][0]) == ''
             expect(tables['空表'][0][0], None)
         reports.append({'file': str(p), 'sha256': hashlib.sha256(p.read_bytes()).hexdigest(), 'bytes': p.stat().st_size,
                         'tables': list(tables), 'official_rng': 'PASS (content, styles, manifest)', 'zip_crc_paths_headers': 'PASS', 'odfpy_values': 'PASS'})

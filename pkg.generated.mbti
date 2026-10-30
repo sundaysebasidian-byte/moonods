@@ -12,11 +12,12 @@ pub fn read_ods(Bytes, allow_formatting_loss? : Bool, allow_extended_types? : Bo
 pub suberror OdsError {
   Invalid(String)
 } derive(@debug.Debug)
+pub fn OdsError::is_unread_xml_dependency(Self) -> Bool
 pub fn OdsError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
 type Cell
-pub fn Cell::excel_1900_date(Int, Int, Int) -> Self raise OdsError
+pub fn Cell::excel_1900_date(Int32, Int32, Int32) -> Self raise OdsError
 pub fn Cell::expression(Self) -> String?
 pub fn Cell::formula(String, Value) -> Self raise OdsError
 pub fn Cell::new(Value) -> Self raise OdsError
@@ -26,8 +27,8 @@ pub fn Cell::value(Self) -> Value
 
 pub(all) struct ImportDiagnostic {
   sheet : String
-  row : Int
-  col : Int
+  row : Int32
+  col : Int32
   code : String
   message : String
 } derive(Eq, @debug.Debug)
@@ -38,19 +39,26 @@ pub fn ImportDiagnostic::to_repr(Self) -> @debug.Repr
 type ImportResult
 pub fn ImportResult::diagnostics(Self) -> Array[ImportDiagnostic]
 pub fn ImportResult::workbook(Self) -> Workbook
+pub fn ImportResult::xml_events(Self) -> Array[XmlProcessorEvent]
+pub fn ImportResult::xml_id_diagnostics(Self) -> Array[XmlIdDiagnostic]
+pub fn ImportResult::xml_ids(Self) -> Array[XmlIdAssignment]
 
 type Sheet
-pub fn Sheet::column_width(Self, Int) -> Int?
-pub fn Sheet::dimensions(Self) -> (Int, Int)
-pub fn Sheet::get(Self, Int, Int) -> Cell?
-pub fn Sheet::is_covered(Self, Int, Int) -> Bool
-pub fn Sheet::merge(Self, Int, Int, Int, Int) -> Unit raise OdsError
-pub fn Sheet::merge_span(Self, Int, Int) -> (Int, Int)?
+pub fn Sheet::column_width(Self, Int32) -> Int32?
+pub fn Sheet::column_width_length(Self, Int32) -> String?
+pub fn Sheet::dimensions(Self) -> (Int32, Int32)
+pub fn Sheet::get(Self, Int32, Int32) -> Cell?
+pub fn Sheet::is_covered(Self, Int32, Int32) -> Bool
+pub fn Sheet::merge(Self, Int32, Int32, Int32, Int32) -> Unit raise OdsError
+pub fn Sheet::merge_span(Self, Int32, Int32) -> (Int32, Int32)?
 pub fn Sheet::name(Self) -> String
-pub fn Sheet::records(Self, header_row? : Int) -> Array[TableRecord] raise OdsError
-pub fn Sheet::set(Self, Int, Int, Cell) -> Unit raise OdsError
-pub fn Sheet::set_column_width(Self, Int, Int) -> Unit raise OdsError
-pub fn Sheet::set_row(Self, Int, Int, Array[Cell]) -> Unit raise OdsError
+pub fn Sheet::records(Self, header_row? : Int32) -> Array[TableRecord] raise OdsError
+pub fn Sheet::row_height_length(Self, Int32) -> String?
+pub fn Sheet::set(Self, Int32, Int32, Cell) -> Unit raise OdsError
+pub fn Sheet::set_column_width(Self, Int32, Int32) -> Unit raise OdsError
+pub fn Sheet::set_column_width_length(Self, Int32, String) -> Unit raise OdsError
+pub fn Sheet::set_row(Self, Int32, Int32, Array[Cell]) -> Unit raise OdsError
+pub fn Sheet::set_row_height_length(Self, Int32, String) -> Unit raise OdsError
 pub fn Sheet::to_csv(Self, use_formula_cache? : Bool, reject_formula_like_text? : Bool, extended_types_as_text? : Bool) -> String raise OdsError
 
 pub(all) enum Style {
@@ -65,7 +73,7 @@ pub fn Style::not_equal(Self, Self) -> Bool
 pub fn Style::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TableRecord {
-  row : Int
+  row : Int32
   values : Map[String, Value]
 }
 
@@ -78,7 +86,7 @@ pub(all) enum Value {
   Duration(String)
   DateTime(String)
   Boolean(Bool)
-  Date(Int, Int, Int)
+  Date(Int32, Int32, Int32)
 } derive(Eq, @debug.Debug)
 pub fn Value::equal(Self, Self) -> Bool
 pub fn Value::not_equal(Self, Self) -> Bool
@@ -89,9 +97,50 @@ pub fn Workbook::add_csv_sheet(Self, String, String) -> Sheet raise OdsError
 pub fn Workbook::add_sheet(Self, String) -> Sheet raise OdsError
 pub fn Workbook::content_xml(Self) -> String raise OdsError
 pub fn Workbook::new() -> Self
-pub fn Workbook::sheet(Self, Int) -> Sheet?
-pub fn Workbook::sheet_count(Self) -> Int
+pub fn Workbook::sheet(Self, Int32) -> Sheet?
+pub fn Workbook::sheet_count(Self) -> Int32
 pub fn Workbook::to_ods(Self) -> Bytes raise OdsError
+
+pub(all) struct XmlIdAssignment {
+  document_part : String
+  element_index : Int32
+  element_name : String
+  attribute_name : String
+  value : String
+  attribute_type : String
+  valid_ncname : Bool
+  unique : Bool
+  declared_type : String?
+} derive(Eq, @debug.Debug)
+pub fn XmlIdAssignment::equal(Self, Self) -> Bool
+pub fn XmlIdAssignment::not_equal(Self, Self) -> Bool
+pub fn XmlIdAssignment::to_repr(Self) -> @debug.Repr
+
+pub(all) struct XmlIdDiagnostic {
+  document_part : String
+  element_index : Int32
+  value : String
+  code : String
+  message : String
+} derive(Eq, @debug.Debug)
+pub fn XmlIdDiagnostic::equal(Self, Self) -> Bool
+pub fn XmlIdDiagnostic::not_equal(Self, Self) -> Bool
+pub fn XmlIdDiagnostic::to_repr(Self) -> @debug.Repr
+
+pub(all) struct XmlProcessorEvent {
+  document_part : String
+  sequence : Int32
+  location : String
+  kind : String
+  name : String
+  data : String
+  public_id : String?
+  system_id : String?
+  notation : String?
+} derive(Eq, @debug.Debug)
+pub fn XmlProcessorEvent::equal(Self, Self) -> Bool
+pub fn XmlProcessorEvent::not_equal(Self, Self) -> Bool
+pub fn XmlProcessorEvent::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

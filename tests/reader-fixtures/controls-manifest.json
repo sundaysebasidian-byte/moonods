@@ -9,7 +9,7 @@
   "dtd-entity.ods": {
     "sha256": "4ef76abd051391545bf50eb2cb39d243dcb32d1860ee323190e7eadee49951b9",
     "bytes": 1227,
-    "expected_moonods_result": "REJECT_DTD_WITHOUT_NETWORK",
+    "expected_moonods_result": "REJECT_EXTERNAL_DEPENDENCY_WITHOUT_NETWORK",
     "moonods_execution": "NOT_RUN",
     "producer": "independent Python ZIP/XML test data; MIT synthetic, not MoonODS output"
   },

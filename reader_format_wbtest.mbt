@@ -144,14 +144,14 @@ test "basic width conversions are exact rational bounded and inherited" {
       ("5in", 127),
       ("360pt", 127),
       ("30pc", 127),
-      ("+500.0mm", 500),
+      ("500.0mm", 500),
     ] {
     assert_eq(read_width_mm(raw), Some(mm))
   }
   for
     raw in [
       "0mm", "501mm", "1pt", "1in", "1px", "4%", "2*", "-1mm", "1.01cm", "999999999999999999mm",
-      "1mmjunk",
+      "1mmjunk", "+500.0mm",
     ] {
     assert_eq(read_width_mm(raw), None)
   }

@@ -1,27 +1,32 @@
-# MoonODS 技术证据索引
+# 复审修订技术证据
 
-核对日期：2026-10-27。当前安装版 **0.4.0**。
+本分支基于 `6dcb77df291acf8b592224c7ba94ce648f395cc2`。当前运行锁见 [TOOLCHAIN.lock](../TOOLCHAIN.lock)，测试与API边界见 [README](../README.md) 和 [XML处理器说明](XML_PROCESSOR_API.md)。
 
-| 项目 | 内容与证据 |
-| --- | --- |
-| 旧基线 | 0.2.0 以写出为主；0.3.x 增加有界 ZIP/XML 读取、显式损失诊断、CSV 和表头记录。 |
-| 本期贡献 | 0.4.0 新增四种显式值、基础格式读取与兼容结构处理，并在写出前检查往返预算。采购示例可从修改 CSV 重算固定模板并生成 ODS、CSV、审计记录。 |
-| 当前安装版 | `moon add sundaysebasidian-byte/moonods@0.4.0`；[官方包](https://mooncakes.io/docs/sundaysebasidian-byte/moonods@0.4.0/)、[发布提交 4413e1a](https://github.com/sundaysebasidian-byte/moonods/commit/4413e1a873d1c0513fe94909a53662b51086137e)、[版本 PR #9](https://github.com/sundaysebasidian-byte/moonods/pull/9)。 |
-| 复现 | [README](../README.md) 给出读改写和采购修正命令；[独立消费者](../tests/consumer)、[迁移说明](release-0.4.0.zh-CN.md)、[数据流程矩阵](DATA_WORKFLOW_SUPPORT.zh-CN.md)给出接口与验证范围。 |
-| 精确版本 CI | 最终 head e567857：[核心](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40538650816)、[fresh clone](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40538650789)；合并提交 4413e1a：[核心](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40539129813)、[fresh clone](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40539129880)。 |
+## 前一处理器阶段的实际验证
 
-## 发布与独立消费
+- 包层冻结候选四后端根库+consumer各176/176；独立包层31份API夹具、58次CLI、13份编辑再导出检查；175阶段独立全包native542/542不与当前根库+consumer口径混算。
+- GUI互通绑定170阶段JS SHA `178c84afc27716e2187a8b69cdce50185860a3d10cd6a850d2e65c234621821c`。合成输入经官方Calc26.8.2.2修改、另存、库读写再开；4与12、公式A1*3、合并A2:B2、布尔日期及中文均核验。
+- Calc另存ODF1.4未套1.3 schema；库输出1.3通过固定OASIS RNG。输出 SHA `4fb13f713c5e354057dce2c0a2e467c3e960260d2170ffe3f151bcd7091f615c`。17条损失诊断需显式接受。
+- 后续175阶段读取同一Calc文件另有回执；不能将170 GUI当成后续源码完整GUI验证。
 
-0.4.0 的官方 CLI 发布退出码为 0，HTTP 200，registry 构建成功。ZIP SHA256：`f29d494c247a80c64c08d8c44d415825a1e8fd5f03abff79325a4b7d4df75c28`；71 个文件与发布源码和实际安装包一致。[PR #9](https://github.com/sundaysebasidian-byte/moonods/pull/9)包含正式回执。
+原始运行日志、截图及独立审查回执在交付私有材料包，不在公开仓库，不提供失效私有路径链接。有限测试不是标准认证；不声明无损办公往返、通用公式执行、嵌入对象XML验证或签名验证。
 
-干净消费者从 registry 精确安装 0.4.0，无 workspace/path 覆盖，实际运行 JS、Wasm、Wasm GC、native，检查九种 Value 分支、扩展类型显式启用、Header 样式、列宽、CSV 策略和 ODS 往返。JS 另对未修改的官方 LibreOffice/core 样本核对 B2–B5 类型和值，再导出读回。
+[历史0.4.0技术索引](development-history/TECHNICAL_EVIDENCE-before-review-20261030.md)中的发布与CI仅适用于当时提交。当前分支远端CI是否通过必须核对实际commit回执。
 
-项目合成 FODS 经 LibreOfficeDev 转换的兼容样本，与官方固定样本分开记录。候选阶段的 LibreOffice 25.2.3.2 闭环没有在此次发布轮重跑；Office 回存时间戳偏移会损失。来源与摘要见[来源说明](../SOURCES.md)、[兼容说明](READER_COMPAT.zh-CN.md)。
+前一集成176阶段严格串行验收23步骤全部通过；JS/WasmGC根库+consumer各176，隔离源码包消费者和固定mbtexcel联用均通过，记录的源码SHA与结束时实际文件逐一一致。其他两后端176由修复阶段实测；不声称远端CI运行。
 
-## 使用范围
+## 当前布局增量
 
-默认拒绝有损读取；显式接受格式损失后默认按数据读取。基础格式保留、扩展类型和 CSV 扩展文本分别由独立选项启用。金额为 binary64，不是精确十进制金融计算；采购示例只重算已知模板公式。没有通用公式引擎、宏、加密、大文件流式或 Excel/打印外观保证。
+精确物理列宽及固定行高：四后端各182/182；31份独立包+3份重复/尾行新包、Fraction及ODF1.3 RNG核验；JS/native独立consumer各9。当前集成严格串行23步骤通过，mbtexcel联用/冷消费者均通过。
 
-README 的旧基准表仍对应 [40287799404](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40287799404/job/121455479461)，Intel Xeon Platinum 8573C、4 个逻辑 CPU、moonc 0.10.15；不改原数值，也不当作 0.4.0 测量。0.4.0 的[基准运行](https://github.com/sundaysebasidian-byte/moonods/actions/runs/40539129794)另列。
 
-完整旧索引保留于[历史归档](development-history/TECHNICAL_EVIDENCE-through-2026-10-27.md)，其中旧安装版和待执行措辞只描述当时状态。许可与辅助工具见 [THIRD_PARTY_NOTICES](../THIRD_PARTY_NOTICES.md)、[AI_USAGE](../AI_USAGE.md)。
+## 新布局182阶段的实际GUI互通
+
+官方LibreOffice26.8.2.2实际打开本阶段导出、另存、关闭再开，最后182再次读取Calc另存件并导出，再由GUI打开。A1修改7→8保持；原生另存XML列宽0.889in、固定行高0.2173in、optimal=false保持，独立Fraction尺寸差为0。界面以0.01in显示为0.89/0.22，不能把界面舍入读数当作底层XML精确值。对话框均取消未确认改变尺寸。该正控不证明所有视觉样式保真，仍有12条其他损失诊断。
+
+本次GUI精确绑定182 CLI SHA `a60cad4b05d895b2df43e1b27c22b5b5050f7fd122c0a6cc0f7d7bc7039eef62`，并核对161份源码清单零差异；这与此前170阶段公式/合并GUI是两个独立回执。最终新分支集成23步骤验收通过，源码hash结束逐项无差异；远端CI未运行。
+
+
+## 189规范反例修复
+
+995e088的+1mm导出和段落原始空白曾实证失败，已在独立新副本修复并保留原失败。四后端各189/189、14段落两次CLI、18份writer输出RNG与独立consumer10项通过；Python oracle同步纠正原先依赖错误raw/CR显示语义的断言，原失败与负控保留。数据接口不是视觉保真承诺，旧182布局GUI不能证明189 CR路径GUI效果。

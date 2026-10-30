@@ -98,6 +98,10 @@ fn read_ods_content_noticing(
   data : Bytes,
   omitted : Array[String],
   style_parts~ : Array[String]? = None,
+  require_manifest~ : Bool = false,
+  id_assignments~ : Array[XmlIdAssignment] = [],
+  id_diagnostics~ : Array[XmlIdDiagnostic] = [],
+  processor_events~ : Array[XmlProcessorEvent] = [],
 ) -> String raise OdsError {
   let length = data.length()
   if length < 22 || length > 33554432 {
@@ -134,7 +138,9 @@ fn read_ods_content_noticing(
   let mut covered = 0
   let mut p = cd_start
   let mut total = 0
-  let mut content : String? = None
+  let mut content : Bytes? = None
+  let mut manifest : String? = None
+  let extra_xml : Map[String, Bytes] = Map([])
   let mut mimetype = false
   for _ in 0..<count {
     if p > end - 46 || ods_zip_u32(data, p) != 0x02014b50 {
@@ -167,24 +173,9 @@ fn read_ods_content_noticing(
     }
     let name_bytes = data[p + 46:p + 46 + name_len].to_owned()
     let name = ods_zip_utf8(name_bytes)
-    let allowed = [
-      "mimetype", "content.xml", "styles.xml", "meta.xml", "settings.xml", "manifest.rdf",
-      "META-INF/manifest.xml", "Thumbnails/thumbnail.png", "Configurations2/", "Configurations2/toolpanel/",
-      "Configurations2/floater/", "Configurations2/statusbar/", "Configurations2/toolbar/",
-      "Configurations2/progressbar/", "Configurations2/popupmenu/", "Configurations2/menubar/",
-      "Configurations2/images/Bitmaps/", "Configurations2/accelerator/current.xml",
-    ]
-    // Only the exact empty legacy UI configuration entries are accepted.
-    // Every accepted entry still passes the common inflate/CRC/structure checks.
-    if !allowed.contains(name) ||
-      (
-        (
-          name.has_suffix("/") ||
-          name == "Configurations2/accelerator/current.xml"
-        ) &&
-        unpacked != 0
-      ) {
-      raise Invalid("unsupported ODS package entry")
+    ods_package_path(name)
+    if name.has_suffix("/") && unpacked != 0 {
+      raise Invalid("nonempty ZIP directory entry")
     }
     if names.contains(name) {
       raise Invalid("duplicate ZIP entry")
@@ -274,10 +265,21 @@ fn read_ods_content_noticing(
       }
       mimetype = true
     } else if name == "content.xml" {
-      content = Some(ods_zip_utf8(decoded))
-    } else if name == "styles.xml" && style_parts is Some(parts) {
-      parts.push(ods_zip_utf8(decoded))
-    } else if name != "META-INF/manifest.xml" && name != "Configurations2/" {
+      content = Some(decoded)
+    } else if name == "styles.xml" {
+      extra_xml.set(name, decoded)
+      if style_parts is None {
+        omitted.push(name)
+      }
+    } else if name == "meta.xml" || name == "settings.xml" {
+      extra_xml.set(name, decoded)
+      omitted.push(name)
+    } else if name == "META-INF/manifest.xml" {
+      manifest = Some(ods_xml_decode(decoded))
+    } else if name != "Configurations2/" {
+      if name.has_prefix("META-INF/") && name.contains("signatures") {
+        extra_xml.set(name, decoded)
+      }
       omitted.push(name)
     }
     p = next
@@ -285,8 +287,66 @@ fn read_ods_content_noticing(
   if p != end || covered != cd_start || !mimetype {
     raise Invalid("invalid ODS ZIP structure")
   }
+  if require_manifest {
+    match manifest {
+      Some(xml) =>
+        check_package_manifest(
+          xml,
+          names,
+          id_assignments~,
+          id_diagnostics~,
+          processor_events~,
+        )
+      None => raise Invalid("ODS package manifest missing")
+    }
+  }
+  // Manifest encryption is diagnosed before attempting to decode ciphertext.
+  for name, raw_xml in extra_xml {
+    let xml = ods_xml_decode(raw_xml)
+    if name == "styles.xml" {
+      if style_parts is Some(parts) {
+        parts.push(xml)
+      }
+    }
+    if require_manifest {
+      ignore(
+        read_xml(
+          xml,
+          document_part=name,
+          id_assignments~,
+          id_diagnostics~,
+          processor_events~,
+        ),
+      )
+    }
+  }
   match content {
-    Some(xml) => xml
+    Some(raw_xml) => ods_xml_decode(raw_xml)
     None => raise Invalid("ODS content.xml missing")
+  }
+}
+
+///|
+// Paths are never extracted or resolved. Reject ambiguous traversal identities
+// before consuming payloads; Unicode safe relative names remain literal names.
+fn ods_package_path(name : String) -> Unit raise OdsError {
+  if name == "" ||
+    name.has_prefix("/") ||
+    name.contains("\\") ||
+    name.contains(":") {
+    raise Invalid("unsafe ODS package path")
+  }
+  for c in name {
+    if c.to_int() < 32 || c.to_int() == 127 {
+      raise Invalid("control in ODS package path")
+    }
+  }
+  let segments = name.split("/").map(s => s.to_owned()).collect()
+  for i, segment in segments {
+    if segment == "." ||
+      segment == ".." ||
+      (segment == "" && i != segments.length() - 1) {
+      raise Invalid("unsafe ODS package path component")
+    }
   }
 }

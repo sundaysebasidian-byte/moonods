@@ -33,6 +33,9 @@ fn ReadNotices::new() -> ReadNotices {
 struct ImportResult {
   book : Workbook
   notices : ReadNotices
+  xml_id_assignments : Array[XmlIdAssignment]
+  xml_id_errors : Array[XmlIdDiagnostic]
+  processor_events : Array[XmlProcessorEvent]
 }
 
 ///|
@@ -46,6 +49,18 @@ pub fn ImportResult::diagnostics(
   self : ImportResult,
 ) -> Array[ImportDiagnostic] {
   self.notices.items.copy()
+}
+
+///|
+pub fn ImportResult::xml_ids(self : ImportResult) -> Array[XmlIdAssignment] {
+  self.xml_id_assignments.copy()
+}
+
+///|
+pub fn ImportResult::xml_id_diagnostics(
+  self : ImportResult,
+) -> Array[XmlIdDiagnostic] {
+  self.xml_id_errors.copy()
 }
 
 ///|
@@ -108,7 +123,7 @@ fn ReadElement::allowed(
   names : Array[String],
 ) -> Unit raise OdsError {
   for k, _ in self.attrs {
-    if !names.contains(k) {
+    if !names.contains(k) && k != xml_id_expanded_name {
       raise Invalid("unsupported attribute: \{k}")
     }
   }
@@ -151,48 +166,14 @@ fn ReadElement::count(
 
 ///|
 fn read_text_parts(node : ReadElement) -> String raise OdsError {
-  let b = StringBuilder()
-  let mut units = 0
-  for part in node.parts {
-    let s = match part {
-      ReadText(t) => t
-      ReadElement(e) =>
-        if e.name == read_text + "span" {
-          e.allowed([read_text + "style-name"])
-          read_text_parts(e)
-        } else if e.name == read_text + "s" {
-          e.allowed([read_text + "c"])
-          if !e.parts.is_empty() {
-            raise Invalid("text:s must be empty")
-          }
-          let n = e.count(read_text, "c", 32767)
-          let spaces = StringBuilder()
-          for _ in 0..<n {
-            spaces.write_char(' ')
-          }
-          spaces.to_string()
-        } else if e.name == read_text + "tab" ||
-          e.name == read_text + "line-break" {
-          e.allowed([])
-          if !e.parts.is_empty() {
-            raise Invalid("text control must be empty")
-          }
-          if e.name == read_text + "tab" {
-            "\t"
-          } else {
-            "\n"
-          }
-        } else {
-          raise Invalid("unsupported rich text, hyperlink, or embedded object")
-        }
-    }
-    units += s.length()
-    if units > 32767 {
-      raise Invalid("expanded cell text exceeds budget")
-    }
-    b.write_string(s)
+  let state : ReadParagraph = {
+    output: StringBuilder(),
+    units: 0,
+    seen: false,
+    pending_space: false,
   }
-  b.to_string()
+  state.append_parts(node)
+  state.output.to_string()
 }
 
 ///|
@@ -743,7 +724,7 @@ fn import_table(
           column_defaults.set(c, style)
         }
         if width is Some(mm) {
-          sheet.set_column_width(c, mm)
+          sheet.set_column_width_length(c, mm)
           if formatting is Some(format) {
             format.retained_widths += 1
           }
@@ -755,7 +736,7 @@ fn import_table(
           row: -1,
           col: declared_cols,
           code: "FORMATTING_DROPPED",
-          message: "Fixed integer-mm column width retained; source column style names, default references and other metadata are normalized, not copied verbatim.",
+          message: "Exact physical column width retained; source column style names, default references and other metadata are normalized, not copied verbatim.",
         })
       } else {
         child.style_notice(notices, name, -1, declared_cols)
@@ -784,8 +765,27 @@ fn import_table(
     }
     read_workbook_budget(book)
     let cells = child.elements()
+    let height = match formatting {
+      Some(format) =>
+        format.row_height(child.attribute(read_table, "style-name"))
+      None => None
+    }
     for r in row..<(row + rows) {
-      child.style_notice(notices, name, r, -1)
+      if height is Some(length) {
+        sheet.set_row_height_length(r, length)
+        if formatting is Some(format) {
+          format.retained_heights += 1
+        }
+        read_notice(notices, {
+          sheet: name,
+          row: r,
+          col: -1,
+          code: "ROW_HEIGHT_RETAINED",
+          message: "Fixed physical row height retained; row style identity and other metadata are not copied verbatim.",
+        })
+      } else {
+        child.style_notice(notices, name, r, -1)
+      }
       let mut col = 0
       for node in cells {
         let is_covered = node.name == read_table + "covered-table-cell"
@@ -863,10 +863,7 @@ fn import_table(
               let cell = match node.attribute(read_table, "formula") {
                 None => Cell::new(value)
                 Some(f) => {
-                  if node.ns.get("of") !=
-                    Some("urn:oasis:names:tc:opendocument:xmlns:of:1.2") {
-                    raise Invalid("formula namespace unsupported")
-                  }
+                  let normalized = read_formula_prefix(f, node.ns)
                   read_notice(notices, {
                     sheet: name,
                     row: r,
@@ -874,7 +871,7 @@ fn import_table(
                     code: "FORMULA_CACHE_NOT_RECALCULATED",
                     message: "Stored cache retained; edits do not recalculate this formula.",
                   })
-                  Cell::formula(f, value)
+                  Cell::formula(normalized, value)
                 }
               }
               let selected_style = match
@@ -951,7 +948,7 @@ fn import_table(
   if formatting is Some(format) {
     for c in declared_cols..<sheet.cols {
       if format.column_width(None) is Some(mm) {
-        sheet.set_column_width(c, mm)
+        sheet.set_column_width_length(c, mm)
         format.retained_widths += 1
       }
     }
@@ -991,9 +988,16 @@ pub fn read_ods(
   }
   let omitted : Array[String] = []
   let styles : Array[String] = []
+  let package_ids : Array[XmlIdAssignment] = []
+  let package_id_errors : Array[XmlIdDiagnostic] = []
+  let package_events : Array[XmlProcessorEvent] = []
   let xml = read_ods_content_noticing(
     data,
     omitted,
+    require_manifest=true,
+    id_assignments=package_ids,
+    id_diagnostics=package_id_errors,
+    processor_events=package_events,
     style_parts=if preserve_basic_formatting { Some(styles) } else { None },
   )
   let result = import_content(
@@ -1002,7 +1006,38 @@ pub fn read_ods(
     preserve_basic_formatting~,
     styles~,
   )
+  for event in package_events {
+    result.processor_events.push(event)
+  }
+  for id in package_ids {
+    result.xml_id_assignments.push(id)
+  }
+  for error in package_id_errors {
+    result.xml_id_errors.push(error)
+  }
+  for event in result.processor_events {
+    if event.kind == "MANIFEST_EXTENSION_NOT_INTERPRETED" {
+      read_notice(result.notices, {
+        sheet: "",
+        row: -1,
+        col: -1,
+        code: "PACKAGE_EXTENSION_DROPPED",
+        message: "Foreign manifest extension not interpreted or preserved: " +
+        event.name,
+      })
+    }
+  }
   for path in omitted {
+    if path.has_prefix("META-INF/") && path.contains("signatures") {
+      read_notice(result.notices, {
+        sheet: "",
+        row: -1,
+        col: -1,
+        code: "SIGNATURE_NOT_VERIFIED",
+        message: "Signature XML parsed, but cryptographic validity not checked; signature omitted on data-only export: " +
+        path,
+      })
+    }
     read_notice(result.notices, {
       sheet: "",
       row: -1,
@@ -1021,7 +1056,16 @@ fn import_content(
   preserve_basic_formatting~ : Bool = false,
   styles~ : Array[String] = [],
 ) -> ImportResult raise OdsError {
-  let root = read_xml(xml)
+  let xml_id_assignments : Array[XmlIdAssignment] = []
+  let xml_id_errors : Array[XmlIdDiagnostic] = []
+  let processor_events : Array[XmlProcessorEvent] = []
+  let root = read_xml(
+    xml,
+    document_part="content.xml",
+    id_assignments=xml_id_assignments,
+    id_diagnostics=xml_id_errors,
+    processor_events~,
+  )
   if root.name != read_office + "document-content" {
     raise Invalid("expected ODF document-content namespace")
   }
@@ -1039,7 +1083,7 @@ fn import_content(
     col: -1,
     code: "DATA_ONLY_IMPORT",
     message: if preserve_basic_formatting {
-      "Only recognized preset styles and exact integer-mm widths may be retained; other formatting, metadata, view settings and display text are not retained. Values, merges and formula/cache follow the selected type policy. BASIC_FORMATTING_SUBSET reports actual retained counts; repeated losses retain 32 exact occurrences plus counted summaries."
+      "Only recognized preset styles, exact physical column lengths and fixed row heights may be retained; other formatting, metadata, view settings and display text are not retained. Values, merges and formula/cache follow the selected type policy. BASIC_FORMATTING_SUBSET reports actual retained counts; repeated losses retain 32 exact occurrences plus counted summaries."
     } else {
       "Formatting, metadata, view settings, and numeric display text are not retained. Numbers use binary64; changed decimal representations are reported. Supported merges and formula text/cache are retained. Repeated per-sheet loss diagnostics retain 32 exact occurrences and an explicit counted summary."
     },
@@ -1099,12 +1143,12 @@ fn import_content(
       row: -1,
       col: -1,
       code: "BASIC_FORMATTING_SUBSET",
-      message: "Retained \{format.retained_cells} normalized preset cell styles and \{format.retained_widths} exact integer-mm widths. Other definitions, names, fonts, row heights, layout, themes and metadata are not retained; arbitrary style XML is never copied.",
+      message: "Retained \{format.retained_cells} normalized preset cell styles and \{format.retained_widths} exact physical column widths and \{format.retained_heights} fixed row heights. Other definitions, names, fonts, automatic sizing, layout, themes and metadata are not retained; arbitrary style XML is never copied.",
     })
   }
   // Reuse writer preflight to enforce aggregate grid/text budgets as well.
   book.content_xml() |> ignore
-  { book, notices, }
+  { book, notices, xml_id_assignments, xml_id_errors, processor_events, }
 }
 
 ///|
@@ -1112,3 +1156,39 @@ pub extend ImportDiagnostic with Eq::{equal, not_equal}
 
 ///|
 pub extend ImportDiagnostic with @debug.Debug::{to_repr}
+
+///|
+// Normalize only the outer OpenFormula namespace prefix. The body is opaque;
+// extension-function prefix semantics and formula correctness are not validated.
+fn read_formula_prefix(
+  f : String,
+  ns : Map[String, String],
+) -> String raise OdsError {
+  let prefix = StringBuilder()
+  let mut first = true
+  for c in f {
+    if c == ':' {
+      break
+    }
+    if !(if first { xml_name_start(c) } else { xml_name_char(c) }) {
+      raise Invalid("unsupported formula namespace prefix")
+    }
+    prefix.write_char(c)
+    first = false
+  }
+  let name = prefix.to_string()
+  if first || !f.has_prefix(name + ":=") || f.length() <= name.length() + 2 {
+    raise Invalid("formula requires namespace prefix and nonempty body")
+  }
+  if ns.get(name) != Some("urn:oasis:names:tc:opendocument:xmlns:of:1.2") {
+    raise Invalid("formula namespace unsupported")
+  }
+  "of:" + f[name.length() + 1:].to_owned()
+}
+
+///|
+pub fn ImportResult::xml_events(
+  self : ImportResult,
+) -> Array[XmlProcessorEvent] {
+  self.processor_events.copy()
+}

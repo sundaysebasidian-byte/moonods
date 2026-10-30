@@ -6,6 +6,8 @@ struct Sheet {
   mut cols : Int32
   mut text_units : Int32
   widths : Map[Int32, Int32]
+  precise_widths : Map[Int32, String]
+  row_heights : Map[Int32, String]
   spans : Map[(Int32, Int32), (Int32, Int32)]
   covered : Map[(Int32, Int32), Bool]
 }
@@ -41,6 +43,8 @@ pub fn Workbook::add_sheet(
     cols: 1,
     text_units: 0,
     widths: {},
+    precise_widths: {},
+    row_heights: {},
     spans: {},
     covered: {},
   }
@@ -184,17 +188,26 @@ pub fn Workbook::content_xml(self : Workbook) -> String raise OdsError {
   b.write_string(
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?><office:document-content\{namespaces} office:version=\"1.3\"><office:automatic-styles>\{self.column_styles()}</office:automatic-styles><office:body><office:spreadsheet>",
   )
-  for s in self.sheets {
+  for sheet_index, s in self.sheets {
     b.write_string("<table:table table:name=\"\{xml_escape(s.name)}\">")
     for col in 0..<s.cols {
-      let a = match s.widths.get(col) {
-        Some(mm) => " table:style-name=\"W\{mm}\""
-        None => ""
+      let a = if s.precise_widths.contains(col) {
+        " table:style-name=\"CW\{sheet_index}_\{col}\""
+      } else {
+        match s.widths.get(col) {
+          Some(mm) => " table:style-name=\"W\{mm}\""
+          None => ""
+        }
       }
       b.write_string("<table:table-column\{a}/>")
     }
     for row in 0..<s.rows {
-      b.write_string("<table:table-row>")
+      let row_style = if s.row_heights.contains(row) {
+        " table:style-name=\"RH\{sheet_index}_\{row}\""
+      } else {
+        ""
+      }
+      b.write_string("<table:table-row\{row_style}>")
       let mut col = 0
       while col < s.cols {
         let mut count = 1

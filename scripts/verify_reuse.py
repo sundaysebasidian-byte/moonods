@@ -83,7 +83,16 @@ def main():
             work = Path(temp)
             extract(candidate, work / 'candidate')
             shutil.copytree(fixture, work / 'consumer', ignore=shutil.ignore_patterns('_build', '.mooncakes'))
-            (work / 'moon.work').write_text('members = [\n  "candidate",\n  "consumer",\n]\n')
+            dependency = json.loads((ROOT / 'DEPENDENCIES.lock.json').read_text())['flate']
+            archive = ROOT / dependency['archive']
+            if digest(archive) != dependency['sha256']:
+                raise RuntimeError('Isolated consumer dependency archive mismatch')
+            extract(archive, work / 'flate')
+            actual = {str(p.relative_to(work / 'flate')): digest(p) for p in (work / 'flate').rglob('*') if p.is_file()}
+            if actual != dependency['files_sha256']:
+                raise RuntimeError('Isolated consumer dependency files mismatch')
+            report['isolated_dependency'] = {'module': dependency['module'], 'version': dependency['version'], 'sha256': dependency['sha256']}
+            (work / 'moon.work').write_text('members = [\n  "candidate",\n  "consumer",\n  "flate",\n]\n')
             report['workspace_config'] = (work / 'moon.work').read_text()
             consumer = work / 'consumer'
             run('consumer-format', [args.moon, 'fmt', '--check', 'src'], consumer)
