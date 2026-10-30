@@ -26,7 +26,7 @@ CONTROLS = {
     'formula-without-cache': 'formula requires a typed nonempty cache',
     'inflate-ratio': 'XML text/attribute exceeds limit',
     'invalid-date': 'invalid Gregorian day',
-    'nonfinite-number': 'invalid ODF numeric lexical form',
+    'nonfinite-number': 'unsupported non-finite ODF numeric value',
     'repeat-overflow': 'repeat/span exceeds budget',
     'typed-prefix-alias': '',
     'unknown-currency': 'unsupported attribute',

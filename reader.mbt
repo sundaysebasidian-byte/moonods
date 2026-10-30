@@ -288,6 +288,11 @@ fn read_finite_double(raw : String) -> Double raise OdsError {
     raise Invalid("numeric literal exceeds 1024 units")
   }
   let raw = read_xsd_collapse(raw)
+  if raw == "INF" || raw == "-INF" || raw == "NaN" {
+    raise Invalid(
+      "unsupported non-finite ODF numeric value; finite numbers required",
+    )
+  }
   // XML Schema decimal/exponent lexical subset; core parse_double also accepts
   // language-specific underscores, which must not be admitted as ODF numbers.
   let chars : Array[Char] = []

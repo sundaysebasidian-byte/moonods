@@ -137,3 +137,5 @@ The importer applies XML Schema / RNG token whitespace collapse at typed boundar
 Repeat/span positiveInteger values accept a single leading `+` and surrounding XML whitespace. Date components still use the strict digit-only parser after whole-date normalization, so `2026-+10-30` remains invalid. `text:s` uses a separate nonNegativeInteger parser, allowing zero (including lexical `-0`), while repeated rows/columns/spans remain strictly positive. Resource limits are unchanged. Physical length strings still reject a leading `+` because ODF positiveLength uses a different lexical definition.
 
 Boolean import follows the ODF RNG token values `true` and `false`; the former nonstandard `1`/`0` compatibility acceptance is intentionally removed. `office:string-value` and ordinary strings are not collapsed by this typed normalization.
+
+Non-finite numeric tokens remain unsupported; [numeric diagnostics](docs/FINITE_NUMBER_DIAGNOSTICS.md) distinguishes legal unsupported values from malformed lexical forms.
