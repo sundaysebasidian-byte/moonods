@@ -59,7 +59,8 @@ jobs:
         run: |
           python scripts/restore_deps.py
           moon update
-          moon check --target js -j 1 --deny-warn
+          # acceptance.py runs moon check after validating the pristine dependency lock.
+          # A prior check regenerates dependency interfaces and invalidates that check.
           python -m pip install -r requirements-verify.txt
           python scripts/verify_deps.py
           python scripts/fetch_schemas.py

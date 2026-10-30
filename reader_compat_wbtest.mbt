@@ -117,7 +117,7 @@ test "compat spans do not admit links scripts unknown nodes or attributes" {
   for
     inner in [
       "<x:span><x:a>link</x:a></x:span>", "<x:span><o:scripts/></x:span>", "<x:span x:unknown=\"1\">text</x:span>",
-      "<x:span><x:unknown/></x:span>", "<x:span><x:s x:c=\"0\"/></x:span>", "<x:span><x:tab>nonempty</x:tab></x:span>",
+      "<x:span><x:unknown/></x:span>", "<x:span><x:s x:c=\"-1\"/></x:span>", "<x:span><x:tab>nonempty</x:tab></x:span>",
     ] {
     for kind in ["string", "float"] {
       let typed = if kind == "float" { " o:value=\"1\"" } else { "" }

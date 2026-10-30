@@ -110,6 +110,12 @@ def main():
     actual = subprocess.check_output([str(dest / 'bin/moonc'), '-v'], env=env, text=True).strip()
     if not actual.startswith('v' + lock['compiler'] + ' '):
         raise RuntimeError('unexpected compiler version after extraction')
+    # Bound workspace discovery to the newly extracted SDK core. Without this,
+    # a project-local SDK inherits the parent project's moon.work before its
+    # dependencies exist. Do not modify that parent workspace or skip bundling.
+    core_workspace = dest / 'lib/core/moon.work'
+    with core_workspace.open('x') as workspace:
+        workspace.write('members = ["."]\n')
     subprocess.run([str(dest / 'bin/moon'), 'bundle', '--all'], cwd=dest / 'lib/core', env=env, check=True)
     print('Verified project-local SDK/core installed; no global settings modified')
 

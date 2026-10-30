@@ -129,3 +129,11 @@ Physical length setters reject leading plus and non-XML surrounding whitespace; 
 189修订四后端根包及consumer各189/189；独立14段落首读/再读28次CLI与18份真实API导出RNG通过。`+1mm`拒绝，`.5mm`、`1.mm`和合法前导零按外部schema保留；只trim XML空白，不接受NBSP/EM SPACE等包围长度。CR数据属性路径已用独立负控确认：改/删属性或加入冲突段落均被验收拒绝。普通Text显式控制与NBSP保留。旧GUI测试不外推此新CR表示。
 
 最终189集成严格23步骤全部通过，结束后全部源码/脚本哈希与运行起点一致。此运行使用固定SDK和锁定依赖；新GUI及远端CI未在该验收中运行。原错误oracle和环境依赖失败记录与修后结果分别保存，不覆盖历史。
+
+## Typed lexical normalization
+
+The importer applies XML Schema / RNG token whitespace collapse at typed boundaries using only XML SPACE/TAB/CR/LF. It does not use Unicode trim: NBSP and other non-XML whitespace remain significant and invalid in numeric/token values. Numeric values (including percentages and currency), boolean tokens, supported date/time values, and the value-type token are normalized before their existing lexical/range checks. Precision diagnostics compare normalized decimal identities; finite-number, underflow, and monetary exactness safeguards remain in force.
+
+Repeat/span positiveInteger values accept a single leading `+` and surrounding XML whitespace. Date components still use the strict digit-only parser after whole-date normalization, so `2026-+10-30` remains invalid. `text:s` uses a separate nonNegativeInteger parser, allowing zero (including lexical `-0`), while repeated rows/columns/spans remain strictly positive. Resource limits are unchanged. Physical length strings still reject a leading `+` because ODF positiveLength uses a different lexical definition.
+
+Boolean import follows the ODF RNG token values `true` and `false`; the former nonstandard `1`/`0` compatibility acceptance is intentionally removed. `office:string-value` and ordinary strings are not collapsed by this typed normalization.

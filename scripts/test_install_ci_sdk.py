@@ -67,6 +67,7 @@ class ExtractionGuards(unittest.TestCase):
                 installer.main()
             for name in installer.TOOLS:
                 self.assertTrue(os.access(dest / 'bin' / name, os.X_OK))
+            self.assertEqual((dest / 'lib/core/moon.work').read_text(), 'members = ["."]\n')
             self.assertEqual(run.call_args.kwargs['cwd'], dest / 'lib/core')
             self.assertEqual(run.call_args.kwargs['env']['MOON_HOME'], str(dest))
 

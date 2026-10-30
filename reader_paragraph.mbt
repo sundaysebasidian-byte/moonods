@@ -56,7 +56,10 @@ fn ReadParagraph::append_parts(
           if !e.parts.is_empty() {
             raise Invalid("text:s must be empty")
           }
-          let n = e.count(read_text, "c", 32767)
+          let n = match e.attribute(read_text, "c") {
+            Some(raw) => read_xsd_nonnegative(raw, 32767)
+            None => 1
+          }
           self.boundary()
           if self.units > 32767 - n {
             raise Invalid("expanded cell text exceeds budget")

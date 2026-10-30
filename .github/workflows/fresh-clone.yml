@@ -13,6 +13,7 @@ jobs:
       matrix:
         sdk: [pinned]
     env:
+      MOON_REGISTRY_API: "1"
       PINNED_SDK: 0.10.18+6c83a7f62
     steps:
       - uses: actions/checkout@v5

@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
+      MOON_REGISTRY_API: "1"
       MOONBIT_VERSION: 0.10.18+6c83a7f62
     steps:
       - uses: actions/checkout@v4

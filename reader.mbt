@@ -159,7 +159,7 @@ fn ReadElement::count(
   max : Int32,
 ) -> Int32 raise OdsError {
   match self.attribute(ns, key) {
-    Some(s) => read_positive(s, max)
+    Some(s) => read_xsd_positive(s, max)
     None => 1
   }
 }
@@ -219,6 +219,7 @@ fn ReadElement::has_text_formatting(self : ReadElement) -> Bool {
 
 ///|
 fn read_decimal_identity(raw : String) -> String raise OdsError {
+  let raw = read_xsd_collapse(raw)
   // Exact decimal normalization for already lexically validated finite inputs.
   // This compares source/output decimals; it does not claim decimal arithmetic.
   let digits : Array[Char] = []
@@ -286,6 +287,7 @@ fn read_finite_double(raw : String) -> Double raise OdsError {
   if raw.length() > 1024 {
     raise Invalid("numeric literal exceeds 1024 units")
   }
+  let raw = read_xsd_collapse(raw)
   // XML Schema decimal/exponent lexical subset; core parse_double also accepts
   // language-specific underscores, which must not be admitted as ODF numbers.
   let chars : Array[Char] = []
@@ -353,13 +355,13 @@ fn read_value(node : ReadElement, extended : Bool) -> Value raise OdsError {
   // Validate even display paragraphs on non-text values; never silently discard
   // annotations, drawings, links, or unsupported text nodes in numeric cells.
   let text = read_cell_text(node)
-  let kind = node.attribute(read_office, "value-type")
+  let kind = node.attribute(read_office, "value-type").map(read_xsd_collapse)
   match
     node.attrs.get(
       "urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0#value-type",
     ) {
     Some(ext) =>
-      if Some(ext) != kind {
+      if Some(read_xsd_collapse(ext)) != kind {
         raise Invalid("unsupported or conflicting LibreOffice value type")
       }
     None => ()
@@ -397,19 +399,26 @@ fn read_value(node : ReadElement, extended : Bool) -> Value raise OdsError {
       Currency(amount, node.attribute(read_office, "currency").unwrap_or(""))
     }
     Some("time") if extended =>
-      Duration(node.attribute(read_office, "time-value").unwrap_or(""))
+      Duration(
+        read_xsd_collapse(
+          node.attribute(read_office, "time-value").unwrap_or(""),
+        ),
+      )
     Some("float") => {
       let raw = node.attribute(read_office, "value").unwrap_or("")
       Number(read_finite_double(raw))
     }
     Some("boolean") =>
-      match node.attribute(read_office, "boolean-value") {
-        Some("true") | Some("1") => Boolean(true)
-        Some("false") | Some("0") => Boolean(false)
+      match
+        node.attribute(read_office, "boolean-value").map(read_xsd_collapse) {
+        Some("true") => Boolean(true)
+        Some("false") => Boolean(false)
         _ => raise Invalid("invalid boolean cell")
       }
     Some("date") => {
-      let raw = node.attribute(read_office, "date-value").unwrap_or("")
+      let raw = read_xsd_collapse(
+        node.attribute(read_office, "date-value").unwrap_or(""),
+      )
       if extended && raw.contains("T") {
         DateTime(raw)
       } else {
