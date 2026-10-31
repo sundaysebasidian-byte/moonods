@@ -1,0 +1,18 @@
+{
+  "part1.html": {
+    "url": "https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part1-introduction/OpenDocument-v1.3-os-part1-introduction.html",
+    "sha256": "b9b3ba011cd691dc0d3b20ce97d221fa137c743d2649858c4cf1d68ede3471e6"
+  },
+  "part2.html": {
+    "url": "https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part2-packages/OpenDocument-v1.3-os-part2-packages.html",
+    "sha256": "c45386059f6a4d5616dac58720cecc6cc7703b83600ac308cc4fddef19e59919"
+  },
+  "part3.html": {
+    "url": "https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html",
+    "sha256": "206725c1b37720482a397ce791f849fe977cf57f67619cd91e33c4ad3caa7df0"
+  },
+  "part4.html": {
+    "url": "https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part4-formula/OpenDocument-v1.3-os-part4-formula.html",
+    "sha256": "0de2d7267ff1c4bc517991ccb23cf8af0b211f37e311911e351a3c3685536c92"
+  }
+}

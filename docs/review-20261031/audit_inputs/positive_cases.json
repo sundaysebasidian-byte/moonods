@@ -1,0 +1,12 @@
+[
+  "explicit-charref-vs-entity-tab",
+  "default-string-entity-whitespace",
+  "DTD-defaults-namespace-bindings",
+  "tokenized-attribute-space-collapse",
+  "explicit-overrides-DTD-default",
+  "first-entity-binding-wins",
+  "row-repeat-default-and-edit-isolation",
+  "default-value-type-numeric-lexical",
+  "entity-markup-alias-and-escaped-text",
+  "nested-entity-default-display-loss"
+]

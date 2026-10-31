@@ -1,0 +1,124 @@
+part,section,classification,scope
+1,1.3 Terminology,定义/义务/目录,不是独立输出功能
+2,1.2 Terminology,定义/义务/目录,不是独立输出功能
+2,2.2.1 OpenDocument Package,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+2,2.3.1 OpenDocument Package Producer,定义/义务/目录,不是独立输出功能
+2,2.3.2 OpenDocument Package Extended Producer,定义/义务/目录,不是独立输出功能
+2,4.16.1 manifest:algorithm-name,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+2,4.16.3 manifest:checksum-type,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+2,4.16.6 manifest:start-key-generation-name,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+2,4.16.9 manifest:key-derivation-name,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+2,4.16.11 manifest:preferred-view-mode,需说明,无GUI；不选择/保留默认视图；消费应用决定
+2,4.16.11 manifest:preferred-view-mode,需说明,无GUI；不选择/保留默认视图；消费应用决定
+2,4.17 manifest:PGPAlgorithm,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,1.2 Terminology,定义/义务/目录,不是独立输出功能
+3,2.3.1 OpenDocument Producer,定义/义务/目录,不是独立输出功能
+3,2.3.2 OpenDocument Extended Producer,定义/义务/目录,不是独立输出功能
+3,3.11 Cursor Position Setting,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,3.16 Document Signatures,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,4.3.1 General,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,8.8.3 <text:alphabetical-index-auto-mark-file>,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,11.3 <chart:coordinate-region>,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,11.5 <chart:plot-area>,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,13.5.25 <form:generic-control>,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,14.5.3 Event Types,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,16.31.3 <text:notes-configuration>,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.85.4 <db:table-definition>,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.155 draw:extrusion-first-light-harsh,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.164 draw:extrusion-second-light-harsh,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.264 form:datasource,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.265 form:default-button,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.418 presentation:show-end-of-presentation-slide,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.419 presentation:show-logo,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.421 presentation:speed,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.493 style:leader-width,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.497 style:line-style,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.646 table:formula,需说明,输出公式文本和外部缓存；无求值HOST-LOCALE
+3,19.677.11 <table:operation>,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.702 table:protection-key-digest-algorithm,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.714 table:show-empty,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,19.857 text:protection-key-digest-algorithm,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.61 chart:symbol-name,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.176 draw:visible-area-height,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.177 draw:visible-area-left,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.178 draw:visible-area-top,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.179 draw:visible-area-width,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.230 fo:wrap-option,需说明,部分样式显式wrap；其他未指定；不渲染溢出
+3,20.238 presentation:transition-speed,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.238 presentation:transition-speed,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.238 presentation:transition-speed,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.315 style:line-break,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.377 style:text-line-through-width,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.383 style:text-overline-width,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.392 style:text-underline-width,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+3,20.395 style:use-window-font-color,当前writer未使用相关机制,固定词汇/四部件核查；并不承诺所有输入均可读取
+4,,定义/义务/目录,不是独立输出功能
+4,2.3.1 OpenDocument Formula Evaluator,定义/义务/目录,不是独立输出功能
+4,"2.4 Variances (Implementation-defined, Unspecified, and Behavioral Changes)",定义/义务/目录,不是独立输出功能
+4,"2.4 Variances (Implementation-defined, Unspecified, and Behavioral Changes)",定义/义务/目录,不是独立输出功能
+4,3.4 Host-Defined Behaviors,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,4.2 Text (String),公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,4.3.3 Date,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,4.4 Complex Number,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,"4.11.12 Sequences (NumberSequence, NumberSequenceList, DateSequence, LogicalSequence, and ComplexSequence)",公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,5.7 Nonstandard Function Names,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.2 Common Template for Functions and Operators,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.2 Common Template for Functions and Operators,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.3.5 Conversion to Number,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.3.6 Conversion to Integer,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.3.12 Conversion to Logical,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.3.15 Conversion to DateParam,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.3.15 Conversion to DateParam,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.3.16 Conversion to TimeParam,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.3.16 Conversion to TimeParam,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,"6.4.9 Infix Operator Ordered Comparison (""<"", ""<="", "">"", "">="")",公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.6.1 General,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.8.5 IMARGUMENT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.8.26 IMSUM,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.12.4 AMORLINC,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.13.6 COUNT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.13.7 COUNTA,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.13.8 COUNTBLANK,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.13.12 FORMULA,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.13.17 ISEVEN,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.13.18 ISFORMULA,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.13.23 ISODD,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.13.26 N,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.13.34 VALUE,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.16.10 ATAN2,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.16.18 CONVERT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.16.36 GCD,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.16.46 POWER,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.16.46 POWER,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.18.48 MIN,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.18.49 MINA,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.18.73 STDEVA,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.18.75 STDEVPA,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.18.83 VARA,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.18.85 VARPA,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.4 BIN2DEC,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.4 BIN2DEC,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.5 BIN2HEX,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.5 BIN2HEX,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.5 BIN2HEX,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.6 BIN2OCT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.6 BIN2OCT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.6 BIN2OCT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.7 DEC2BIN,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.7 DEC2BIN,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.8 DEC2HEX,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.8 DEC2HEX,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.9 DEC2OCT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.9 DEC2OCT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.11 HEX2BIN,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.11 HEX2BIN,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.12 HEX2DEC,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.13 HEX2OCT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.13 HEX2OCT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.14 OCT2BIN,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.14 OCT2BIN,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.15 OCT2DEC,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.16 OCT2HEX,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.19.16 OCT2HEX,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.20.5 CODE,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
+4,6.20.23 TEXT,公式求值器范围,本库不托管通用求值器；不据此宣称函数行为通过
