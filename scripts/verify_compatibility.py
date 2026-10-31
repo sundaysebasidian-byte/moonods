@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """Independent ODF date/length regression; no native app or UI activation."""
+from verification_runtime import require_assertions
+
+# Refuse optimized CLI execution before imports, parsing, or filesystem writes.
+if __name__ == '__main__':
+    require_assertions()
+
 import argparse, hashlib, json, zipfile
 from pathlib import Path
 from lxml import etree
@@ -7,6 +13,7 @@ from fetch_schemas import SCHEMAS
 from verify_external import check_package, cell_value, expected_cell
 
 def main():
+    require_assertions()
     ap = argparse.ArgumentParser()
     ap.add_argument('--input', type=Path, default=Path('examples/compatibility/generated/compatibility.ods'))
     ap.add_argument('--report', type=Path, required=True)

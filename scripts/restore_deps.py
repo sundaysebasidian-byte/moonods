@@ -8,28 +8,45 @@ import hashlib
 import json
 import stat
 import zipfile
+from io_preflight import validate_layout
 from verify_deps import ROOT, verify, require, safe_path, installed_files, dependency_targets
 
 
 def restore(root=ROOT):
     lock = json.loads(safe_path(root, 'DEPENDENCIES.lock.json').read_text())
     targets = dependency_targets(root, lock)
+    # Inputs must remain outside every installed tree, including other modules.
+    # Otherwise a valid-looking member can overwrite the ZIP needed by verify().
+    archives = {key: safe_path(root, item['archive']) for key, item in lock.items()}
+    for archive in archives.values():
+        require(archive.is_file(), 'dependency archive must be a regular file')
+        for target in targets.values():
+            require(not (archive == target or archive.is_relative_to(target)),
+                    'dependency input archive overlaps output tree')
     pending = []
     for key, item in lock.items():
-        archive = safe_path(root, item['archive'])
+        archive = archives[key]
         require(hashlib.sha256(archive.read_bytes()).hexdigest() == item['sha256'],
                 'dependency archive mismatch')
         target = targets[key]
         expected = item['files_sha256']
+        validate_layout(expected)
         require(installed_files(target) <= set(expected), 'unexpected installed dependency files')
         seen = set()
+        seen_entries = set()
+        directories = set()
         with zipfile.ZipFile(archive) as z:
             for entry in z.infolist():
                 name = entry.filename
+                require(name not in seen_entries, 'duplicate archive entry')
+                seen_entries.add(name)
                 out = safe_path(target, name[:-1] if entry.is_dir() else name)
                 mode = entry.external_attr >> 16
                 require(not stat.S_ISLNK(mode), 'archive symlink forbidden')
                 if entry.is_dir():
+                    require(stat.S_IFMT(mode) in (0, stat.S_IFDIR), 'non-directory archive entry')
+                    require(not out.exists() or out.is_dir(), 'dependency directory destination is not a directory')
+                    directories.add(name[:-1])
                     continue
                 require(stat.S_IFMT(mode) in (0, stat.S_IFREG), 'nonregular archive entry')
                 require(name not in seen and name in expected, 'archive file set mismatch')
@@ -40,6 +57,7 @@ def restore(root=ROOT):
                 require(not out.exists() or out.is_file(), 'dependency destination is not a file')
                 pending.append((item['module'], name, data))
         require(seen == set(expected), 'archive missing locked files')
+        validate_layout(seen, directories)
     for module, name, data in pending:
         # Recheck the entire target path immediately before each write.
         out = safe_path(root, '.mooncakes/' + module + '/' + name)

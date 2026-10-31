@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 """Serial, fail-closed reproducible checks. Does not install tools or publish."""
+from verification_runtime import require_assertions
+
+# Refuse optimized CLI execution before imports, parsing, or filesystem writes.
+if __name__ == '__main__':
+    require_assertions()
+
 import argparse, datetime, hashlib, json, os, platform, re, shutil, subprocess, sys
 from importlib.metadata import version
 from pathlib import Path
 from verify_deps import ROOT, verify
 
 def main():
+    require_assertions()
     p = argparse.ArgumentParser()
     p.add_argument('--moon', default=os.environ.get('MOON_BIN') or shutil.which('moon'))
     p.add_argument('--output', type=Path, default=ROOT / 'evidence' / 'current')
@@ -51,6 +58,14 @@ def main():
         run('source-export-guards-optimized', [sys.executable, '-O', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_package_source.py'])
         run('sdk-boundary-guards', [sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_installer_boundaries.py'])
         run('sdk-boundary-guards-optimized', [sys.executable, '-O', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_installer_boundaries.py'])
+        run('source-manifest-guards', [sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_source_manifest.py'])
+        run('source-manifest-guards-optimized', [sys.executable, '-O', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_source_manifest.py'])
+        run('verification-runtime-guards', [sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_verification_runtime.py'])
+        run('verification-runtime-guards-optimized', [sys.executable, '-O', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_verification_runtime.py'])
+        run('io-preflight-guards', [sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_io_preflight.py'])
+        run('io-preflight-guards-optimized', [sys.executable, '-O', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_io_preflight.py'])
+        run('cli-input-bounds-guards', [sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_cli_input_bounds.py'])
+        run('cli-input-bounds-guards-optimized', [sys.executable, '-O', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_cli_input_bounds.py'])
         run('format', [moon, 'fmt', '--check'])
         run('check', [moon, 'check', '--target', 'js', '-j', '1', '--deny-warn'])
         run('build', [moon, 'build', '--target', 'js', '-j', '1', '--deny-warn'])

@@ -11,6 +11,7 @@ import stat
 import subprocess
 import zipfile
 import xml.etree.ElementTree as ET
+from source_manifest import verify_source_manifest
 
 
 def sha(path):
@@ -18,26 +19,48 @@ def sha(path):
 
 
 def unpack(archive, destination, prefix=""):
-    """Reject aliases/links and bound extraction before creating any files."""
+    """Preflight all ZIP contents and path shapes before any destination writes.
+
+    Not transactional on ordinary I/O errors; concurrent writers unsupported.
+    """
+    from io_preflight import checked_destination, validate_layout
+    destination = checked_destination(destination)
+    if not stat.S_ISREG(Path(archive).lstat().st_mode):
+        raise ValueError('source archive must be a regular file')
+    if prefix and (not prefix.endswith('/') or prefix.startswith('/')):
+        raise ValueError("unsafe source archive prefix")
+    if prefix:
+        validate_layout([], [prefix[:-1]])
     with zipfile.ZipFile(archive) as z:
         names = set()
-        entries = []
+        files, directories, entries = set(), set(), []
         if sum(i.file_size for i in z.infolist()) > 256 * 1024 * 1024:
             raise ValueError("source archive exceeds private extraction budget")
         for item in z.infolist():
             name = item.filename
             parts = PurePosixPath(name).parts
-            if (name.startswith("/") or "\\" in name or ":" in name
+            mode = stat.S_IFMT(item.external_attr >> 16)
+            if (not name or name.startswith("/") or "\\" in name or ":" in name
                     or any(p in (".", "..") for p in parts)
                     or name != "/".join(parts) + ("/" if item.is_dir() else "")
-                    or name in names or stat.S_ISLNK(item.external_attr >> 16)):
+                    or name in names
+                    or mode not in ((0, stat.S_IFDIR) if item.is_dir() else (0, stat.S_IFREG))):
                 raise ValueError("unsafe source archive member")
             names.add(name)
             if not name.startswith(prefix):
                 raise ValueError("unexpected source archive prefix")
             relative = name[len(prefix):]
-            if relative and not item.is_dir():
+            if not relative:
+                if not item.is_dir():
+                    raise ValueError("source archive member aliases root")
+                continue
+            if item.is_dir():
+                directories.add(relative[:-1])
+            else:
+                files.add(relative)
                 entries.append((relative, z.read(item)))
+        validate_layout(files, directories)
+    checked_destination(destination)
     destination.mkdir(parents=True, exist_ok=False)
     for name, data in entries:
         target = destination / name
@@ -156,12 +179,10 @@ def main():
         workspace = out / "workspace"
         candidate, consumer = workspace / "candidate", workspace / "consumer"
         unpack(archive, candidate, "MoonODS/")
-        state = json.loads((candidate / "SOURCE_STATE.json").read_text())
+        state = verify_source_manifest(candidate)
         report["source_commit"] = state["head"]
-        for name, digest in state["files_sha256"].items():
-            if sha(candidate / name) != digest:
-                raise ValueError("source manifest mismatch: " + name)
         report["archive_manifest_hash_count"] = len(state["files_sha256"])
+        report["archive_manifest_exact_file_set"] = True
         forbidden = {".git", ".mooncakes", ".aws", ".ssh", ".codex", ".env", "credentials.json"}
         forbidden_paths = [str(p.relative_to(candidate)) for p in candidate.rglob("*") if p.name in forbidden]
         if forbidden_paths:

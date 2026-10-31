@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """Independent odfpy/RNG assertions for the three synthetic consumer scenarios."""
+from verification_runtime import require_assertions
+
+# Refuse optimized CLI execution before imports, parsing, or filesystem writes.
+if __name__ == '__main__':
+    require_assertions()
+
 from lxml import etree
 from odf import teletype
 from fetch_schemas import SCHEMAS
@@ -10,6 +16,7 @@ def digest(path):
     return sha256(path.read_bytes()).hexdigest()
 
 def verify_generated(generated, schema_root):
+    require_assertions()
     sources = {k: schema_root / (k + '.rng') for k in SCHEMAS}
     assert all(digest(p) == SCHEMAS[k][1] for k, p in sources.items())
     schemas = {k: etree.RelaxNG(etree.parse(str(p))) for k, p in sources.items()}

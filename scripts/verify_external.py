@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """Independent reader and OASIS schema checks. Never import the MoonODS writer."""
+from verification_runtime import require_assertions
+
+# Refuse optimized CLI execution before imports, parsing, or filesystem writes.
+if __name__ == '__main__':
+    require_assertions()
+
 import argparse, hashlib, json, struct, zipfile, tempfile
 from pathlib import Path
 from importlib.metadata import version
@@ -16,6 +22,7 @@ MANIFEST = 'urn:oasis:names:tc:opendocument:xmlns:manifest:1.0'
 NS_TABLE = 'urn:oasis:names:tc:opendocument:xmlns:table:1.0'
 
 def check_package(p, schemas):
+    require_assertions()
     raw = p.read_bytes()
     assert raw[:4] == b'PK\x03\x04'
     with zipfile.ZipFile(p) as z:
@@ -106,6 +113,7 @@ def expected_cell(value):
 
 
 def main():
+    require_assertions()
     ap = argparse.ArgumentParser()
     ap.add_argument('--schemas', type=Path, default=Path('.schemas'))
     ap.add_argument('--input', type=Path, default=Path('examples/generated'))

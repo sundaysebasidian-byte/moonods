@@ -21,6 +21,7 @@ from lxml import etree as ET
 from verify_delivery_consumer import unpack
 from verify_value import semantic
 from ods_value_oracle import normalize_expected, expected_number
+from source_manifest import verify_source_manifest
 
 
 def sha(p):
@@ -37,8 +38,7 @@ def main():
     out = a.output.resolve(); out.mkdir(parents=True, exist_ok=False)
     root = out/'MoonODS'; archive = a.archive.resolve(); sdk = a.sdk.resolve()
     unpack(archive, root, 'MoonODS/')
-    state = json.loads((root/'SOURCE_STATE.json').read_text())
-    assert all(sha(root/n) == h for n,h in state['files_sha256'].items())
+    state = verify_source_manifest(root)
     env = {k:v for k,v in os.environ.items() if not k.startswith(('MOON_', 'REPORT_', 'RECONCILE_', 'ODS_'))}
     env.update(MOON_HOME=str(out/'moon-state'), MOON_TOOLCHAIN_ROOT=str(sdk), PATH=str(sdk/'bin')+':'+os.environ['PATH'])
     report = {'status':'RUNNING','source_commit':state['head'],'archive_sha256':sha(archive),'scope':'synthetic but input-driven procurement correction; actual ZIP, public API, independent integer-cent/XML/CSV oracle, real headless Office; no competitor execution or registry install','steps':[],'negative_cases':[]}

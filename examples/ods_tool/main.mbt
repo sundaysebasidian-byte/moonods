@@ -21,7 +21,27 @@ extern "js" fn env(name : String) -> String =
 
 ///|
 extern "js" fn read_file(path : String) -> Bytes =
-  #| (p) => new Uint8Array(require('node:fs').readFileSync(p))
+  #| path => {
+  #|   const limit = 33554432;
+  #|   const fs = require('node:fs');
+  #|   const stat = fs.statSync(path);
+  #|   if (!stat.isFile() || stat.size > limit) throw new Error('input must be a regular file within the byte budget');
+  #|   const fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NONBLOCK);
+  #|   const chunks = []; let total = 0;
+  #|   try {
+  #|     const opened = fs.fstatSync(fd);
+  #|     if (!opened.isFile() || opened.size > limit) throw new Error('input must be a regular file within the byte budget');
+  #|     for (;;) {
+  #|       const buf = Buffer.alloc(Math.min(65536, limit + 1 - total));
+  #|       const n = fs.readSync(fd, buf, 0, buf.length, null);
+  #|       if (!n) break;
+  #|       total += n;
+  #|       if (total > limit) throw new Error('input exceeds byte budget');
+  #|       chunks.push(buf.subarray(0, n));
+  #|     }
+  #|     return new Uint8Array(Buffer.concat(chunks, total));
+  #|   } finally { fs.closeSync(fd); }
+  #| }
 
 ///|
 extern "js" fn write_exports(

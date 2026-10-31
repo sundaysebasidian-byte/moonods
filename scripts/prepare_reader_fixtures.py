@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """Prepare independent-producer and hostile reader fixtures. Does NOT execute MoonODS."""
+from verification_runtime import require_assertions
+
+# Refuse optimized CLI execution before imports, parsing, or filesystem writes.
+if __name__ == '__main__':
+    require_assertions()
+
 import argparse, hashlib, json, struct, subprocess, tempfile, warnings, zipfile
 from io import BytesIO
 from pathlib import Path
@@ -207,6 +213,7 @@ def semantics(path):
     return {'sheets':result,'outside_writer_grid':tails}
 
 def assert_external_observation(observation):
+    require_assertions()
     cells=observation['sheets']['Types']
     assert cells['0,1']['boolean-value']=='true' and cells['0,2']['date-value']=='2024-02-29'
     assert cells['0,3']['text']==' leading \t中\n文 '
@@ -219,6 +226,7 @@ def assert_external_observation(observation):
     return {'cells':cells,'checks':['Boolean','Date','whitespace','repeat2x2','Empty_vs_empty_string','merge2x2_three_covered','formula_text_and_external_cache_3']}
 
 def main():
+    require_assertions()
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);ap.add_argument('--soffice',type=Path,required=True);a=ap.parse_args()
     out=a.output.resolve();out.mkdir(parents=True,exist_ok=False)
     data=controls();again=controls();assert data==again

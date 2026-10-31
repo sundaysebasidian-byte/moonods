@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """Consume moon package output in a separate module; no publication or installs."""
+from verification_runtime import require_assertions
+
+# Refuse optimized CLI execution before imports, parsing, or filesystem writes.
+if __name__ == '__main__':
+    require_assertions()
+
 import argparse, datetime, hashlib, json, os, re, shutil, subprocess, sys, tempfile, zipfile
 from pathlib import Path
 from lxml import etree
@@ -26,6 +32,7 @@ def extract(archive, destination):
         z.extractall(destination)
 
 def main():
+    require_assertions()
     ap = argparse.ArgumentParser()
     ap.add_argument('--moon', required=True, type=Path)
     ap.add_argument('--output', type=Path, default=ROOT / 'evidence/reuse-review')

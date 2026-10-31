@@ -2,6 +2,7 @@
 """Validate exact dependency contents; checks remain active under python -O."""
 import hashlib
 import json
+import stat
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -18,12 +19,23 @@ def safe_path(root, name):
     require(bool(name) and not p.is_absolute() and '\\' not in name
             and all(part not in ('', '.', '..') for part in name.split('/')),
             'unsafe dependency path: ' + name)
+    root = Path(root)
+    require(not root.is_symlink() and (not root.exists() or root.is_dir()),
+            'dependency root must be an unlinked directory')
     target = root
-    for part in p.parts:
+    for index, part in enumerate(p.parts):
         target = target / part
-        require(not target.is_symlink(), 'dependency symlink forbidden: ' + str(target))
-        require(not target.is_file() or target.stat().st_nlink == 1,
+        try:
+            info = target.lstat()
+        except FileNotFoundError:
+            continue
+        require(not stat.S_ISLNK(info.st_mode), 'dependency symlink forbidden: ' + str(target))
+        require(stat.S_ISDIR(info.st_mode) or stat.S_ISREG(info.st_mode),
+                'nonregular dependency path: ' + str(target))
+        require(not stat.S_ISREG(info.st_mode) or info.st_nlink == 1,
                 'dependency hardlink forbidden: ' + str(target))
+        require(index == len(p.parts) - 1 or stat.S_ISDIR(info.st_mode),
+                'dependency parent is not a directory: ' + str(target))
     return target
 
 

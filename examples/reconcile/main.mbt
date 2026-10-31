@@ -12,20 +12,23 @@ extern "js" fn env(name : String) -> String =
 ///|
 extern "js" fn read_bytes(path : String, limit : Int32) -> Bytes =
   #| (path, limit) => {
-  #|   const fs=require('node:fs'), stat=fs.statSync(path);
-  #|   if(!stat.isFile() || stat.size>limit) throw new Error('input must be a regular file within the byte budget');
-  #|   const fd=fs.openSync(path,'r'), chunks=[]; let total=0;
+  #|   const fs = require('node:fs');
+  #|   const stat = fs.statSync(path);
+  #|   if (!stat.isFile() || stat.size > limit) throw new Error('input must be a regular file within the byte budget');
+  #|   const fd = fs.openSync(path, fs.constants.O_RDONLY | fs.constants.O_NONBLOCK);
+  #|   const chunks = []; let total = 0;
   #|   try {
-  #|     if(!fs.fstatSync(fd).isFile()) throw new Error('input must be a regular file');
+  #|     const opened = fs.fstatSync(fd);
+  #|     if (!opened.isFile() || opened.size > limit) throw new Error('input must be a regular file within the byte budget');
   #|     for (;;) {
-  #|       const buf=Buffer.alloc(Math.min(65536,limit+1-total));
-  #|       const n=fs.readSync(fd,buf,0,buf.length,null);
-  #|       if(!n) break;
-  #|       total+=n;
-  #|       if(total>limit) throw new Error('input exceeds byte budget');
-  #|       chunks.push(buf.subarray(0,n));
+  #|       const buf = Buffer.alloc(Math.min(65536, limit + 1 - total));
+  #|       const n = fs.readSync(fd, buf, 0, buf.length, null);
+  #|       if (!n) break;
+  #|       total += n;
+  #|       if (total > limit) throw new Error('input exceeds byte budget');
+  #|       chunks.push(buf.subarray(0, n));
   #|     }
-  #|     return new Uint8Array(Buffer.concat(chunks,total));
+  #|     return new Uint8Array(Buffer.concat(chunks, total));
   #|   } finally { fs.closeSync(fd); }
   #| }
 
