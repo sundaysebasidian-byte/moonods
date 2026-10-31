@@ -136,6 +136,7 @@ fn run() -> Unit raise {
   let extended = option_bool("ODS_EXTENDED_TYPES")
   let preserve = option_bool("ODS_PRESERVE_BASIC")
   let extended_csv = option_bool("ODS_EXTENDED_CSV_TEXT")
+  let reject_formula_text = option_bool("ODS_CSV_REJECT_FORMULA_TEXT")
   let imported = @ods.read_ods(
     read_file(input),
     allow_formatting_loss=loss,
@@ -248,7 +249,7 @@ fn run() -> Unit raise {
     .unwrap()
     .to_csv(
       use_formula_cache=use_cache,
-      reject_formula_like_text=env("ODS_CSV_REJECT_FORMULA_TEXT") == "1",
+      reject_formula_like_text=reject_formula_text,
       extended_types_as_text=extended_csv,
     )
   } else {

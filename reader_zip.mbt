@@ -92,6 +92,43 @@ fn ods_zip_inflate(data : Bytes, budget : Int32) -> Bytes raise OdsError {
 }
 
 ///|
+// Recognize the directory framing before selecting an EOCD. A signature inside
+// the archive comment is not an end record merely because its comment length
+// happens to reach EOF. No data is inflated in this bounded framing pass.
+fn ods_zip_end_candidate(data : Bytes, end : Int32) -> Bool raise OdsError {
+  let count = ods_zip_u16(data, end + 10)
+  if count == 0 ||
+    count > 128 ||
+    ods_zip_u16(data, end + 4) != 0 ||
+    ods_zip_u16(data, end + 6) != 0 ||
+    ods_zip_u16(data, end + 8) != count {
+    return false
+  }
+  let size = ods_zip_u32(data, end + 12)
+  let start = ods_zip_u32(data, end + 16)
+  if size < 0 || size > end || start < 0 || start != end - size {
+    return false
+  }
+  let mut p = start
+  for _ in 0..<count {
+    if p > end - 46 || ods_zip_u32(data, p) != 0x02014b50 {
+      return false
+    }
+    let name_len = ods_zip_u16(data, p + 28)
+    let next = p +
+      46 +
+      name_len +
+      ods_zip_u16(data, p + 30) +
+      ods_zip_u16(data, p + 32)
+    if name_len == 0 || next > end {
+      return false
+    }
+    p = next
+  }
+  p == end
+}
+
+///|
 // Every archive entry is checked, even entries not used by the XML reader.
 // No filesystem access, extraction paths, or unbounded inflate convenience API.
 fn read_ods_content_noticing(
@@ -107,16 +144,28 @@ fn read_ods_content_noticing(
   if length < 22 || length > 33554432 {
     raise Invalid("invalid ODS ZIP input size")
   }
-  let mut end = length - 22
+  let mut cursor = length - 22
   let min_end = if length > 65557 { length - 65557 } else { 0 }
-  while end >= min_end {
-    if ods_zip_u32(data, end) == 0x06054b50 &&
-      end + 22 + ods_zip_u16(data, end + 20) == length {
-      break
+  let mut fallback = -1
+  let mut selected = -1
+  while cursor >= min_end {
+    if ods_zip_u32(data, cursor) == 0x06054b50 &&
+      cursor + 22 + ods_zip_u16(data, cursor + 20) == length {
+      if fallback == -1 {
+        fallback = cursor
+      }
+      if ods_zip_end_candidate(data, cursor) {
+        if selected != -1 {
+          raise Invalid("ambiguous ZIP end records")
+        }
+        selected = cursor
+      }
     }
-    end = end - 1
+    cursor = cursor - 1
   }
-  if end < min_end {
+  // Keep the original diagnostics for archives with no valid framing candidate.
+  let end = if selected >= 0 { selected } else { fallback }
+  if end < 0 {
     raise Invalid("ZIP end record missing")
   }
   let count = ods_zip_u16(data, end + 10)
