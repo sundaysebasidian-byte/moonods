@@ -108,5 +108,35 @@ class StructuralAndUnitOracleTests(unittest.TestCase):
         self.assertEqual(cell_value(TableCell(valuetype='float', value='1.00')), expected_cell(('number',1.0)))
 
 
+
+
+class TextSpaceCountOracleTests(unittest.TestCase):
+    def test_zero_counts_are_legal_and_keep_normalization_boundaries(self):
+        from lxml import etree
+        from prepare_reader_fixtures import TEXT, text_of
+        cases = [
+            ('a<x:s x:c="0"/>b', 'ab'),
+            ('a<x:s x:c="-0"/>b', 'ab'),
+            ('<x:s x:c="+000"/> a', ' a'),
+            ('a <x:s x:c="0"/>', 'a '),
+            ('a <x:span><x:s x:c="0"/></x:span> b', 'a  b'),
+            ('<x:s x:c="  +2  "/>x<x:s/>', '  x '),
+        ]
+        for body, expected in cases:
+            with self.subTest(body=body):
+                xml = ('<x:p xmlns:x="'+TEXT+'">'+body+'</x:p>').encode()
+                self.assertEqual(text_of(etree.fromstring(xml)), expected)
+
+    def test_count_lexical_and_resource_guards(self):
+        from prepare_reader_fixtures import text_space_count
+        for token, expected in [('0', 0), ('-000', 0), ('+32767', 32767), (' \t2\r\n ', 2), ('0'*5000, 0)]:
+            with self.subTest(token=token[:40]):
+                self.assertEqual(text_space_count(token), expected)
+        for token in ['', '-', '+', '-1', '1 0', '1_0', '1.0', '1e2', '\u00a01', '1\u2003', '\u0661', '32768', '9'*5000]:
+            with self.subTest(token=token[:40]):
+                with self.assertRaises(ValueError):
+                    text_space_count(token)
+
+
 if __name__ == '__main__':
     unittest.main()

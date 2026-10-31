@@ -68,6 +68,22 @@ def fixed_producer_xml(path):
     if b'<!DOCTYPE' in data or b'<!ENTITY' in data:raise ValueError('DTD forbidden')
     return etree.fromstring(data,etree.XMLParser(resolve_entities=False,no_network=True,load_dtd=False,huge_tree=False))
 
+def text_space_count(raw):
+    """ODF text:c is XSD nonNegativeInteger; bound before large-int parsing."""
+    import re
+    token = raw.strip(' \t\r\n')
+    if not re.fullmatch(r'[+-]?[0-9]+', token):
+        raise ValueError('fixed-fixture text repeat lexical form')
+    negative = token.startswith('-')
+    digits = token[1:] if token[:1] in ('+', '-') else token
+    significant = digits.lstrip('0') or '0'
+    if (negative and significant != '0') or len(significant) > 5:
+        raise ValueError('fixed-fixture text repeat budget')
+    count = int(significant)
+    if count > 32767:
+        raise ValueError('fixed-fixture text repeat budget')
+    return count
+
 def text_of(node):
     # Independent ODF 1.3 section 6.1.2 oracle: flatten span text, normalize
     # raw XML whitespace, then expand explicit controls. NUL is forbidden
@@ -81,8 +97,7 @@ def text_of(node):
         raw(element.text or '')
         for child in element:
             if child.tag == '{'+TEXT+'}s':
-                count = int(child.get('{'+TEXT+'}c', '1'))
-                if not 1 <= count <= 32767: raise ValueError('fixed-fixture text repeat budget')
+                count = text_space_count(child.get('{'+TEXT+'}c', '1'))
                 controls.append(' ' * count); pieces.append('\0')
             elif child.tag == '{'+TEXT+'}tab':
                 controls.append('\t'); pieces.append('\0')
