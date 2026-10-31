@@ -1,4 +1,4 @@
-> 本页矩阵保留历史发行验证；当前复审运行锁与能力以根README为准。
+> 本页矩阵保留历史发行验证；当前源码运行锁与能力以根README为准。
 
 # 数据型 ODS 交付验收矩阵
 
@@ -21,7 +21,7 @@ PASS 指已有对应配置的执行结果。下表区分此前源码/Office 实�
 | JS检查/构建/项目全测试 | PASS | 最终版本 JS 119/119；固定 SDK 的公开 CI 见版本 PR。此前隔离 0.10.16/0.10.17 源码回归保持原记录，依赖测试不计入项目新增测试。 |
 | Wasm/Wasm GC | PASS（Mac pinned SDK） | Mac 原生 0.10.15 四后端各 119/119，最小控制及独立消费者实际运行通过。旧云工具链的控制失败仍为历史环境结果，不代表库失败。 |
 | native | PASS（Mac arm64） | 现有原生 0.10.15 SDK/Apple clang 已完成 119/119 与独立消费者运行；不扩展为 Linux/Windows native 消费验证。 |
-| 干净源码ZIP消费者 | PASS（此前本地） | 从实际源码包解压，只用其声明的锁定依赖，核候选版本、README API、扩展类型/格式/records及ODS→CSV和失败保护；不等于正式打包或注册表安装。 |
+| 干净源码ZIP消费者 | PASS（此前本地） | 从实际源码包解压，只用其声明的锁定依赖，核源码版本、README API、扩展类型/格式/records及ODS→CSV和失败保护；不等于正式打包或注册表安装。 |
 | 正式包/registry/精确 head CI | PASS（0.4.0） | 最终 head e567857、合并 4413e1a 的 8 个 CI run / 20 个 job 通过；正式包 71 文件与源码及安装一致。干净 registry 消费者四后端实际运行；九种 Value 分支、格式/列宽、CSV 策略、往返通过。[PR #9 正式回执](https://github.com/sundaysebasidian-byte/moonods/pull/9)。 |
 
 ## 可替换输入的实用流程
@@ -51,4 +51,4 @@ python3 scripts/verify_basic_formatting.py --moon /path/to/moon --output /tmp/od
 python3 scripts/verify_extended_compat.py --moon /path/to/moon --soffice /path/to/soffice --output /tmp/ods-extended-check
 ```
 
-输出目录需尚不存在，避免覆盖旧证据。当前固定 SDK 见 `TOOLCHAIN.lock`（本复审分支0.10.18；下述旧CI只代表历史），精确版本 CI 见[技术证据索引](TECHNICAL_EVIDENCE.zh-CN.md)。上表 0.10.16/0.10.17 是此前隔离源码验证，不替代此次固定 SDK 或 registry 结果；旧云控制失败保留原环境归属。
+输出目录需尚不存在，避免覆盖旧证据。当前固定 SDK 见 `TOOLCHAIN.lock`（本源码分支0.10.18；下述旧CI只代表历史），精确版本 CI 见[技术证据索引](TECHNICAL_EVIDENCE.zh-CN.md)。上表 0.10.16/0.10.17 是此前隔离源码验证，不替代此次固定 SDK 或 registry 结果；旧云控制失败保留原环境归属。

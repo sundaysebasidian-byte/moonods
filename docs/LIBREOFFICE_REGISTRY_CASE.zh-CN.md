@@ -1,6 +1,6 @@
 # LibreOffice 固定夹具：0.3.1 兼容验证
 
-0.3.1 修复两个精确空配置条目的拒绝，并有界省略纯空白尾行、逐项报告损失。原始文件的 B2–B5 类型、值及导出再读已在候选源码通过；安装版结果以本次发布回执为准。SDK：moonc 0.10.15，Node 24.18.0。
+0.3.1 修复两个精确空配置条目的拒绝，并有界省略纯空白尾行、逐项报告损失。原始文件的 B2–B5 类型、值及导出再读已在源码通过；安装版结果以本次发布回执为准。SDK：moonc 0.10.15，Node 24.18.0。
 
 输入为 LibreOffice/core 固定提交 `528ba1172ce7f2193db9297a3dac0bc4da7cd9d9` 的 [basic-cell-content.ods](https://github.com/LibreOffice/core/blob/528ba1172ce7f2193db9297a3dac0bc4da7cd9d9/sc/qa/unit/data/ods/basic-cell-content.ods)，10,552 字节，SHA256：
 

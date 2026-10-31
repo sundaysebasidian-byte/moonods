@@ -20,7 +20,7 @@
 
 干净消费者从 registry 精确安装 0.4.0，无 workspace/path 覆盖，实际运行 JS、Wasm、Wasm GC、native，检查九种 Value 分支、扩展类型显式启用、Header 样式、列宽、CSV 策略和 ODS 往返。JS 另对未修改的官方 LibreOffice/core 样本核对 B2–B5 类型和值，再导出读回。
 
-项目合成 FODS 经 LibreOfficeDev 转换的兼容样本，与官方固定样本分开记录。候选阶段的 LibreOffice 25.2.3.2 闭环没有在此次发布轮重跑；Office 回存时间戳偏移会损失。来源与摘要见[来源说明](../SOURCES.md)、[兼容说明](READER_COMPAT.zh-CN.md)。
+项目合成 FODS 经 LibreOfficeDev 转换的兼容样本，与官方固定样本分开记录。开发阶段的 LibreOffice 25.2.3.2 闭环没有在此次发布轮重跑；Office 回存时间戳偏移会损失。来源与摘要见[来源说明](../SOURCES.md)、[兼容说明](READER_COMPAT.zh-CN.md)。
 
 ## 使用范围
 

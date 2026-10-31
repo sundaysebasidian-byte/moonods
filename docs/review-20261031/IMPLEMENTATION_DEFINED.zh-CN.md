@@ -1,6 +1,6 @@
 # MoonODS implementation-defined 范围审计
 
-公开技术说明，AI 辅助编制；不是人工申报书、标准认证或参赛提交。审计日期：2026-10-31。公开基线：`897c906607e1ec5072e514599e846bdbe6defe3e`，树 `ff36f8b595e36dd45f85bd480fe41c28b63dc441`。
+公开技术说明，AI 辅助编制；验证范围见下文。审计日期：2026-10-31。公开基线：`897c906607e1ec5072e514599e846bdbe6defe3e`，树 `ff36f8b595e36dd45f85bd480fe41c28b63dc441`。
 
 ## 结论
 
@@ -48,6 +48,6 @@ Part4全部70个关键词命中中，目录/术语/建议项不当成功能要�
 
 **已补上：** 当前producer范围内的实现定义项说明与全量关键词归类，而不是继续笼统写“尚未审计”。
 
-**尚不能称为完成：** 全标准符合性认证、全部潜在默认渲染行为实测、完整OpenFormula验证、最新版本Office GUI全矩阵互通；本说明的公开不等同比赛表格已更新或主办方已复审。参赛者仍需独立人工撰写并自行提交。
+**尚不能称为完成：** 全标准符合性认证、全部潜在默认渲染行为实测、完整OpenFormula验证、最新版本Office GUI全矩阵互通。
 
 官方来源：[Part2](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part2-packages/OpenDocument-v1.3-os-part2-packages.html)、[Part3](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html)、[Part4](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part4-formula/OpenDocument-v1.3-os-part4-formula.html)。

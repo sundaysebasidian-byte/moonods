@@ -24,4 +24,4 @@
 
 外部文件实测：[LibreOffice 固定夹具](LIBREOFFICE_REGISTRY_CASE.zh-CN.md)保留 0.3.0 的拒绝历史；0.3.1 对原文件的类型、值及往返通过，见该页边界。
 
-0.3.1 修复仅涉及空 UI 条目和大段纯空白尾行的有界省略；79 项 JS 回归及未修改 LibreOffice 文件往返已在候选源码通过。新的 registry 安装验收与合并回执见本次版本 PR；不沿用 0.3.0 checksum 为 0.3.1 背书。
+0.3.1 修复仅涉及空 UI 条目和大段纯空白尾行的有界省略；79 项 JS 回归及未修改 LibreOffice 文件往返已在源码通过。新的 registry 安装验收与合并回执见本次版本 PR；不沿用 0.3.0 checksum 为 0.3.1 背书。

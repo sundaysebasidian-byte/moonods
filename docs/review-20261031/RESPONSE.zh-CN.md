@@ -1,6 +1,6 @@
-# MoonODS 复审技术回应：范围、损失与验证
+# MoonODS：实现范围、损失与验证
 
-AI 辅助整理的公开技术说明，不是要求人工撰写的申报书；发布本说明不等于比赛提交或复审通过。
+本说明介绍实现范围、数据损失与验证方法。AI 协助情况见仓库 AI_USAGE.md。
 
 ## 版本与可复现入口
 
@@ -46,6 +46,6 @@ MoonODS 是有界的表格数据转换库，**不声明完整ODF 1.3/XML标准�
 
 ## 4. 保留的限制
 
-本次补齐的是评审可见的技术回应、范围审计及一组可检查的合成保存输出。它不构成完整标准认证、全公式验证、任意Office兼容性或获奖概率保证。申报书仍须遵守人工撰写等赛事规则，由参赛者自行提交；未将公开文档当作报名表更新回执。
+本目录包含实现范围审计及可检查的合成保存输出。它不构成完整标准认证、全公式验证、任意Office兼容性。
 
 官方依据：[ODF1.3 Part2](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part2-packages/OpenDocument-v1.3-os-part2-packages.html)、[Part3](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html)、[Part4](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part4-formula/OpenDocument-v1.3-os-part4-formula.html)。日期：2026-10-31 UTC。

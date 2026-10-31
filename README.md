@@ -2,7 +2,7 @@
 
 MoonBit 数据型 ODS 读写库：类型化工作簿、有界 ZIP/XML 读取、显式损失诊断、CSV 与表头记录。适合报表与离线数据处理，不是通用办公软件。
 
-## 2026-10-30 复审修订
+## 2026-10-30 源码修订
 
 本分支基于公开提交 `6dcb77df291acf8b592224c7ba94ce648f395cc2`，不是新的 registry 发行版。`moon add sundaysebasidian-byte/moonods@0.4.0` **不包含本轮修改**。
 
@@ -114,18 +114,15 @@ moon run examples/reconcile --target js
 
 历史182布局阶段根包及消费者 JS / Wasm / WasmGC / native 各 **182/182**。独立审查另使用 31 份输入包逐一读改写并核对 Fraction 精确尺寸和输出 ODF 1.3 RNG；下游 API JS/native 各 9/9（其中 3 组为本次独立新增）。真实 Calc 产物原 `0.889in` 列宽可保留，`optimal=true` 的自动行高不误转为固定。上述结构验收不等于完整视觉保真。
 
-
 ## 新布局182阶段的实际GUI互通
 
 官方LibreOffice26.8.2.2实际打开本阶段导出、另存、关闭再开，最后182再次读取Calc另存件并导出，再由GUI打开。A1修改7→8保持；原生另存XML列宽0.889in、固定行高0.2173in、optimal=false保持，独立Fraction尺寸差为0。界面以0.01in显示为0.89/0.22，不能把界面舍入读数当作底层XML精确值。对话框均取消未确认改变尺寸。该正控不证明所有视觉样式保真，仍有12条其他损失诊断。
 
 本次GUI精确绑定182 CLI SHA `a60cad4b05d895b2df43e1b27c22b5b5050f7fd122c0a6cc0f7d7bc7039eef62`，并核对161份源码清单零差异；这与此前170阶段公式/合并GUI是两个独立回执。182阶段集成23步骤验收通过，源码hash结束逐项无差异；这是历史182回执，不代表后续189阶段的GUI或远端CI。
 
-
 ### Subsequent normative regression fixes
 
-Physical length setters reject leading plus and non-XML surrounding whitespace; accepted tokens are checked against external ODF1.3 RNG cases. Paragraph raw XML whitespace collapses across spans according to Part3 section6.1.2, while explicit text:s/tab/line-break and NBSP remain. Text containing CR is represented with office:string-value numeric references rather than a separate display paragraph; this preserves data, not display fidelity. Historical182/GUI evidence remains historical; new validation is bound in the next private receipt.
-
+Physical length setters reject leading plus and non-XML surrounding whitespace; accepted tokens are checked against external ODF1.3 RNG cases. Paragraph raw XML whitespace collapses across spans according to Part3 section6.1.2, while explicit text:s/tab/line-break and NBSP remain. Text containing CR is represented with office:string-value numeric references rather than a separate display paragraph; this preserves data, not display fidelity. Historical182/GUI evidence remains historical; validation results apply only to their tested source revision.
 
 189修订四后端根包及consumer各189/189；独立14段落首读/再读28次CLI与18份真实API导出RNG通过。`+1mm`拒绝，`.5mm`、`1.mm`和合法前导零按外部schema保留；只trim XML空白，不接受NBSP/EM SPACE等包围长度。CR数据属性路径已用独立负控确认：改/删属性或加入冲突段落均被验收拒绝。普通Text显式控制与NBSP保留。旧GUI测试不外推此新CR表示。
 
