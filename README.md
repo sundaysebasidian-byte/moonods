@@ -2,15 +2,15 @@
 
 MoonBit 数据型 ODS 读写库：类型化工作簿、有界 ZIP/XML 读取、显式损失诊断、CSV 与表头记录。适合报表与离线数据处理，不是通用办公软件。
 
-## 2026-10-30 源码修订
+## 0.5.0 发行候选源码
 
-本分支基于公开提交 `6dcb77df291acf8b592224c7ba94ce648f395cc2`，不是新的 registry 发行版。`moon add sundaysebasidian-byte/moonods@0.4.0` **不包含本轮修改**。
+当前默认分支包含基于公开提交 `6dcb77df291acf8b592224c7ba94ce648f395cc2` 的后续修订，模块版本为 0.5.0 发行候选，尚无新 registry 发布回执。内容及迁移边界见 [0.5.0 说明](docs/release-0.5.0.zh-CN.md)。`moon add sundaysebasidian-byte/moonods@0.4.0` **不包含本轮修改**。
 
 新增 Unicode XML 名称、UTF-8/BOM UTF-16、内部 DTD/实体/默认属性、非致命 xml:id 赋型报告、PI/notation/未读取外部依赖通知，以及安全附加包部件、manifest 与签名 XML 处理。签名不做密码学验证；未知部件与嵌入文档不解释其语义，转换时明确报告丢失。外部 XML 资源不联网获取，必须依赖其内容的导入明确拒绝。接口与限制见 [XML处理器说明](docs/XML_PROCESSOR_API.md)。
 
 当前不声明完整 ODF 或 XML 标准认证，也不以有限样本通过替代通用符合性证明。公式仅保存文本和缓存、检查外层前缀，不验证完整 OpenFormula，也不通用重算。
 
-## 从本分支源码运行
+## 从当前默认分支源码运行
 
 使用 [TOOLCHAIN.lock](TOOLCHAIN.lock) 固定的 MoonBit 0.10.18；[项目内安装脚本](scripts/install-ci-sdk.py) 验证 SDK/core 双 SHA，不改全局配置。
 
@@ -25,7 +25,7 @@ moon test --target js
 moon run examples/generate --target js
 ```
 
-生成文件位于 `examples/generated/`。本分支的实际公开可用性以 GitHub 分支为准，不能用默认分支或旧版本复现新修复。
+生成文件位于 `examples/generated/`。当前默认分支已包含这些修复；旧注册表包不包含本轮修订，新包可安装性须以官方注册表回执为准。
 
 ## 公共 API
 
