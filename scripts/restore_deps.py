@@ -8,17 +8,18 @@ import hashlib
 import json
 import stat
 import zipfile
-from verify_deps import ROOT, verify, require, safe_path, installed_files
+from verify_deps import ROOT, verify, require, safe_path, installed_files, dependency_targets
 
 
 def restore(root=ROOT):
     lock = json.loads(safe_path(root, 'DEPENDENCIES.lock.json').read_text())
+    targets = dependency_targets(root, lock)
     pending = []
-    for item in lock.values():
+    for key, item in lock.items():
         archive = safe_path(root, item['archive'])
         require(hashlib.sha256(archive.read_bytes()).hexdigest() == item['sha256'],
                 'dependency archive mismatch')
-        target = safe_path(root, '.mooncakes/' + item['module'])
+        target = targets[key]
         expected = item['files_sha256']
         require(installed_files(target) <= set(expected), 'unexpected installed dependency files')
         seen = set()

@@ -45,6 +45,8 @@ def main():
         if verifier_versions != lock['verifier']:
             raise RuntimeError('Verifier dependencies differ from TOOLCHAIN.lock')
         report['dependencies'] = verify()
+        run('dependency-integrity-guards', [sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_dependency_integrity.py'])
+        run('dependency-integrity-guards-optimized', [sys.executable, '-O', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_dependency_integrity.py'])
         run('format', [moon, 'fmt', '--check'])
         run('check', [moon, 'check', '--target', 'js', '-j', '1', '--deny-warn'])
         run('build', [moon, 'build', '--target', 'js', '-j', '1', '--deny-warn'])

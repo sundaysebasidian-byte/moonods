@@ -1,6 +1,7 @@
 """Synthetic offline integrity tests. Each test owns an isolated temporary tree."""
 import hashlib
 import json
+import os
 from pathlib import Path
 import stat
 import tempfile
@@ -99,6 +100,47 @@ class DependencyIntegrity(unittest.TestCase):
                 operation(self.root)
         self.assertEqual(outside.read_bytes(), b'outside')
 
+    def test_file_hardlink_escape(self):
+        restore(self.root)
+        outside = Path(self.tmp.name) / 'outside-sentinel'
+        # Equal digest must not mask a shared inode.
+        outside.write_bytes(self.contents['main.mbt'])
+        (self.target / 'main.mbt').unlink()
+        os.link(outside, self.target / 'main.mbt')
+        for operation in (restore, verify):
+            with self.assertRaisesRegex(ValueError, 'hardlink'):
+                operation(self.root)
+        self.assertEqual(outside.read_bytes(), self.contents['main.mbt'])
+        self.assertEqual(outside.stat().st_nlink, 2)
+
+    def test_late_module_hardlink_before_any_write(self):
+        second = self.root / '.mooncakes/vendor/second'
+        second.mkdir(parents=True)
+        outside = Path(self.tmp.name) / 'outside-sentinel'
+        outside.write_bytes(b'KEEP')
+        os.link(outside, second / 'main.mbt')
+        self.lock['second'] = {**self.lock['dep'], 'module': 'vendor/second'}
+        self.save_lock()
+        with self.assertRaisesRegex(ValueError, 'hardlink'):
+            restore(self.root)
+        self.assertFalse(self.target.exists())
+        self.assertFalse((second / 'sub').exists())
+        self.assertEqual(outside.read_bytes(), b'KEEP')
+
+    def test_hardlinked_lock_or_archive_rejected(self):
+        for path in (self.root / 'DEPENDENCIES.lock.json', self.archive):
+            outside = Path(self.tmp.name) / ('outside-' + path.name)
+            os.link(path, outside)
+            before = outside.read_bytes()
+            try:
+                for operation in (restore, verify):
+                    with self.assertRaisesRegex(ValueError, 'hardlink'):
+                        operation(self.root)
+                self.assertFalse(self.target.exists())
+                self.assertEqual(outside.read_bytes(), before)
+            finally:
+                outside.unlink()
+
     def test_archive_traversal_preflight(self):
         self.make_archive({**self.contents, '../escape': b'no'})
         with self.assertRaisesRegex(ValueError, 'unsafe dependency path'):
@@ -128,6 +170,22 @@ class DependencyIntegrity(unittest.TestCase):
         self.save_lock()
         with self.assertRaisesRegex(ValueError, 'unsafe dependency path'):
             restore(self.root)
+
+
+    def assert_overlapping_modules_preflight(self, nested):
+        self.lock['second'] = {**self.lock['dep'],
+                               'module': self.lock['dep']['module'] + ('/nested' if nested else '')}
+        self.save_lock()
+        for operation in (restore, verify):
+            with self.assertRaisesRegex(ValueError, 'overlapping dependency module roots'):
+                operation(self.root)
+            self.assertFalse(self.target.exists())
+
+    def test_duplicate_module_roots_before_any_write(self):
+        self.assert_overlapping_modules_preflight(False)
+
+    def test_parent_child_module_roots_before_any_write(self):
+        self.assert_overlapping_modules_preflight(True)
 
 
 if __name__ == '__main__':

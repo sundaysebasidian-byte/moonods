@@ -219,19 +219,24 @@ fn read_ods_content_noticing(
         (local_unpacked != 0 && local_unpacked != unpacked) {
         raise Invalid("ZIP descriptor header mismatch")
       }
-      // Accept both signed and unsigned ZIP32 data descriptors.
-      let d = if ods_zip_u32(data, finish) == 0x08074b50 {
-        finish + 4
+      // Match the complete tuple against the directory, not just the first
+      // word: an unsigned descriptor's CRC may equal the optional signature.
+      let unsigned_matches = finish + 12 <= cd_start &&
+        ods_zip_u32(data, finish) == crc &&
+        ods_zip_u32(data, finish + 4) == packed &&
+        ods_zip_u32(data, finish + 8) == unpacked
+      let signed_matches = finish + 16 <= cd_start &&
+        ods_zip_u32(data, finish) == 0x08074b50 &&
+        ods_zip_u32(data, finish + 4) == crc &&
+        ods_zip_u32(data, finish + 8) == packed &&
+        ods_zip_u32(data, finish + 12) == unpacked
+      finish = if signed_matches {
+        finish + 16
+      } else if unsigned_matches {
+        finish + 12
       } else {
-        finish
-      }
-      if d + 12 > cd_start ||
-        ods_zip_u32(data, d) != crc ||
-        ods_zip_size(data, d + 4) != packed ||
-        ods_zip_size(data, d + 8) != unpacked {
         raise Invalid("invalid ZIP data descriptor")
       }
-      finish = d + 12
     }
     for (a, b) in spans {
       if local_start < b && finish > a {
