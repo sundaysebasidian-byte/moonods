@@ -380,12 +380,9 @@ fn read_value(node : ReadElement, extended : Bool) -> Value raise OdsError {
     }
     Some("string") =>
       match node.attribute(read_office, "string-value") {
-        Some(s) => {
-          if text != "" && text != s {
-            raise Invalid("string value/display conflict")
-          }
-          Text(s)
-        }
+        // ODF 1.3 Part 3 section 19.389: a supplied value attribute is
+        // authoritative even when the validated display content differs.
+        Some(s) => Text(s)
         None => Text(text)
       }
     Some("percentage") if extended =>
@@ -479,10 +476,10 @@ fn read_notice(
 ) -> Unit raise OdsError {
   // Count every repeated loss. Keep the first 32 exact locations per sheet/code
   // and one explicit summary rather than rejecting an otherwise valid grid.
-  // At most 32 sheets * 4 grouped codes * 33 entries, below the old hard cap.
+  // At most 32 sheets * 5 grouped codes * 33 entries, below the old hard cap.
   if [
       "FORMATTING_DROPPED", "RICH_TEXT_FORMATTING_DROPPED", "FORMULA_CACHE_NOT_RECALCULATED",
-      "NUMBER_PRECISION_CHANGED",
+      "NUMBER_PRECISION_CHANGED", "STRING_DISPLAY_TEXT_DROPPED",
     ].contains(diagnostic.code) {
     let key = (diagnostic.sheet, diagnostic.code)
     let count = notices.counts.get(key).unwrap_or(0) + 1
@@ -844,6 +841,25 @@ fn import_table(
               }
               node.allowed(allowed_attributes)
               let value = read_value(node, extended)
+              if node.attribute(read_office, "string-value") is Some(stored) &&
+                value is Text(_) &&
+                node.parts
+                .iter()
+                .any(part => {
+                  match part {
+                    ReadElement(child) => child.name == read_text + "p"
+                    _ => false
+                  }
+                }) &&
+                read_cell_text(node) != stored {
+                read_notice(notices, {
+                  sheet: name,
+                  row: r,
+                  col: c,
+                  code: "STRING_DISPLAY_TEXT_DROPPED",
+                  message: "Explicit office:string-value is retained as the cell value; distinct source display text is not retained by this data model.",
+                })
+              }
               if node.has_text_formatting() {
                 read_notice(notices, {
                   sheet: name,
@@ -936,7 +952,10 @@ fn import_table(
               let nr = node.count(read_table, "number-rows-spanned", 1024)
               let nc = node.count(read_table, "number-columns-spanned", 128)
               if nr > 1 || nc > 1 {
-                if rows != 1 || cols != 1 {
+                // ODF 1.3 section 19.681 permits repeated rows with only
+                // horizontal merges. Section 19.679.3 forbids repeating a
+                // merged cell across columns, even for vertical-only spans.
+                if cols != 1 || (rows != 1 && nr != 1) {
                   raise Invalid("repeated merged anchors unsupported")
                 }
                 sheet.merge(r, c, nr, nc)

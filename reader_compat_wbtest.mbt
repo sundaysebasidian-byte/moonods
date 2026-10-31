@@ -103,12 +103,18 @@ test "compat empty spans paragraphs and string attributes remain distinct" {
     result.workbook().sheet(0).unwrap().get(0, 0).unwrap().value(),
     Text(""),
   )
+  let explicit_value = loss_case(
+    "<t:table-cell o:value-type=\"string\" o:string-value=\"different\"><x:p><x:span>text</x:span></x:p></t:table-cell>",
+  )
+  assert_eq(
+    explicit_value.workbook().sheet(0).unwrap().get(0, 0).unwrap().value(),
+    Text("different"),
+  )
   assert_true(
-    reader_xml_rejects(
-      reader_xml_fixture(
-        "<t:table-row><t:table-cell o:value-type=\"string\" o:string-value=\"different\"><x:p><x:span>text</x:span></x:p></t:table-cell></t:table-row>",
-      ),
-    ),
+    explicit_value
+    .diagnostics()
+    .iter()
+    .any(d => d.code == "STRING_DISPLAY_TEXT_DROPPED"),
   )
 }
 

@@ -10,7 +10,10 @@
 //   ODS_CSV_REJECT_FORMULA_TEXT=1  reject formula-like Text fields
 //   ODS_SET            optional edit "sheet,row,col,number"
 //   ODS_OUTPUT         optional, write the (edited) workbook back as .ods
-// Exit code 0 = accepted, 1 = refused or failed ("ERROR: ..." on stdout).
+// Exit code 0 = completed, 1 = refused or failed. MoonBit validation/usage
+// errors print ERROR (other caught errors: FAILED) on stdout; Node filesystem
+// exceptions report on stderr. Inspect exit status, not stdout alone: an
+// accepted input does not mean that later exports succeeded.
 
 ///|
 extern "js" fn env(name : String) -> String =

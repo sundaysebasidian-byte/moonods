@@ -97,6 +97,7 @@ moon run examples/reconcile --target js
 - 支持类型、值、公式缓存、合并及有限基础格式，不承诺图片、宏、图表、全样式、加密、ZIP64或打印保真。
 - 没有 Microsoft Office 互通实测；金额使用binary64，非精确十进制金融计算。
 - 每个输出文件独立rename，多文件不是整体事务；业务模板只重算已知算术关系。
+- `ods_tool` 必须同时检查退出码与 stderr：输入已接受的 stdout 不等于后续导出成功。验证/用法错误在 stdout 报 `ERROR`，其他 MoonBit 捕获错误报 `FAILED`；Node 文件系统异常在 stderr 报错并退出 1。CLI 不是逐行 JSON 协议，不能只查找 stdout 的 `ERROR` 判断失败。
 
 ## 许可与来源
 
@@ -123,7 +124,7 @@ moon run examples/reconcile --target js
 
 ### Subsequent normative regression fixes
 
-Physical length setters reject leading plus and non-XML surrounding whitespace; accepted tokens are checked against external ODF1.3 RNG cases. Paragraph raw XML whitespace collapses across spans according to Part3 section6.1.2, while explicit text:s/tab/line-break and NBSP remain. Text containing CR is represented with office:string-value numeric references rather than a conflicting display paragraph; this preserves data, not display fidelity. Historical182/GUI evidence remains historical; new validation is bound in the next private receipt.
+Physical length setters reject leading plus and non-XML surrounding whitespace; accepted tokens are checked against external ODF1.3 RNG cases. Paragraph raw XML whitespace collapses across spans according to Part3 section6.1.2, while explicit text:s/tab/line-break and NBSP remain. Text containing CR is represented with office:string-value numeric references rather than a separate display paragraph; this preserves data, not display fidelity. Historical182/GUI evidence remains historical; new validation is bound in the next private receipt.
 
 
 189修订四后端根包及consumer各189/189；独立14段落首读/再读28次CLI与18份真实API导出RNG通过。`+1mm`拒绝，`.5mm`、`1.mm`和合法前导零按外部schema保留；只trim XML空白，不接受NBSP/EM SPACE等包围长度。CR数据属性路径已用独立负控确认：改/删属性或加入冲突段落均被验收拒绝。普通Text显式控制与NBSP保留。旧GUI测试不外推此新CR表示。
@@ -139,3 +140,7 @@ Repeat/span positiveInteger values accept a single leading `+` and surrounding X
 Boolean import follows the ODF RNG token values `true` and `false`; the former nonstandard `1`/`0` compatibility acceptance is intentionally removed. `office:string-value` and ordinary strings are not collapsed by this typed normalization.
 
 Non-finite numeric tokens remain unsupported; [numeric diagnostics](docs/FINITE_NUMBER_DIAGNOSTICS.md) distinguishes legal unsupported values from malformed lexical forms.
+
+For string cells, explicit `office:string-value` is authoritative under ODF 1.3 Part 3 §19.389, even if validated paragraph display text differs. Without the attribute, the paragraph content defines the value. Distinct present display text is not retained by the data model and is reported as `STRING_DISPLAY_TEXT_DROPPED`; malformed or unsupported display content is still rejected. This is typed-data preservation, not display fidelity.
+
+Repeated rows containing horizontal-only merges are supported within the existing grid and cell budgets (ODF 1.3 §19.681). Repeated merged cells across columns and row repetition containing vertical merges remain rejected (§19.679.3/§19.681). Covered-cell positions must still be explicit and consistent; this does not add arbitrary layout preservation.
